@@ -1,0 +1,79 @@
+PODS:
+  - Flutter (1.0.0)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - google_maps_flutter (0.0.1):
+    - Flutter
+    - GoogleMaps
+  - GoogleMaps (3.0.3):
+    - GoogleMaps/Maps (= 3.0.3)
+  - GoogleMaps/Base (3.0.3)
+  - GoogleMaps/Maps (3.0.3):
+    - GoogleMaps/Base
+  - location (0.0.1):
+    - Flutter
+  - MMKV (1.0.18)
+  - mmkv_flutter (0.0.1):
+    - Flutter
+    - MMKV
+  - path_provider (0.0.1):
+    - Flutter
+  - simple_rsa (0.0.3):
+    - Flutter
+    - SwiftyRSA (~> 1.5.0)
+  - sqflite (0.0.1):
+    - Flutter
+    - FMDB (~> 2.7.2)
+  - SwiftyRSA (1.5.0):
+    - SwiftyRSA/ObjC (= 1.5.0)
+  - SwiftyRSA/ObjC (1.5.0)
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - location (from `.symlinks/plugins/location/ios`)
+  - mmkv_flutter (from `.symlinks/plugins/mmkv_flutter/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - simple_rsa (from `.symlinks/plugins/simple_rsa/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - FMDB
+    - GoogleMaps
+    - MMKV
+    - SwiftyRSA
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  google_maps_flutter:
+    :path: ".symlinks/plugins/google_maps_flutter/ios"
+  location:
+    :path: ".symlinks/plugins/location/ios"
+  mmkv_flutter:
+    :path: ".symlinks/plugins/mmkv_flutter/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  simple_rsa:
+    :path: ".symlinks/plugins/simple_rsa/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  google_maps_flutter: 6449d5918d3f1a69a37dc9c557bbad7bb9bcf0e9
+  GoogleMaps: fd5c9fa58871781b9fb94d4936f19c69fe60ce32
+  location: 26c90953ad5916331d0d1d913898779910416487
+  MMKV: 2dc8974641213da7ab069f9e94caa0fba7241f14
+  mmkv_flutter: c30199174f0117c468572e4758f72921d8089f68
+  path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
+  simple_rsa: 9487dfcb7e06bb757b8692d6d48de4cfaa6faea0
+  sqflite: d1612813fa7db7c667bed9f1d1b508deffc56999
+  SwiftyRSA: 6e528fb1b1a87d5111c48081083b141d6d65f1cf
+
+PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
+
+COCOAPODS: 1.6.0.beta.1
