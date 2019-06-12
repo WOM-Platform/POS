@@ -72,6 +72,7 @@
 #api key files
 **/ios/Runner/Api.swift
 **/android/app/src/main/res/values/api_key.xml
+**/android/key.properties
 **/android/app/development/debug/app.aab
 **/android/app/production/release/app.aab
 **/pubspec.lock
