@@ -5,6 +5,7 @@ import 'package:pos/src/model/payment_request.dart';
 import 'package:simple_rsa/simple_rsa.dart';
 import 'package:wom_package/wom_package.dart';
 
+import '../../../app.dart';
 import '../../constants.dart';
 
 class PaymentRegistrationRepository {
@@ -29,8 +30,14 @@ class PaymentRegistrationRepository {
       //encode map to json string
       final payloadMapEncoded = json.encode(payloadMap);
 
-      final privateKeyString = await _loadKey('assets/pos.pem');
+//      final privateKeyString1 = await _loadKey('assets/pos.pem');
+      final privateKeyString = user.privateKey;
+
       final publicKeyString = await _loadKey('assets/registry.pub');
+//      final publicKeyString1 = user.publicKey;
+
+//      assert(publicKeyString == publicKeyString1);
+//      assert(privateKeyString == privateKeyString1);
 
       final encrypted = await encryptString(payloadMapEncoded, publicKeyString);
 
@@ -71,6 +78,7 @@ class PaymentRegistrationRepository {
     try {
       final String payloadMapEncoded = json.encode(payloadMap);
       final String publicKeyString = await _loadKey('assets/registry.pub');
+//      final publicKeyString = user.publicKey;
       final String payloadEncrypted =
           await encryptString(payloadMapEncoded, publicKeyString);
 
@@ -78,8 +86,7 @@ class PaymentRegistrationRepository {
         "Payload": payloadEncrypted,
       };
 
-      return await HttpHelper.genericHttpPost(
-              URL_PAYMENT_VERIFICATION, map) !=
+      return await HttpHelper.genericHttpPost(URL_PAYMENT_VERIFICATION, map) !=
           null;
     } catch (ex) {
       print(ex.toString());
