@@ -67,7 +67,7 @@ class TypeSelectionPage extends StatelessWidget {
           ),
         ),
         floatingActionButton:
-            FloatingActionButton(onPressed: () => bloc.goToNextPage()),
+            FloatingActionButton(child:Icon(Icons.arrow_forward_ios),onPressed: () => bloc.goToNextPage()),
       ),
     );
   }

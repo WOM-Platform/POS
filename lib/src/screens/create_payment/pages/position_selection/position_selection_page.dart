@@ -136,7 +136,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   //Add pin to tapped position
   _onTapMap(LatLng location) {
     _updateCurrentLocation(location);
-
   }
 
   @override
@@ -268,7 +267,8 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         ),
         floatingActionButton: isValid
             ? FloatingActionButton(
-          heroTag: Key("positionHero"),
+                heroTag: Key("positionHero"),
+                child: Icon(Icons.arrow_forward_ios),
                 onPressed: () {
                   bloc.saveCurrentPosition();
                   goToRequestScreen();
@@ -292,7 +292,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
   void _updateCurrentLocation(LatLng target) {
     bloc.currentPosition = target;
-    addSquare(target,bloc.radius);
+    addSquare(target, bloc.radius);
 //    final MarkerId markerId = MarkerId('Request Position');
 //
 //    Marker marker = Marker(
@@ -301,14 +301,12 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 //      infoWindow: InfoWindow(title: 'Request Location', snippet: '*'),
 //    );
 
-  //TODO setState per aggiornare il marker
+    //TODO setState per aggiornare il marker
 //    setState(() {
 ////      markers.clear();
 ////      markers.add(marker);
 //    });
   }
-
-
 
   void addSquare(LatLng location, radius) {
     bloc.updatePolylines();

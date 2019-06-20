@@ -100,7 +100,7 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
             ),
           ),
           floatingActionButton: isValid
-              ? FloatingActionButton(onPressed: () => bloc.goToNextPage())
+              ? FloatingActionButton(child:Icon(Icons.arrow_forward_ios),onPressed: () => bloc.goToNextPage())
               : null,
         ),
       ),

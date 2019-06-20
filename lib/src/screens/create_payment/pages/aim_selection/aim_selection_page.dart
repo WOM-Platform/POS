@@ -82,7 +82,7 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
             ),
           ),
           floatingActionButton: isValid
-              ? FloatingActionButton(onPressed: () => bloc.goToNextPage())
+              ? FloatingActionButton(child:Icon(Icons.arrow_forward_ios),onPressed: () => bloc.goToNextPage())
               : null,
         ),
       ),
