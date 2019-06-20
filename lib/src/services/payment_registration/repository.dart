@@ -8,10 +8,10 @@ import 'package:wom_package/wom_package.dart';
 import '../../constants.dart';
 
 class PaymentRegistrationRepository {
-  HttpHelper _apiProvider;
+//  HttpHelper _apiProvider;
 
   PaymentRegistrationRepository() {
-    _apiProvider = HttpHelper();
+//    _apiProvider = HttpHelper();
   }
 
   Future generateNewPaymentRequest(PaymentRequest paymentRequest) async {
@@ -43,7 +43,7 @@ class PaymentRegistrationRepository {
       print(map);
 
       final responseBody =
-          await _apiProvider.genericHttpPost(URL_PAYMENT_REGISTRATION, map);
+          await HttpHelper.genericHttpPost(URL_PAYMENT_REGISTRATION, map);
 
       //decode response body into json
       final jsonResponse = json.decode(responseBody);
@@ -78,7 +78,7 @@ class PaymentRegistrationRepository {
         "Payload": payloadEncrypted,
       };
 
-      return await _apiProvider.genericHttpPost(
+      return await HttpHelper.genericHttpPost(
               URL_PAYMENT_VERIFICATION, map) !=
           null;
     } catch (ex) {

@@ -8,12 +8,14 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="pos"
+        android:label="WOM POS"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
+            android:allowBackup="false"
+            android:fullBackupContent="@xml/backup_rules"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"

@@ -1,12 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pos/src/blocs/home/home_event.dart';
+import 'package:pos/src/blocs/home/home_state.dart';
 import 'package:pos/src/db/app_db.dart';
 import 'package:pos/src/db/payment_request_db.dart';
 import 'package:pos/src/model/payment_request.dart';
-import 'package:pos/src/screens/home/home_event.dart';
-import 'package:pos/src/screens/home/home_state.dart';
 import 'package:wom_package/wom_package.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {

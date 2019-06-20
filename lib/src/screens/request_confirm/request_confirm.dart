@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
-import 'package:pos/src/screens/home/bloc.dart';
-import 'package:pos/src/screens/home/home_event.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/screens/request_confirm/summary_request.dart';
 import 'package:pos/src/screens/request_confirm/wom_creation_event.dart';
@@ -80,6 +79,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                 paymentRequest: bloc.paymentRequest,
               );
             }
+
+            return Center(child: Text("ERROR SCREEN STATE"));
           },
         ),
       ),

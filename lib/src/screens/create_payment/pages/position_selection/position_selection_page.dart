@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:location/location.dart';
-import 'dart:math' as math;
+import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import '../../back_button_text.dart';
 
 class PositionSelectionPage extends StatefulWidget {
@@ -268,9 +268,10 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         ),
         floatingActionButton: isValid
             ? FloatingActionButton(
+          heroTag: Key("positionHero"),
                 onPressed: () {
                   bloc.saveCurrentPosition();
-                  bloc.goToNextPage();
+                  goToRequestScreen();
                 },
               )
             : null,
@@ -278,10 +279,15 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     );
   }
 
-  void _onWidgetDidBuild(Function callback) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      callback();
-    });
+  goToRequestScreen() async {
+    final womRequest = await bloc.createModelForCreationRequest();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (ctx) => RequestConfirmScreen(
+          paymentRequest: womRequest,
+        ),
+      ),
+    );
   }
 
   void _updateCurrentLocation(LatLng target) {

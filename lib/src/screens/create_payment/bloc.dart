@@ -59,7 +59,7 @@ class CreatePaymentRequestBloc extends Bloc {
 
   createModelForCreationRequest() async {
     final aim = await aimSelectionBloc.getAim();
-    final String password = passwordController.text;
+//    final String password = passwordController.text;
     final String name = nameController.text;
 
     //TODO aggiungi bounding box
@@ -74,7 +74,7 @@ class CreatePaymentRequestBloc extends Bloc {
 
     final PaymentRequest paymentRequest = PaymentRequest(
         posId: "1",
-        password: password,
+//        password: password,
         dateTime: DateTime.now(),
         amount: _amount,
         aim: aim,

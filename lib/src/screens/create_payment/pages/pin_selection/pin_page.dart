@@ -116,7 +116,7 @@ class _Page4State extends State<Page4> {
         ),
         floatingActionButton: isValid
             ? FloatingActionButton(
-          heroTag: Key("pinHero"),
+                heroTag: Key("pinHero"),
                 onPressed: () {
                   goToRequestScreen();
                 },
@@ -131,8 +131,8 @@ class _Page4State extends State<Page4> {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (ctx) => RequestConfirmScreen(
-              paymentRequest: womRequest,
-            ),
+          paymentRequest: womRequest,
+        ),
       ),
     );
   }

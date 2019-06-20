@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
-import 'package:pos/src/screens/home/bloc.dart';
-import 'package:pos/src/screens/home/home_event.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
-import 'package:pos/src/screens/home/home_state.dart';
+import 'package:wom_package/wom_package.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -25,13 +24,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     print("Home build()");
     bloc = BlocProvider.of<HomeBloc>(context);
+
+    final AuthenticationBloc authenticationBloc =
+    BlocProvider.of<AuthenticationBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("HOME"),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.update),
-              onPressed: () => bloc.dispatch(LoadRequest()))
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () => authenticationBloc.dispatch(
+              LoggedOut(),
+            ),
+          ),
         ],
       ),
       body: BlocBuilder(
@@ -44,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           if (state is RequestLoaded) {
-            if(state.requests.isEmpty){
+            if (state.requests.isEmpty) {
               return Center(
                 child: Text("There aren't requests"),
               );
@@ -53,6 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
               requests: state.requests,
             );
           }
+
+          return Container(child: Center(child: Text("Error screen")),);
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -73,7 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    bloc.dispose();
     super.dispose();
   }
 }
