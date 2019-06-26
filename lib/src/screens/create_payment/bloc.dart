@@ -17,7 +17,6 @@ enum RequestType {
 }
 
 class CreatePaymentRequestBloc extends Bloc {
-
   AimSelectionBloc aimSelectionBloc;
 
   TextEditingController nameController;
@@ -37,6 +36,7 @@ class CreatePaymentRequestBloc extends Bloc {
   bool boundingBoxEnabled = false;
 
   int get _amount => int.tryParse(amountController.text);
+
   int get _maxAge => int.tryParse(maxAgeController.text);
 
   final PaymentRequest draftRequest;
@@ -63,12 +63,17 @@ class CreatePaymentRequestBloc extends Bloc {
     final String name = nameController.text;
 
     //TODO aggiungi bounding box
-    final SimpleFilter simpleFilter = SimpleFilter(
+    final SimpleFilters simpleFilter = SimpleFilters(
       aimCode: aim?.code,
       maxAge: maxAgeEnabled ? _maxAge : null,
-      boundingBox: boundingBoxEnabled
-          ? BoundingBox(
-              leftTop: locationPoints[0], rightBottom: locationPoints[2])
+      bounds: boundingBoxEnabled
+          ? BoundingBox(leftTop: [
+              locationPoints[0].latitude,
+              locationPoints[0].longitude
+            ], rightBottom: [
+              locationPoints[2].latitude,
+              locationPoints[2].longitude
+            ])
           : null,
     );
 

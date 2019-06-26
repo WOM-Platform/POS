@@ -15,7 +15,7 @@ class CardRequest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 230.0,
+      height: 260.0,
       child: Card(
         margin: const EdgeInsets.all(10),
         clipBehavior: Clip.antiAlias,
@@ -66,7 +66,7 @@ class CardRequest extends StatelessWidget {
                   ),
                   MyRichText(
                     t1: "Position: ",
-                    t2: "${request?.location?.latitude?.toStringAsFixed(2)},${request?.location?.longitude?.toStringAsFixed(2)}",
+                    t2: "${request?.simpleFilter?.bounds.toString()}",
                   ),
                 ],
               ),

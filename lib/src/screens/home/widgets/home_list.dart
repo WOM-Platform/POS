@@ -9,7 +9,6 @@ import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:pos/src/screens/request_datails/request_datail.dart';
 import 'package:wom_package/wom_package.dart';
 
-
 class HomeList extends StatefulWidget {
   final List<PaymentRequest> requests;
 
@@ -29,7 +28,9 @@ class _HomeListState extends State<HomeList> {
         itemCount: widget.requests.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: widget.requests[index].status == RequestStatus.COMPLETE ? () => goToDetails(index) : null,
+            onTap: widget.requests[index].status == RequestStatus.COMPLETE
+                ? () => goToDetails(index)
+                : null,
             child: CardRequest(
               request: widget.requests[index],
               onDelete: () => onDelete(index),
@@ -44,8 +45,8 @@ class _HomeListState extends State<HomeList> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => RequestDetails(
-              paymentRequest: widget.requests[index],
-            ),
+          paymentRequest: widget.requests[index],
+        ),
       ),
     );
   }
@@ -54,8 +55,8 @@ class _HomeListState extends State<HomeList> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => RequestConfirmScreen(
-              paymentRequest: widget.requests[index].copyFrom(),
-            ),
+          paymentRequest: widget.requests[index].copyFrom(),
+        ),
       ),
     );
   }
@@ -63,7 +64,8 @@ class _HomeListState extends State<HomeList> {
   onEdit(int index) {
     final provider = BlocProvider(
       child: GenerateWomScreen(),
-      bloc: CreatePaymentRequestBloc(draftRequest: widget.requests[index]),
+      builder: (context) =>
+          CreatePaymentRequestBloc(draftRequest: widget.requests[index]),
     );
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => provider));
   }

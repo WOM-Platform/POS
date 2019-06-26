@@ -64,7 +64,7 @@ class AppDatabase {
         "${PaymentRequest.STATUS} INTEGER,"
         "${PaymentRequest.POCKET_ACK_URL} TEXT,"
         "${PaymentRequest.POS_ACK_URL} TEXT,"
-        "${SimpleFilter.MAX_AGE} INTEGER,"
+        "${SimpleFilters.MAX_AGE} INTEGER,"
         "${BoundingBox.LEFT_TOP_LAT} LONG,"
         "${BoundingBox.LEFT_TOP_LONG} LONG,"
         "${BoundingBox.RIGHT_BOT_LAT} LONG,"

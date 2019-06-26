@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () async {
           final provider = BlocProvider(
             child: GenerateWomScreen(),
-            bloc: CreatePaymentRequestBloc(draftRequest: null),
+            builder: (context)=> CreatePaymentRequestBloc(draftRequest: null),
           );
           await Navigator.of(context)
               .push(MaterialPageRoute(builder: (ctx) => provider));

@@ -73,8 +73,11 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return BlocProviderTree(
       blocProviders: [
-        BlocProvider<AuthenticationBloc>(bloc: authenticationBloc),
-        BlocProvider<HomeBloc>(bloc: homeBloc),
+        BlocProvider<AuthenticationBloc>(
+            builder: (context) => authenticationBloc),
+        BlocProvider<HomeBloc>(
+          builder: (context) => homeBloc,
+        ),
       ],
       child: MaterialApp(
         theme: ThemeData(primaryColor: Colors.blue, accentColor: Colors.yellow),
@@ -105,8 +108,6 @@ class _AppState extends State<App> {
 
   @override
   void dispose() {
-    homeBloc.dispose();
-    authenticationBloc.dispose();
     super.dispose();
   }
 }

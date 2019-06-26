@@ -65,7 +65,7 @@ class SummaryRequest extends StatelessWidget {
               RichText(
                 text: TextSpan(
                   text: 'Pin ',
-                  style: TextStyle(fontSize: 30.0, color: Colors.red),
+                  style: TextStyle(fontSize: 25.0, color: Colors.red),
                   children: <TextSpan>[
                     TextSpan(
                         text: paymentRequest.password,

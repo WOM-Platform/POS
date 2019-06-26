@@ -37,7 +37,7 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Qual'è l'eta dei WOM accettai?",
+                    "Qual è l'eta dei WOM accettati?",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,

@@ -46,7 +46,7 @@ class PaymentRequest {
   LatLng location;
   Aim aim;
   String aimName;
-  SimpleFilter simpleFilter;
+  SimpleFilters simpleFilter;
 
   /*      {
         "PosId": 1,
@@ -93,7 +93,7 @@ class PaymentRequest {
     data[NONCE] = this.nonce;
     data[PASSWORD] = this.password;
     data[AMOUNT] = this.amount;
-    data[SIMPLE_FILTER] = this.simpleFilter?.toMap();
+    data[SIMPLE_FILTER] = this.simpleFilter?.toJson();
     data[POS_ACK_URL] = this.posAckUrl;
     data[POCKET_ACK_URL] = this.pocketAckUrl;
     return data;
@@ -119,28 +119,28 @@ class PaymentRequest {
     this.pocketAckUrl = map[POCKET_ACK_URL];
     this.posAckUrl = map[POS_ACK_URL];
     this.deepLink = map[DEEP_LINK];
-    final maxAge = map[SimpleFilter.MAX_AGE];
+    final maxAge = map[SimpleFilters.MAX_AGE];
     final aimCode = map[AIM_CODE];
     final leftTopLat = map[BoundingBox.LEFT_TOP_LAT];
     final leftTopLong = map[BoundingBox.LEFT_TOP_LONG];
     final rightBottomLat = map[BoundingBox.RIGHT_BOT_LAT];
     final rightBottomLong = map[BoundingBox.RIGHT_BOT_LONG];
 
-    BoundingBox boundingBox;
+    BoundingBox bounds;
     if (leftTopLat != null &&
         leftTopLong != null &&
         rightBottomLat != null &&
         rightBottomLong != null) {
-      boundingBox = BoundingBox(
-        leftTop: LatLng(leftTopLat, leftTopLong),
-        rightBottom: LatLng(rightBottomLat, rightBottomLong),
+      bounds = BoundingBox(
+        leftTop: [leftTopLat, leftTopLong],
+        rightBottom: [rightBottomLat, rightBottomLong],
       );
     }
-    if (aimCode != null || maxAge != null || boundingBox != null) {
-      this.simpleFilter = SimpleFilter(
+    if (aimCode != null || maxAge != null || bounds != null) {
+      this.simpleFilter = SimpleFilters(
         maxAge: maxAge,
         aimCode: aimCode,
-        boundingBox: boundingBox,
+        bounds: bounds,
       );
     }
   }
@@ -158,16 +158,16 @@ class PaymentRequest {
     map[NONCE] = this.nonce;
     map[POS_ID] = this.posId;
     map[STATUS] = this.status.index;
-    map[SimpleFilter.MAX_AGE] = this.simpleFilter?.maxAge;
-    if (simpleFilter?.boundingBox != null) {
+    map[SimpleFilters.MAX_AGE] = this.simpleFilter?.maxAge;
+    if (simpleFilter?.bounds != null) {
       map[BoundingBox.LEFT_TOP_LAT] =
-          this.simpleFilter?.boundingBox?.leftTop?.latitude ?? null;
+          this.simpleFilter?.bounds?.leftTop[0] ?? null;
       map[BoundingBox.LEFT_TOP_LONG] =
-          this.simpleFilter?.boundingBox?.leftTop?.longitude ?? null;
+          this.simpleFilter?.bounds?.leftTop[1] ?? null;
       map[BoundingBox.RIGHT_BOT_LAT] =
-          this.simpleFilter?.boundingBox?.rightBottom?.latitude ?? null;
+          this.simpleFilter?.bounds?.rightBottom[0] ?? null;
       map[BoundingBox.RIGHT_BOT_LONG] =
-          this.simpleFilter?.boundingBox?.rightBottom?.longitude ?? null;
+          this.simpleFilter?.bounds?.rightBottom[1] ?? null;
     }
     map[POCKET_ACK_URL] = this.pocketAckUrl;
     map[POS_ACK_URL] = this.posAckUrl;
@@ -191,65 +191,5 @@ class PaymentRequest {
       pocketAckUrl: this.pocketAckUrl,
       posAckUrl: this.posAckUrl,
     );
-  }
-}
-
-class SimpleFilter {
-  static String AIM = "Aim";
-  static String BOUNDS = "Bounds";
-  static String MAX_AGE = "MaxAge";
-
-  String aimCode;
-  BoundingBox boundingBox;
-  int maxAge;
-
-  SimpleFilter({
-    this.aimCode,
-    this.boundingBox,
-    this.maxAge,
-  });
-
-/*
-  "SimpleFilter": {
-  "Aim": "11",
-  "Bounds": {
-  "LeftTop": [ 45.0, -170.0 ],
-  "RightBottom": [ 50.0, -160.0 ]
-  },
-  "MaxAge": 14
-  },
-  "PocketAckUrl": "pocket://confirmation-url",
-  "PosAckUrl": "https://merchant.com/confirmation"
-}*/
-
-  Map<String, dynamic> toMap() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data[AIM] = this.aimCode;
-    if (boundingBox != null) {
-      data[BOUNDS] = this.boundingBox.toMap();
-    }
-    data[MAX_AGE] = this.maxAge;
-    return data;
-  }
-}
-
-class BoundingBox {
-  static String LEFT_TOP = "LeftTop";
-  static String LEFT_TOP_LAT = "LeftTopLat";
-  static String LEFT_TOP_LONG = "LeftTopLong";
-  static String RIGHT_BOT = "RightBottom";
-  static String RIGHT_BOT_LAT = "RightBottomLat";
-  static String RIGHT_BOT_LONG = "RightBottomLong";
-
-  LatLng leftTop;
-  LatLng rightBottom;
-
-  BoundingBox({this.leftTop, this.rightBottom});
-
-  Map<String, dynamic> toMap() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data[LEFT_TOP] = [leftTop.latitude, leftTop.longitude];
-    data[RIGHT_BOT] = [this.rightBottom.latitude, this.rightBottom.longitude];
-    return data;
   }
 }

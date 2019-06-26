@@ -41,6 +41,7 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
               DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build();
           paymentRequest.status = RequestStatus.COMPLETE;
           paymentRequest.registryUrl = response.registryUrl;
+          paymentRequest.password = response.password;
           await insertRequestOnDb();
           yield WomVerifyCreationRequestComplete(
             response: response,
