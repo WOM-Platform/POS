@@ -10,7 +10,17 @@ class RequestDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(paymentRequest.name),),
+      appBar: AppBar(
+        title: Text(paymentRequest.name),
+        centerTitle: true,
+        elevation: 0.0,
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: Text("ID ${paymentRequest.id}")),
+          ),
+        ],
+      ),
       body: SummaryRequest(
         paymentRequest: paymentRequest,
       ),

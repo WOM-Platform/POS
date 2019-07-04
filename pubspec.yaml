@@ -31,6 +31,9 @@ dependencies:
   simple_rsa: ^0.0.5
   mmkv_flutter: ^1.0.10
   intl:
+  auto_size_text: ^2.0.1
+  clippy_flutter: ^1.1.0
+  flutter_slidable: "^0.5.3"
   wom_package:
     git:
       url: git://github.com/WOM-Platform/WOM-Package.git
@@ -55,6 +58,7 @@ flutter:
   assets:
     - assets/pos.pem
     - assets/registry.pub
+    - assets/logo_wom.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pos/app.dart';
 import 'package:wom_package/wom_package.dart';
 
-void main() => runApp(App(userRepository: UserRepository(UserType.POS),));
+void main() {
+  runApp(App(userRepository: UserRepository(UserType.POS),));
+}

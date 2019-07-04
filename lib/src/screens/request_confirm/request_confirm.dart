@@ -21,6 +21,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
   HomeBloc homeBloc;
 
   bool isComplete = false;
+  bool isWrong = false;
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
   }
 
   Future<bool> onWillPop() {
-    if (isComplete) {
+    if (isComplete || isWrong) {
       return Future.value(true);
     }
     return Future.value(false);
@@ -42,7 +43,14 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
-        appBar: AppBar(title: Text(bloc.paymentRequest.name),),
+        appBar: AppBar(
+          title: Text(bloc.paymentRequest.name),
+          centerTitle: true,
+          elevation: 0.0,
+          actions: <Widget>[
+            Text("${bloc.paymentRequest.id}"),
+          ],
+        ),
         body: BlocBuilder(
           bloc: bloc,
           builder: (_, WomCreationState state) {
@@ -53,22 +61,24 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
             }
 
             if (state is WomCreationRequestLoading) {
+              isWrong = false;
+              isComplete = false;
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
 
             if (state is WomCreationRequestError) {
+              isWrong = true;
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Text(state.error),
-                  OutlineButton(
-                      child: Text('RIPROVA!'),
-                      onPressed: (){
-                    bloc.dispatch(CreateWomRequest());
-                  })
+                  FloatingActionButton.extended(
+                    onPressed: () => bloc.dispatch(CreateWomRequest()),
+                    label: Text('Try Again'),
+                  ),
                 ],
               );
             }

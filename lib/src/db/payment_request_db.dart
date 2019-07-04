@@ -18,10 +18,14 @@ class PaymentRequestDb {
     print("getRequests");
     var db = await _appDatabase.getDb();
     try {
-      List<Map> maps = await db.query(
-        PaymentRequest.TABLE,
-        orderBy: "${PaymentRequest.DATE} DESC",
-      );
+//      List<Map> maps = await db.query(
+//        PaymentRequest.TABLE,
+//        orderBy: "${PaymentRequest.DATE} DESC",
+//      );
+//    LEFT OUTER JOIN ${Aim.TABLE_NAME} ON ${PaymentRequest.AIM_CODE} = ${Aim.CODE}
+      List<Map> maps = await db.rawQuery(
+          'SELECT * FROM ${PaymentRequest.TABLE} ORDER BY ${PaymentRequest.DATE} DESC');
+      print("requests: ${maps.length}");
       return maps.map((a) {
         return PaymentRequest.fromMap(a);
       }).toList();

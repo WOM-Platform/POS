@@ -99,7 +99,7 @@ class PaymentRequest {
     return data;
   }
 
-  String get dateString => DateFormat.yMd().format(dateTime);
+  String get dateString => DateFormat.yMMMd().format(dateTime);
 
   PaymentRequest.fromMap(Map<String, dynamic> map) {
     this.id = map[ID];
@@ -178,7 +178,6 @@ class PaymentRequest {
     return PaymentRequest(
       amount: this.amount,
       dateTime: DateTime.now(),
-      password: this.password,
       registryUrl: this.registryUrl,
       name: this.name,
       aim: this.aim,

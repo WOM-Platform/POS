@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/card_request.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
-import 'package:pos/src/screens/request_datails/request_datail.dart';
+import 'package:pos/src/screens/request_datails/request_datails.dart';
 import 'package:wom_package/wom_package.dart';
 
 class HomeList extends StatefulWidget {
@@ -31,14 +32,53 @@ class _HomeListState extends State<HomeList> {
             onTap: widget.requests[index].status == RequestStatus.COMPLETE
                 ? () => goToDetails(index)
                 : null,
-            child: CardRequest(
-              request: widget.requests[index],
-              onDelete: () => onDelete(index),
-              onEdit: () => onEdit(index),
-              onDuplicate: () => onDuplicate(index),
+            child: Slidable(
+              actionPane: SlidableDrawerActionPane(),
+              actionExtentRatio: 0.25,
+              child: CardRequest2(
+                request: widget.requests[index],
+                onDelete: () => onDelete(index),
+                onEdit: () => onEdit(index),
+                onDuplicate: () => onDuplicate(index),
+              ),
+              actions: <Widget>[
+                MySlideAction(
+                  icon: Icons.share,
+                  color: Colors.green,
+                  onTap: () => _showSnackBar(context, 'Share'),
+                ),
+                widget.requests[index].status == RequestStatus.COMPLETE
+                    ? MySlideAction(
+                        icon: Icons.control_point_duplicate,
+                        color: Colors.indigo,
+                        onTap: () => onDuplicate(index),
+                      )
+                    : MySlideAction(
+                        icon: Icons.edit,
+                        color: Colors.orange,
+                        onTap: () => onEdit(index),
+                      ),
+
+              ],
+              secondaryActions: <Widget>[
+                MySlideAction(
+                  icon: Icons.archive,
+                  color: Colors.yellow,
+                  onTap: () => _showSnackBar(context, 'Archive'),
+                ),
+                MySlideAction(
+                  icon: Icons.delete,
+                  color: Colors.red,
+                  onTap: () => onDelete(index),
+                ),
+              ],
             ),
           );
         });
+  }
+
+  void _showSnackBar(BuildContext context, String text) {
+    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
   goToDetails(int index) {
@@ -79,5 +119,37 @@ class _HomeListState extends State<HomeList> {
         widget.requests.removeAt(index);
       });
     }
+  }
+}
+
+class MySlideAction extends StatelessWidget {
+  final Function onTap;
+  final IconData icon;
+  final Color color;
+
+  const MySlideAction({Key key, this.onTap, this.icon, this.color})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideAction(
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Card(
+          color: color,
+          elevation: 8.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      onTap: onTap,
+    );
   }
 }

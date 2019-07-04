@@ -37,7 +37,7 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Qual è l'eta dei WOM accettati?",
+                    "How recent are the WOMs supposed to be?",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -83,8 +83,8 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
-                      hintText: 'max age in days',
-                      errorText: isValid ? null : 'Value Can\'t Be 0',
+                      hintText: 'How many days?',
+                      errorText: isValid ? null : 'Insert values greater than 0 and lower than 1000',
                     ),
                   ),
                 ),
@@ -109,7 +109,9 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
             ),
           ),
           floatingActionButton: isValid
-              ? FloatingActionButton(onPressed: () => bloc.goToNextPage())
+              ? FloatingActionButton(
+                  child: Icon(Icons.arrow_forward_ios),
+                  onPressed: () => bloc.goToNextPage())
               : null,
         ),
       ),

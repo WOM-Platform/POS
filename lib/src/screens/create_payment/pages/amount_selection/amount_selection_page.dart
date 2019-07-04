@@ -38,7 +38,7 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Quanti WOM\nsono richiesti?",
+                    "How many WOMs?",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -73,11 +73,16 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.yellow)),
+                      errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red)),
+                      errorStyle: TextStyle(color: Colors.yellow),
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
-                      hintText: 'How many wom?',
-                      errorText: isValid ? null : 'Value Can\'t Be 0',
+                      hintText: 'How many WOMs?',
+                      errorText: isValid ? null : 'Insert values greater than 0',
                     ),
                   ),
                 ),
@@ -87,7 +92,7 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Indica il quantitativo di WOM necessari...",
+                    "Insert service price in WOMs",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,

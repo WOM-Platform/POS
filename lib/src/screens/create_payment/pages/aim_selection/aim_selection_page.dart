@@ -34,26 +34,30 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                 SizedBox(
                   height: 30.0,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Per quale causa accetti i WOM?",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Switch(
-                  value: bloc.aimSelectionBloc.aimEnabled,
-                  onChanged: (value) {
-                    setState(
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "What\'s the AIM?",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Switch(
+                      value: bloc.aimSelectionBloc.aimEnabled,
+                      onChanged: (value) {
+                        setState(
                           () {
-                        bloc.aimSelectionBloc.aimEnabled = value;
+                            bloc.aimSelectionBloc.aimEnabled = value;
+                          },
+                        );
                       },
-                    );
-                  },
+                    ),
+                  ],
                 ),
                 SelectAim(
                   bloc: bloc.aimSelectionBloc,
@@ -67,7 +71,7 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Selezionando un determinato AIM stabilisci che solo i WOM generati per quell'aim potranno essere usati in questo pagamento",
+                    "Select the AIM to filter which WOMs can be used to pay the service",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -82,7 +86,9 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
             ),
           ),
           floatingActionButton: isValid
-              ? FloatingActionButton(child:Icon(Icons.arrow_forward_ios),onPressed: () => bloc.goToNextPage())
+              ? FloatingActionButton(
+                  child: Icon(Icons.arrow_forward_ios),
+                  onPressed: () => bloc.goToNextPage())
               : null,
         ),
       ),

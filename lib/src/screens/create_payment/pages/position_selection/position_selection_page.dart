@@ -184,12 +184,13 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              height: 140.0,
+            SizedBox(
+              height: 30.0,
+            ),
+            Padding(
               padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.bottomLeft,
               child: Text(
-                "Seleziona un'area sulla mappa",
+                "What's the area of interest?",
                 textAlign: TextAlign.start,
                 style: TextStyle(
                     color: Colors.white,
@@ -212,30 +213,53 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
             ),
             Slider(
               value: bloc.radius,
-              min: 5000,
-              max: 500000,
-              onChanged: (double value) {
-                bloc.radius = value;
-                addSquare(bloc.currentPosition, value);
-              },
+              min: 2500,
+              max: 2000000,
+              activeColor: Theme.of(context).accentColor,
+              inactiveColor: Colors.white,
+              onChanged: bloc.boundingBoxEnabled
+                  ? (double value) {
+
+                      addSquare(bloc.currentPosition, value);
+                      setState(() {
+                        bloc.radius = value;
+                      });
+                    }
+                  : null,
             ),
             Expanded(
               child: Stack(
                 children: [
                   googleMap,
-                  Container(
-                    color: !bloc.boundingBoxEnabled
-                        ? Colors.grey.withOpacity(0.5)
-                        : null,
+                  GestureDetector(
+                    onTap: bloc.boundingBoxEnabled
+                        ? null
+                        : () {
+                            initPlatformState();
+                            setState(
+                              () {
+                                bloc.boundingBoxEnabled = true;
+                              },
+                            );
+                          },
+                    child: Container(
+                      color: !bloc.boundingBoxEnabled
+                          ? Colors.grey.withOpacity(0.5)
+                          : null,
+                      child: !bloc.boundingBoxEnabled
+                          ? Center(
+                              child: Text(
+                                "Touch to enable geographic filtering",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30.0,
+                                    fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : Container(),
+                    ),
                   ),
-                  !bloc.boundingBoxEnabled
-                      ? Center(
-                          child: Text(
-                          "Abilitare la mappa",
-                          style:
-                              TextStyle(color: Colors.yellow, fontSize: 30.0),
-                        ))
-                      : Container(),
                   Positioned(
                     left: 5.0,
                     top: 5.0,
@@ -311,18 +335,18 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   void addSquare(LatLng location, radius) {
     bloc.updatePolylines();
 
-    final Polyline polyline = Polyline(
-      polylineId: PolylineId("polyline1"),
-      consumeTapEvents: true,
-      color: Colors.orange,
-      width: 15,
-      points: bloc.locationPoints,
-    );
-
-    polylines.clear();
-    setState(() {
-      polylines.add(polyline);
-    });
+//    final Polyline polyline = Polyline(
+//      polylineId: PolylineId("polyline1"),
+//      consumeTapEvents: true,
+//      color: Colors.orange,
+//      width: 15,
+//      points: bloc.locationPoints,
+//    );
+//
+//    polylines.clear();
+//    setState(() {
+//      polylines.add(polyline);
+//    });
   }
 
   @override
