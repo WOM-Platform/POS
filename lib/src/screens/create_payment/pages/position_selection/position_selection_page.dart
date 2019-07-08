@@ -15,10 +15,9 @@ class PositionSelectionPage extends StatefulWidget {
 
 class _PositionSelectionPageState extends State<PositionSelectionPage> {
   CreatePaymentRequestBloc bloc;
-
   static final CameraPosition _kInitialPosition = const CameraPosition(
     target: LatLng(0, 0),
-    zoom: 11.0,
+    zoom: 12.0,
   );
 
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
@@ -111,7 +110,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
       print(location.latitude.toString());
       print(location.longitude.toString());
       final target = LatLng(location.latitude, location.longitude);
-      _currentCameraPosition = CameraPosition(target: target, zoom: 16);
+      _currentCameraPosition = CameraPosition(target: target, zoom: 12);
 
       final GoogleMapController controller = await _controller.future;
 
@@ -160,14 +159,14 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
         target: bloc.lastPosition ?? LatLng(0, 0),
-        zoom: 11.0,
+        zoom: 12.0,
       ),
       minMaxZoomPreference: _minMaxZoomPreference,
       myLocationEnabled: true,
       onCameraMove: _updateCameraPosition,
 //      markers: {marker},
       circles: {circle},
-      polylines: polylines,
+//      polylines: polylines,
       onTap: _onTapMap,
 //      compassEnabled: _compassEnabled,
 //      cameraTargetBounds: _cameraTargetBounds,
@@ -187,45 +186,71 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
             SizedBox(
               height: 30.0,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "What's the area of interest?",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            Switch(
-              value: bloc.boundingBoxEnabled,
-              onChanged: (value) {
-                if (value) {
-                  initPlatformState();
-                }
-                setState(
-                  () {
-                    bloc.boundingBoxEnabled = value;
-                  },
-                );
-              },
-            ),
-            Slider(
-              value: bloc.radius,
-              min: 2500,
-              max: 2000000,
-              activeColor: Theme.of(context).accentColor,
-              inactiveColor: Colors.white,
-              onChanged: bloc.boundingBoxEnabled
-                  ? (double value) {
-
-                      addSquare(bloc.currentPosition, value);
-                      setState(() {
-                        bloc.radius = value;
-                      });
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "What's the area of interest?",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                Switch(
+                  value: bloc.boundingBoxEnabled,
+                  onChanged: (value) {
+                    if (value) {
+                      initPlatformState();
                     }
-                  : null,
+                    setState(
+                      () {
+                        bloc.boundingBoxEnabled = value;
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            SliderTheme(
+              data: Theme.of(context).sliderTheme.copyWith(
+                    activeTrackColor: Colors.grey[100],
+                    inactiveTrackColor: Theme.of(context).accentColor,
+                    activeTickMarkColor: Colors.grey,
+                    inactiveTickMarkColor: Colors.white,
+                    overlayColor: Colors.black12,
+                    thumbColor: Theme.of(context).accentColor,
+                    valueIndicatorColor: Theme.of(context).accentColor,
+                    valueIndicatorTextStyle: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold),
+                  ),
+              child: Slider(
+                value: bloc.radius,
+                min: 2000,
+                max: 2002000,
+                divisions: 50,
+                label: '${(bloc.radius / 1000).floor()}km',
+                activeColor: Theme.of(context).accentColor,
+                inactiveColor: Colors.white,
+//                onChangeEnd: (value) {
+//                  _controller.future.then((c) {
+//                    c.animateCamera(CameraUpdate.zoomBy((bloc.radius/1000)/0.12));
+//                  });
+//                },
+                onChanged: bloc.boundingBoxEnabled
+                    ? (value) {
+                        addSquare(bloc.currentPosition, value);
+                        setState(() {
+                          bloc.radius = value;
+                        });
+                      }
+                    : null,
+              ),
             ),
             Expanded(
               child: Stack(

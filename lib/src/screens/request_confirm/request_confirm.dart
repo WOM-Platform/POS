@@ -47,9 +47,9 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
           title: Text(bloc.paymentRequest.name),
           centerTitle: true,
           elevation: 0.0,
-          actions: <Widget>[
-            Text("${bloc.paymentRequest.id}"),
-          ],
+//          actions: <Widget>[
+//            Text("${bloc.paymentRequest.id}"),
+//          ],
         ),
         body: BlocBuilder(
           bloc: bloc,

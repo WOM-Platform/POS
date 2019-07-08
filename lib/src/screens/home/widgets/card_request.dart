@@ -163,7 +163,7 @@ class CardRequest2 extends StatelessWidget {
                   ),
                   Spacer(),
                   Padding(
-                    padding: const EdgeInsets.only(right:8.0),
+                    padding: const EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
                       radius: 10,
                       backgroundColor: request.status == RequestStatus.COMPLETE
@@ -228,7 +228,7 @@ class CardRequest2 extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         ItemRow(t1: 'id ', t2: request.id.toString()),
-                        ItemRow(t1: 'aim ', t2: request?.aimName ?? '-'),
+                        ItemRow(t1: 'aim ', t2: request?.aim?.title ?? '-'),
                         ItemRow(t1: 'date ', t2: request.dateString),
                       ],
                     ),
@@ -275,6 +275,7 @@ class ItemRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Expanded(
             child: AutoSizeText(
@@ -287,6 +288,8 @@ class ItemRow extends StatelessWidget {
             child: AutoSizeText(
           ' $t2',
           maxLines: 1,
+          minFontSize: 9,
+          stepGranularity: 0.1,
           style: TextStyle(fontWeight: FontWeight.bold),
         )),
       ],

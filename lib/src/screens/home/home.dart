@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (state is RequestLoaded) {
                   if (state.requests.isEmpty) {
                     return Center(
-                      child: Text("There aren't requests"),
+                      child: Text("No payment requests"),
                     );
                   }
                   return HomeList(
