@@ -18,19 +18,19 @@ class _ChipSelectionState extends State<ChipSelection> {
       children: <Widget>[
         ChoiceChip(
           label: Text("Singola"),
-          selected: widget.bloc.requestType == RequestType.SINGLE,
+          selected: widget.bloc.persistentRequest,
           onSelected: (bool value) {
             setState(() {
-              widget.bloc.requestType = RequestType.SINGLE;
+//              widget.bloc.requestType = RequestType.SINGLE;
             });
           },
         ),
         ChoiceChip(
           label: Text("Multipla"),
-          selected: widget.bloc.requestType == RequestType.MULTIPLE,
+          selected: widget.bloc.persistentRequest,
           onSelected: (bool value) {
             setState(() {
-              widget.bloc.requestType = RequestType.MULTIPLE;
+//              widget.bloc.requestType = RequestType.MULTIPLE;
             });
           },
         ),

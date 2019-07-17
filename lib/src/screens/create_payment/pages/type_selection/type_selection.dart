@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
-import 'package:pos/src/screens/create_payment/pages/amount_selection/amount_selection_page.dart';
-import 'package:pos/src/utils.dart';
 
 import '../../back_button_text.dart';
-import '../../chip_selection.dart';
 
 class TypeSelectionPage extends StatelessWidget {
   CreatePaymentRequestBloc bloc;
@@ -34,7 +30,7 @@ class TypeSelectionPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Seleziona la modalità di richiesta",
+                  "Is a persistent request?",
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white,
@@ -45,16 +41,25 @@ class TypeSelectionPage extends StatelessWidget {
               SizedBox(
                 height: 30.0,
               ),
-              ChipSelection(bloc: bloc,),
+//              ChipSelection(bloc: bloc,),
+
+              StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                return Switch(
+                    value: bloc.persistentRequest,
+                    onChanged: (value) {
+                      setState(() {
+                        bloc.persistentRequest = value;
+                      });
+                    });
+              }),
               SizedBox(
                 height: 10.0,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "La richiesta singola genera un'unica istanza di pagamento, "
-                  "mentre la richiesta multipla permette di crare più istanze "
-                  "di pagamento con un'unica procedura",
+                  "",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,
@@ -62,12 +67,13 @@ class TypeSelectionPage extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              BackButtonText(onTap:()=> bloc.goToPreviousPage())
+              BackButtonText(onTap: () => bloc.goToPreviousPage())
             ],
           ),
         ),
-        floatingActionButton:
-            FloatingActionButton(child:Icon(Icons.arrow_forward_ios),onPressed: () => bloc.goToNextPage()),
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.arrow_forward_ios),
+            onPressed: () => bloc.goToNextPage()),
       ),
     );
   }

@@ -1,3 +1,4 @@
+
 import 'package:pos/src/db/app_db.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:wom_package/wom_package.dart';
@@ -88,7 +89,9 @@ class AimSelectionBloc {
 
   //Return aim code selected
   getAimCode() {
-    return aimEnabled ? (subSubAimCode ?? subAimCode ?? _selectedAimCode.value) :  null;
+    return aimEnabled
+        ? (subSubAimCode ?? subAimCode ?? _selectedAimCode.value)
+        : null;
   }
 
   setAimCode(String aimCode) {

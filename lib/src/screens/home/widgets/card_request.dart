@@ -229,7 +229,9 @@ class CardRequest2 extends StatelessWidget {
                       children: <Widget>[
                         ItemRow(t1: 'id ', t2: request.id.toString()),
                         ItemRow(t1: 'aim ', t2: request?.aim?.title ?? '-'),
-                        ItemRow(t1: 'date ', t2: request.dateString),
+//                        ItemRow(t1: 'date ', t2: request.dateString),
+                        ItemRow(t1: 'persistent ', t2: request.persistent.toString()),
+
                       ],
                     ),
                   ),

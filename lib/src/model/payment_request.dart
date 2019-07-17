@@ -26,6 +26,7 @@ class PaymentRequest {
   static String SIMPLE_FILTER = "SimpleFilter";
   static String POCKET_ACK_URL = "PocketAckUrl";
   static String POS_ACK_URL = "PosAckUrl";
+  static String PERSISTENT = "Persistent";
 
   String posId;
   String nonce;
@@ -47,6 +48,7 @@ class PaymentRequest {
   Aim aim;
   String aimName;
   SimpleFilters simpleFilter;
+  bool persistent;
 
   /*      {
         "PosId": 1,
@@ -83,7 +85,8 @@ class PaymentRequest {
       this.simpleFilter,
       this.deepLink,
       @required this.pocketAckUrl,
-      this.posAckUrl}) {
+      this.posAckUrl,
+      this.persistent = false}) {
     this.nonce = generateGUID();
   }
 
@@ -96,6 +99,7 @@ class PaymentRequest {
     data[SIMPLE_FILTER] = this.simpleFilter?.toJson();
     data[POS_ACK_URL] = this.posAckUrl;
     data[POCKET_ACK_URL] = this.pocketAckUrl;
+    data[PERSISTENT] = this.persistent;
     return data;
   }
 
@@ -118,6 +122,7 @@ class PaymentRequest {
     this.registryUrl = map[URL];
     this.pocketAckUrl = map[POCKET_ACK_URL];
     this.posAckUrl = map[POS_ACK_URL];
+    this.persistent = map[PERSISTENT] == 0 ? false : true;
     this.deepLink = map[DEEP_LINK];
     final maxAge = map[SimpleFilters.MAX_AGE];
     final aimCode = map[AIM_CODE];
@@ -158,6 +163,7 @@ class PaymentRequest {
     map[NONCE] = this.nonce;
     map[POS_ID] = this.posId;
     map[STATUS] = this.status.index;
+    map[PERSISTENT] = this.persistent ? 1: 0;
     map[SimpleFilters.MAX_AGE] = this.simpleFilter?.maxAge;
     if (simpleFilter?.bounds != null) {
       map[BoundingBox.LEFT_TOP_LAT] =
@@ -189,6 +195,7 @@ class PaymentRequest {
       simpleFilter: this.simpleFilter,
       pocketAckUrl: this.pocketAckUrl,
       posAckUrl: this.posAckUrl,
+      persistent: this.persistent,
     );
   }
 }

@@ -32,8 +32,7 @@ class PaymentRegistrationRepository {
 
 //      final privateKeyString1 = await _loadKey('assets/pos.pem');
       final privateKeyString = user.privateKey;
-
-      final publicKeyString = await _loadKey('assets/registry.pub');
+      final String publicKeyString = await getPublicKey();
 //      final publicKeyString1 = user.publicKey;
 
 //      assert(publicKeyString == publicKeyString1);
@@ -77,7 +76,7 @@ class PaymentRegistrationRepository {
 
     try {
       final String payloadMapEncoded = json.encode(payloadMap);
-      final String publicKeyString = await _loadKey('assets/registry.pub');
+      final String publicKeyString = await getPublicKey();
 //      final publicKeyString = user.publicKey;
       final String payloadEncrypted =
           await encryptString(payloadMapEncoded, publicKeyString);
@@ -96,5 +95,12 @@ class PaymentRegistrationRepository {
 
   Future<String> _loadKey(String path) async {
     return await rootBundle.loadString(path);
+  }
+
+  Future<String> getPublicKey() async {
+    if (Config.appFlavor == Flavor.DEVELOPMENT) {
+      return await _loadKey('assets/registry_dev.pub');
+    }
+    return await _loadKey('assets/registry.pub');
   }
 }

@@ -24,7 +24,8 @@ class CreatePaymentRequestBloc extends Bloc {
   TextEditingController maxAgeController;
   TextEditingController passwordController;
 
-  RequestType requestType = RequestType.SINGLE;
+//  RequestType requestType = RequestType.SINGLE;
+  bool persistentRequest  = false;
   final PageController pageController = PageController();
 
   LatLng currentPosition;
@@ -86,6 +87,7 @@ class CreatePaymentRequestBloc extends Bloc {
         aimCode: aim?.code,
         aimName: aim?.title,
         location: currentPosition,
+        persistent: persistentRequest ?? false,
         name: name,
         status: RequestStatus.DRAFT,
         simpleFilter: simpleFilter,

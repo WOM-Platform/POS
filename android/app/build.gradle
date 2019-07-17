@@ -60,8 +60,6 @@ android {
             storeFile file(keystoreProperties['storeFile'])
             storePassword keystoreProperties['storePassword']
         }
-
-
     }
 
     buildTypes {
@@ -75,6 +73,18 @@ android {
 //            ndk {
 //                abiFilters 'armeabi-v7a'
 //            }
+        }
+    }
+
+    flavorDimensions "flutter-flavours"
+
+    productFlavors{
+        development{
+            dimension "flutter-flavours"
+            applicationIdSuffix ".dev"
+        }
+        production{
+            dimension "flutter-flavours"
         }
     }
 }

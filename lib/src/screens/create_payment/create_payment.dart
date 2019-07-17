@@ -53,7 +53,7 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
                 physics: new NeverScrollableScrollPhysics(),
                 children: <Widget>[
                   NameSelectionPage(),
-//                  TypeSelectionPage(),
+                  TypeSelectionPage(),
                   AmountSelectionPage(),
                   AimSelectionPage(),
                   MaxAgeSelectionPage(),

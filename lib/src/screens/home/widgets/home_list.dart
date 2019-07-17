@@ -9,7 +9,7 @@ import 'package:pos/src/screens/home/widgets/card_request.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:pos/src/screens/request_datails/request_datails.dart';
 import 'package:wom_package/wom_package.dart';
-
+import 'package:share/share.dart';
 class HomeList extends StatefulWidget {
   final List<PaymentRequest> requests;
 
@@ -45,7 +45,9 @@ class _HomeListState extends State<HomeList> {
                 MySlideAction(
                   icon: Icons.share,
                   color: Colors.green,
-                  onTap: () => _showSnackBar(context, 'Share'),
+                  onTap: () {
+                    Share.share('${widget.requests[index].deepLink}');
+                  },
                 ),
                 widget.requests[index].status == RequestStatus.COMPLETE
                     ? MySlideAction(
