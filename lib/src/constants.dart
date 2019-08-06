@@ -1,8 +1,10 @@
+import 'package:wom_package/wom_package.dart'show Config;
+
 //URL
-const URL_CREATION_REQUEST = 'http://dev.wom.social/api/v1/voucher/create';
-const URL_CREATION_VERIFICATION = 'http://dev.wom.social/api/v1/voucher/verify';
-const URL_PAYMENT_REGISTRATION = 'http://dev.wom.social/api/v1/payment/register';
-const URL_PAYMENT_VERIFICATION = 'http://dev.wom.social/api/v1/payment/verify';
+final URL_CREATION_REQUEST = '${Config.baseUrl}voucher/create';
+final URL_CREATION_VERIFICATION = '${Config.baseUrl}voucher/verify';
+final URL_PAYMENT_REGISTRATION = '${Config.baseUrl}payment/register';
+final URL_PAYMENT_VERIFICATION = '${Config.baseUrl}payment/verify';
 
 //SHARED PREFERENCES
 const LAST_LATITUDE = "lastLatitude";

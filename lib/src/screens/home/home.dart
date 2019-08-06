@@ -15,8 +15,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomeBloc bloc;
-
-//  CreatePaymentRequestBloc _generateWomBloc;
   ScrollController _scrollViewController;
 
   @override
@@ -31,9 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Theme.of(context).primaryColor,
-//        systemNavigationBarColor: Colors.transparent,
-//        systemNavigationBarDividerColor: Colors.red,
-//        systemNavigationBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.light,
       ),
@@ -79,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: new Text('WOM POS'),
                   centerTitle: true,
                   pinned: true,
-                  floating: true,
+                  floating: false,
                   forceElevated: innerBoxIsScrolled,
                   actions: <Widget>[
                     IconButton(
@@ -135,7 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
           await Navigator.of(context)
               .push(MaterialPageRoute(builder: (ctx) => provider));
-          debugPrint("return to the home");
         },
       ),
     );
