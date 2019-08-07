@@ -80,6 +80,7 @@ class _AppState extends State<App> {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(primaryColor: Colors.blue, accentColor: Colors.yellow),
         home: BlocBuilder<AuthenticationEvent, AuthenticationState>(
           bloc: authenticationBloc,

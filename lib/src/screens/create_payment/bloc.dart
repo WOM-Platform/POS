@@ -9,6 +9,7 @@ import 'package:mmkv_flutter/mmkv_flutter.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:wom_package/wom_package.dart';
 import 'dart:math' as math;
+import '../../../app.dart';
 import '../../constants.dart';
 
 enum RequestType {
@@ -79,8 +80,7 @@ class CreatePaymentRequestBloc extends Bloc {
     );
 
     final PaymentRequest paymentRequest = PaymentRequest(
-        posId: "1",
-//        password: password,
+        posId: user.id.toString(),
         dateTime: DateTime.now(),
         amount: _amount,
         aim: aim,
@@ -91,7 +91,7 @@ class CreatePaymentRequestBloc extends Bloc {
         name: name,
         status: RequestStatus.DRAFT,
         simpleFilter: simpleFilter,
-        pocketAckUrl: "www.social.wom");
+        pocketAckUrl: "www.wom.social");
 
     if (draftRequest != null) {
       paymentRequest.id = draftRequest.id;

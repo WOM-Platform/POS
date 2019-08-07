@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
         statusBarColor: Theme.of(context).primaryColor,
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Theme.of(context).primaryColor,
       ),
     );
     bloc = BlocProvider.of<HomeBloc>(context);

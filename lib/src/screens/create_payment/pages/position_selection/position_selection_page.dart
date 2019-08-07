@@ -15,10 +15,11 @@ class PositionSelectionPage extends StatefulWidget {
 
 class _PositionSelectionPageState extends State<PositionSelectionPage> {
   CreatePaymentRequestBloc bloc;
-  static final CameraPosition _kInitialPosition = const CameraPosition(
-    target: LatLng(0, 0),
-    zoom: 12.0,
-  );
+
+//  static final CameraPosition _kInitialPosition = const CameraPosition(
+//    target: LatLng(0, 0),
+//    zoom: 12.0,
+//  );
 
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
 
@@ -33,6 +34,8 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition _currentCameraPosition;
+
+  final sliderSteps = [10,100,250,500,1000,2500,5000,7500,10000,15000,25000,50000,100000,125000,150000,250000,500000];
 
   @override
   void initState() {
@@ -119,9 +122,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         _updateCurrentLocation(target);
         controller.animateCamera(
             CameraUpdate.newCameraPosition(_currentCameraPosition));
-//        setState(() {
-//          _currentLocation = location;
-//        });
+
       }
     } on PlatformException catch (e) {
       print(e.toString());
@@ -135,6 +136,42 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   //Add pin to tapped position
   _onTapMap(LatLng location) {
     _updateCurrentLocation(location);
+  }
+
+  void _updateCurrentLocation(LatLng target) {
+    bloc.currentPosition = target;
+    bloc.updatePolylines();
+    setState(() {});
+//    addSquare(target, bloc.radius);
+//    final MarkerId markerId = MarkerId('Request Position');
+//
+//    Marker marker = Marker(
+//      markerId: markerId,
+//      position: target,
+//      infoWindow: InfoWindow(title: 'Request Location', snippet: '*'),
+//    );
+
+    //TODO setState per aggiornare il marker
+//    setState(() {
+////      markers.clear();
+////      markers.add(marker);
+//    });
+  }
+
+  void addSquare(LatLng location, radius) {
+
+//    final Polyline polyline = Polyline(
+//      polylineId: PolylineId("polyline1"),
+//      consumeTapEvents: true,
+//      color: Colors.orange,
+//      width: 15,
+//      points: bloc.locationPoints,
+//    );
+//
+//    polylines.clear();
+//    setState(() {
+//      polylines.add(polyline);
+//    });
   }
 
   @override
@@ -158,7 +195,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     final GoogleMap googleMap = GoogleMap(
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
-        target: bloc.lastPosition ?? LatLng(0, 0),
+        target: bloc.currentPosition ?? bloc.lastPosition ?? LatLng(0, 0),
         zoom: 12.0,
       ),
       minMaxZoomPreference: _minMaxZoomPreference,
@@ -337,41 +374,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         ),
       ),
     );
-  }
-
-  void _updateCurrentLocation(LatLng target) {
-    bloc.currentPosition = target;
-    addSquare(target, bloc.radius);
-//    final MarkerId markerId = MarkerId('Request Position');
-//
-//    Marker marker = Marker(
-//      markerId: markerId,
-//      position: target,
-//      infoWindow: InfoWindow(title: 'Request Location', snippet: '*'),
-//    );
-
-    //TODO setState per aggiornare il marker
-//    setState(() {
-////      markers.clear();
-////      markers.add(marker);
-//    });
-  }
-
-  void addSquare(LatLng location, radius) {
-    bloc.updatePolylines();
-
-//    final Polyline polyline = Polyline(
-//      polylineId: PolylineId("polyline1"),
-//      consumeTapEvents: true,
-//      color: Colors.orange,
-//      width: 15,
-//      points: bloc.locationPoints,
-//    );
-//
-//    polylines.clear();
-//    setState(() {
-//      polylines.add(polyline);
-//    });
   }
 
   @override

@@ -17,12 +17,6 @@ class PaymentRegistrationRepository {
 
   Future generateNewPaymentRequest(PaymentRequest paymentRequest) async {
     try {
-      /*{
-    "PosId": 1,
-    "Nonce": "91553f9f3d404a5399a7a7d651bb0ddd",
-    "Payload": "<see below>"
-    }*/
-
       final payloadMap = paymentRequest.toPayloadMap();
 
       print(payloadMap);
