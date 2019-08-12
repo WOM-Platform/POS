@@ -35,7 +35,23 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition _currentCameraPosition;
 
-  final sliderSteps = [10,100,250,500,1000,2500,5000,7500,10000,15000,25000,50000,100000,125000,150000,250000,500000];
+  final sliderSteps = [
+    100,
+    200,
+    500,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    50000,
+    100000,
+    200000,
+    500000,
+    1000000
+  ];
+
+  double sliderValue = 0.0;
 
   @override
   void initState() {
@@ -113,7 +129,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
       print(location.latitude.toString());
       print(location.longitude.toString());
       final target = LatLng(location.latitude, location.longitude);
-      _currentCameraPosition = CameraPosition(target: target, zoom: 12);
+      _currentCameraPosition = CameraPosition(target: target, zoom: 17);
 
       final GoogleMapController controller = await _controller.future;
 
@@ -122,7 +138,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         _updateCurrentLocation(target);
         controller.animateCamera(
             CameraUpdate.newCameraPosition(_currentCameraPosition));
-
       }
     } on PlatformException catch (e) {
       print(e.toString());
@@ -159,7 +174,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   }
 
   void addSquare(LatLng location, radius) {
-
 //    final Polyline polyline = Polyline(
 //      polylineId: PolylineId("polyline1"),
 //      consumeTapEvents: true,
@@ -196,7 +210,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
         target: bloc.currentPosition ?? bloc.lastPosition ?? LatLng(0, 0),
-        zoom: 12.0,
+        zoom: 17.0,
       ),
       minMaxZoomPreference: _minMaxZoomPreference,
       myLocationEnabled: true,
@@ -267,11 +281,14 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                         fontWeight: FontWeight.bold),
                   ),
               child: Slider(
-                value: bloc.radius,
-                min: 2000,
-                max: 2002000,
-                divisions: 50,
-                label: '${(bloc.radius / 1000).floor()}km',
+                value: sliderValue,
+                min: 0.0,
+                max: sliderSteps.length.toDouble() - 1.0,
+                divisions: sliderSteps.length - 1,
+
+//                label: '${(bloc.radius / 1000).floor()}km',
+                label:
+                    '${bloc.radius > 500 ? bloc.radius ~/ 1000 : bloc.radius.toInt()}${bloc.radius > 500 ? 'km' : 'm'}',
                 activeColor: Theme.of(context).accentColor,
                 inactiveColor: Colors.white,
 //                onChangeEnd: (value) {
@@ -281,9 +298,11 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 //                },
                 onChanged: bloc.boundingBoxEnabled
                     ? (value) {
-                        addSquare(bloc.currentPosition, value);
+                        sliderValue = value;
+//                        addSquare(bloc.currentPosition, value);
                         setState(() {
-                          bloc.radius = value;
+                          bloc.radius =
+                              sliderSteps[sliderValue.toInt()].toDouble();
                         });
                       }
                     : null,

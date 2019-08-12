@@ -33,7 +33,7 @@ class CreatePaymentRequestBloc extends Bloc {
   LatLng lastPosition;
   List<LatLng> locationPoints = [];
 
-  double radius = 5000;
+  double radius = 100.0;
   bool maxAgeEnabled = false;
   bool boundingBoxEnabled = false;
 
