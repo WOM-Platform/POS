@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
@@ -56,7 +57,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
           builder: (_, WomCreationState state) {
             if (state is WomCreationRequestEmpty) {
               return Center(
-                child: Text("Starting Creation Request"),
+                child: Text(AppLocalizations.of(context)
+                    .translate('starting_creation_request')),
               );
             }
 
@@ -77,7 +79,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                   Text(state.error),
                   FloatingActionButton.extended(
                     onPressed: () => bloc.dispatch(CreateWomRequest()),
-                    label: Text('Try Again'),
+                    label: Text(
+                        AppLocalizations.of(context).translate('try_again')),
                   ),
                 ],
               );
@@ -90,7 +93,9 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
               );
             }
 
-            return Center(child: Text("ERROR SCREEN STATE"));
+            return Center(
+                child: Text(AppLocalizations.of(context)
+                    .translate('error_screen_state')));
           },
         ),
       ),

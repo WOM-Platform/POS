@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/utils.dart';
 
@@ -81,8 +82,12 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
-                      hintText: 'How many WOMs?',
-                      errorText: isValid ? null : 'Insert values greater than 0',
+                      hintText:
+                          AppLocalizations.of(context).translate('how_wom'),
+                      errorText: isValid
+                          ? null
+                          : AppLocalizations.of(context)
+                              .translate('error_text_amount'),
                     ),
                   ),
                 ),
@@ -92,7 +97,8 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Insert service price in WOMs",
+                    AppLocalizations.of(context)
+                        .translate('insert_service_price'),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -100,12 +106,16 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                   ),
                 ),
                 Spacer(),
-                BackButtonText(onTap:()=> bloc.goToPreviousPage(),)
+                BackButtonText(
+                  onTap: () => bloc.goToPreviousPage(),
+                )
               ],
             ),
           ),
           floatingActionButton: isValid
-              ? FloatingActionButton(child:Icon(Icons.arrow_forward_ios),onPressed: () => bloc.goToNextPage())
+              ? FloatingActionButton(
+                  child: Icon(Icons.arrow_forward_ios),
+                  onPressed: () => bloc.goToNextPage())
               : null,
         ),
       ),

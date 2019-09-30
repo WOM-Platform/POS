@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/select_aim.dart';
 import 'package:pos/src/utils.dart';
@@ -39,7 +40,7 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "What\'s the AIM?",
+                        AppLocalizations.of(context).translate('what_aim'),
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             color: Colors.white,
@@ -71,7 +72,7 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Select the AIM to filter which WOMs can be used to pay the service",
+                    AppLocalizations.of(context).translate('aim_suggestion'),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,

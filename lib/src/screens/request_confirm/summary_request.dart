@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -11,7 +12,6 @@ class SummaryRequest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
@@ -73,8 +73,8 @@ class SummaryRequest extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: height/2.5,
-                  width: height/2.5,
+                  height: height / 2.5,
+                  width: height / 2.5,
                   child: Card(
                     child: QrImage(
                       padding: const EdgeInsets.all(20.0),
@@ -100,7 +100,9 @@ class SummaryRequest extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 80.0,),
+                SizedBox(
+                  height: 80.0,
+                ),
 //                  Row(
 //                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 //                    children: <Widget>[
@@ -147,7 +149,7 @@ class SummaryRequest extends StatelessWidget {
                 ),
               );
             },
-            label: Text('Duplicate')),
+            label: Text(AppLocalizations.of(context).translate('duplicate'))),
       ),
     );
   }

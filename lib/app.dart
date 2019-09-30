@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/splash/splash.dart';
 import 'package:wom_package/wom_package.dart';
 
+import 'localization/app_localizations.dart';
 import 'src/screens/home/home.dart';
 
 //class App extends StatelessWidget {
@@ -81,6 +83,28 @@ class _AppState extends State<App> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        localeResolutionCallback: (locale, supportedLocales) {
+          if (locale == null) {
+            return supportedLocales.first;
+          }
+
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode &&
+                supportedLocale.countryCode == locale.countryCode) {
+              return supportedLocale;
+            }
+          }
+          return supportedLocales.first;
+        },
+        supportedLocales: [
+          const Locale('en', 'US'),
+          const Locale('it', 'IT'),
+        ],
         theme: ThemeData(primaryColor: Colors.blue, accentColor: Colors.yellow),
         home: BlocBuilder<AuthenticationEvent, AuthenticationState>(
           bloc: authenticationBloc,
@@ -98,7 +122,8 @@ class _AppState extends State<App> {
             }
             return Container(
               child: Center(
-                child: Text("Error screen"),
+                child: Text(AppLocalizations.of(context)
+                    .translate('error_screen_state')),
               ),
             );
           },

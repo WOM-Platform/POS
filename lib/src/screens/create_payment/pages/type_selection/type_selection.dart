@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 
 import '../../back_button_text.dart';
@@ -30,7 +31,8 @@ class TypeSelectionPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Is a persistent request?",
+                  AppLocalizations.of(context)
+                      .translate('is_a_persistent_request'),
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white,

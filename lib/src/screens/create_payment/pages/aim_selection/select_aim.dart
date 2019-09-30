@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/my_dropdown.dart';
 
@@ -19,18 +20,21 @@ class SelectAim extends StatelessWidget {
             MyDropdown(
               list: bloc.aimList,
               value: bloc.aimEnabled ? snapshot.data : null,
-              labelText: 'Primary AIM',
-              onChanged: bloc.aimEnabled ? (String aim) {
-                bloc.changeSelectedAimRoot(aim);
-                bloc.subAimCode = null;
-                updateState();
-              } : null,
+              labelText: AppLocalizations.of(context).translate('primary_aim'),
+              onChanged: bloc.aimEnabled
+                  ? (String aim) {
+                      bloc.changeSelectedAimRoot(aim);
+                      bloc.subAimCode = null;
+                      updateState();
+                    }
+                  : null,
             ),
             snapshot.data != null && bloc.subAimList.isNotEmpty
                 ? MyDropdown(
                     list: bloc.subAimList,
                     value: bloc.subAimCode,
-                    labelText: 'Secondary AIM',
+                    labelText:
+                        AppLocalizations.of(context).translate('secondary_aim'),
                     onChanged: (String aimCode) {
                       bloc.changeSelectedAimRoot(aimCode.substring(0, 1));
                       bloc.subAimCode = aimCode;
@@ -46,7 +50,8 @@ class SelectAim extends StatelessWidget {
                 ? MyDropdown(
                     list: bloc.subSubAimList,
                     value: bloc.subSubAimCode,
-                    labelText: 'Tiertiary AIM',
+                    labelText:
+                        AppLocalizations.of(context).translate('tiertiary_aim'),
                     onChanged: (aim) {
                       bloc.changeSelectedAimRoot(aim.substring(0, 1));
                       bloc.subSubAimCode = aim;
@@ -61,7 +66,8 @@ class SelectAim extends StatelessWidget {
               color: Colors.grey[200],
             ),
             Text(
-              bloc.getStringOfAimSelected() ?? "Errore",
+              bloc.getStringOfAimSelected() ??
+                  AppLocalizations.of(context).translate('error'),
               style: TextStyle(color: Colors.white),
             ),
           ],

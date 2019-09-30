@@ -71,6 +71,7 @@
 
 #api key files
 **/ios/Runner/Api.swift
+**/ios/Runner/GoogleService-Info.plist
 **/android/app/src/main/res/values/api_key.xml
 **/android/app/google-services.json
 **/android/key.properties

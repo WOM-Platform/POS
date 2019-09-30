@@ -11,13 +11,15 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.0.8+8
+version: 0.0.9+9
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
@@ -63,6 +65,8 @@ flutter:
     - assets/registry.pub
     - assets/registry_dev.pub
     - assets/logo_wom.png
+    - lang/en.json
+    - lang/it.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

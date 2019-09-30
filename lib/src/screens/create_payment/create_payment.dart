@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/aim_selection_page.dart';
@@ -9,7 +10,6 @@ import 'package:pos/src/screens/create_payment/pages/name_selection/name_selecti
 import 'package:pos/src/screens/create_payment/pages/pin_selection/pin_page.dart';
 import 'package:pos/src/screens/create_payment/pages/position_selection/position_selection_page.dart';
 import 'package:pos/src/screens/create_payment/pages/amount_selection/amount_selection_page.dart';
-
 
 import 'pages/age_selection/age_selection_page.dart';
 import 'pages/type_selection/type_selection.dart';
@@ -43,10 +43,11 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
     homeBloc = BlocProvider.of<HomeBloc>(context);
     return WillPopScope(
       onWillPop: onWillPop,
-      child: SafeArea(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Stack(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Theme.of(context).primaryColor,
+        body: SafeArea(
+          child: Stack(
             children: <Widget>[
               PageView(
                 controller: bloc.pageController,
@@ -71,8 +72,8 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
                   ),
                   onPressed: () {
                     if (bloc.pageController.page.round() != 0) {
-                       showAlert(context);
-                    }else{
+                      showAlert(context);
+                    } else {
                       Navigator.of(context).pop();
                     }
                   },
@@ -86,13 +87,12 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
   }
 
   showAlert(BuildContext context) async {
-
     bool result = await showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: new Text("Alert Dialog title"),
-          content: new Text("Alert Dialog body"),
+          title: new Text(AppLocalizations.of(context)
+              .translate('save_draft_request_title_popup')),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -102,7 +102,7 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
               },
             ),
             new FlatButton(
-              child: new Text("Si"),
+              child: new Text(AppLocalizations.of(context).translate('yes')),
               onPressed: () {
                 Navigator.of(ctx).pop(true);
               },
@@ -111,7 +111,6 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
         );
       },
     );
-
 
     if (result ?? false) {
       await bloc.saveDraftRequest();

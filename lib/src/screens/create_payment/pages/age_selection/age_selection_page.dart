@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 
 import '../../back_button_text.dart';
@@ -37,7 +38,7 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "How recent are the WOMs supposed to be?",
+                    AppLocalizations.of(context).translate('how_recent_wom'),
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -67,7 +68,7 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                       }
                     },
                     onEditingComplete: () {
-                      print("onEditingComplete");
+//                      print("onEditingComplete");
                       SystemChannels.textInput.invokeMethod('TextInput.hide');
                       if (isValid) {
                         bloc.goToNextPage();
@@ -83,8 +84,12 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
-                      hintText: 'How many days?',
-                      errorText: isValid ? null : 'Insert values greater than 0 and lower than 1000',
+                      hintText: AppLocalizations.of(context)
+                          .translate('how_many_days'),
+                      errorText: isValid
+                          ? null
+                          : AppLocalizations.of(context)
+                              .translate('insert_value_grather'),
                     ),
                   ),
                 ),

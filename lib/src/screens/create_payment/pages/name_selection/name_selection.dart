@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 
 class NameSelectionPage extends StatefulWidget {
@@ -14,7 +15,6 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("NameSelectionPage build");
     bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
 
     final isValid = bloc.isValidName;
@@ -37,7 +37,7 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Request name",
+                  AppLocalizations.of(context).translate('request_name'),
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white,
@@ -59,7 +59,7 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
                       }
                     },
                     onEditingComplete: () {
-                      print("onEditingComplete");
+//                      print("onEditingComplete");
                       SystemChannels.textInput.invokeMethod('TextInput.hide');
                       if (isValid) {
                         bloc.goToNextPage();
@@ -76,8 +76,12 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
-                      hintText: 'What is the request name?',
-                      errorText: isValid ? null : 'Name too short',
+                      hintText: AppLocalizations.of(context)
+                          .translate('What is the request name?'),
+                      errorText: isValid
+                          ? null
+                          : AppLocalizations.of(context)
+                              .translate('name_short'),
                     ),
                   )),
               SizedBox(
@@ -86,7 +90,8 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: AutoSizeText(
-                  "Examples: \n\n- Discount 10%\n\n- Student free ride\n\n- Free parking",
+                  AppLocalizations.of(context)
+                      .translate('example_name_request'),
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:location/location.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
@@ -243,7 +244,8 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "What's the area of interest?",
+                      AppLocalizations.of(context)
+                          .translate('what_are_interest'),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.white,
@@ -330,7 +332,8 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                       child: !bloc.boundingBoxEnabled
                           ? Center(
                               child: Text(
-                                "Touch to enable geographic filtering",
+                                AppLocalizations.of(context)
+                                    .translate('touch_to_enable_filter_map'),
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30.0,

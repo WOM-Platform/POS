@@ -2,6 +2,7 @@ import 'package:clippy_flutter/arc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
@@ -105,7 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (state is RequestLoaded) {
                   if (state.requests.isEmpty) {
                     return Center(
-                      child: Text("No payment requests"),
+                      child: Text(
+                          AppLocalizations.of(context).translate('no_request')),
                     );
                   }
                   return HomeList(
@@ -114,7 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
 
                 return Container(
-                  child: Center(child: Text("Error screen")),
+                  child: Center(
+                      child: Text(AppLocalizations.of(context)
+                          .translate('error_screen_state'))),
                 );
               },
             ),

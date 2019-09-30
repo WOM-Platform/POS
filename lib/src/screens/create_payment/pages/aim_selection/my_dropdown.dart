@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:wom_package/wom_package.dart';
 
 class MyDropdown extends StatelessWidget {
@@ -20,18 +21,18 @@ class MyDropdown extends StatelessWidget {
         baseStyle: TextStyle(color: Colors.yellow),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(7),
-            labelText: labelText,
-            labelStyle: TextStyle(
-              color: Colors.white,
-            ),
-            border: OutlineInputBorder(),
-            filled: true,
-            fillColor:  Theme.of(context).primaryColor,
+          labelText: labelText,
+          labelStyle: TextStyle(
+            color: Colors.white,
+          ),
+          border: OutlineInputBorder(),
+          filled: true,
+          fillColor: Theme.of(context).primaryColor,
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton(
             value: value,
-            hint: const Text('Choose',),
+            hint: Text(AppLocalizations.of(context).translate('choose')),
             onChanged: onChanged,
             items: list.map((Aim aim) {
               return DropdownMenuItem<String>(
