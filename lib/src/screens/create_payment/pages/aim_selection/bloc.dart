@@ -1,7 +1,6 @@
-
-import 'package:pos/src/db/app_db.dart';
+import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:wom_package/wom_package.dart';
+import 'package:wom_package/wom_package.dart' show AimRepository, Aim;
 
 class AimSelectionBloc {
   BehaviorSubject<String> _selectedAimCode = BehaviorSubject<String>();
@@ -38,7 +37,7 @@ class AimSelectionBloc {
   }
 
   Future<List<Aim>> getAimListFromDb() async {
-    return await _aimRepository.getAimList(AppDatabase.get().getDb());
+    return await _aimRepository.getAimList(database: AppDatabase.get().getDb());
   }
 
 //  changeSelectedAimRoot(String newSelectedAim) {
@@ -109,7 +108,8 @@ class AimSelectionBloc {
   Future<Aim> getAim() async {
     final aimCode = getAimCode();
     if (aimCode != null) {
-      return await _aimRepository.getAim(AppDatabase.get().getDb(), aimCode);
+      return await _aimRepository.getAim(
+          database: AppDatabase.get().getDb(), aimCode: aimCode);
     }
 
     return null;

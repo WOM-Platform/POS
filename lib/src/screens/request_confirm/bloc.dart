@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:pos/src/db/payment_request_db.dart';
+import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/services/payment_registration/repository.dart';
 import 'package:wom_package/wom_package.dart';
@@ -11,11 +11,11 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
   PaymentRegistrationRepository _repository;
   final PaymentRequest paymentRequest;
 
-  PaymentRequestDb _requestDb;
+  PaymentDatabase _requestDb;
 
   RequestConfirmBloc({@required this.paymentRequest}) {
     _repository = PaymentRegistrationRepository();
-    _requestDb = PaymentRequestDb.get();
+    _requestDb = PaymentDatabase.get();
     dispatch(CreateWomRequest());
   }
 

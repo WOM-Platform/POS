@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/src/blocs/home/home_event.dart';
 import 'package:pos/src/blocs/home/home_state.dart';
-import 'package:pos/src/db/app_db.dart';
-import 'package:pos/src/db/payment_request_db.dart';
+import 'package:pos/src/db/app_database/app_database.dart';
+import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:wom_package/wom_package.dart';
 
@@ -11,12 +11,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   TextEditingController amountController = TextEditingController();
 
   AimRepository _aimRepository;
-  PaymentRequestDb _requestDb;
+  PaymentDatabase _requestDb;
 
   HomeBloc() {
     _aimRepository = AimRepository();
-    _requestDb = PaymentRequestDb.get();
-    _aimRepository.updateAim(AppDatabase.get().getDb()).then((_) {
+    _requestDb = PaymentDatabase.get();
+    _aimRepository.updateAim(database: AppDatabase.get().getDb()).then((_) {
       dispatch(LoadRequest());
     });
   }
@@ -27,8 +27,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(event) async* {
     if (event is LoadRequest) {
-      final List<Aim> aims =
-          await _aimRepository.getFlatAimList(AppDatabase.get().getDb());
+      final List<Aim> aims = await _aimRepository.getFlatAimList(
+          database: AppDatabase.get().getDb());
       final List<PaymentRequest> requests = await _requestDb.getRequests();
       for (PaymentRequest r in requests) {
         final Aim aim = aims.firstWhere((a) {

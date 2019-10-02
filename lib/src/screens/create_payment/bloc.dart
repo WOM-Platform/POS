@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:pos/src/db/payment_request_db.dart';
+import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:mmkv_flutter/mmkv_flutter.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
@@ -26,7 +26,7 @@ class CreatePaymentRequestBloc extends Bloc {
   TextEditingController passwordController;
 
 //  RequestType requestType = RequestType.SINGLE;
-  bool persistentRequest  = false;
+  bool persistentRequest = false;
   final PageController pageController = PageController();
 
   LatLng currentPosition;
@@ -200,7 +200,7 @@ class CreatePaymentRequestBloc extends Bloc {
 
   saveDraftRequest() async {
     print("saveDraftRequest");
-    final db = PaymentRequestDb.get();
+    final db = PaymentDatabase.get();
     final paymentRequest = await createModelForCreationRequest();
     try {
       if (draftRequest == null) {

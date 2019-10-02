@@ -4,7 +4,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/splash/splash.dart';
 import 'package:wom_package/wom_package.dart';
-
 import 'localization/app_localizations.dart';
 import 'src/screens/home/home.dart';
 
