@@ -104,7 +104,10 @@ class _AppState extends State<App> {
           const Locale('en', 'US'),
           const Locale('it', 'IT'),
         ],
-        theme: ThemeData(primaryColor: Colors.blue, accentColor: Colors.yellow),
+        theme: ThemeData(
+          primaryColor: Colors.blue,
+          accentColor: Colors.yellow,
+        ),
         home: BlocBuilder<AuthenticationEvent, AuthenticationState>(
           bloc: authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {

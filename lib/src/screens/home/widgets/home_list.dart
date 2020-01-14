@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
@@ -10,6 +11,7 @@ import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:pos/src/screens/request_datails/request_datails.dart';
 import 'package:wom_package/wom_package.dart';
 import 'package:share/share.dart';
+
 class HomeList extends StatefulWidget {
   final List<PaymentRequest> requests;
 
@@ -60,7 +62,6 @@ class _HomeListState extends State<HomeList> {
                         color: Colors.orange,
                         onTap: () => onEdit(index),
                       ),
-
               ],
               secondaryActions: <Widget>[
                 MySlideAction(
@@ -106,8 +107,9 @@ class _HomeListState extends State<HomeList> {
   onEdit(int index) {
     final provider = BlocProvider(
       child: GenerateWomScreen(),
-      builder: (context) =>
-          CreatePaymentRequestBloc(draftRequest: widget.requests[index]),
+      builder: (ctx) => CreatePaymentRequestBloc(
+          draftRequest: widget.requests[index],
+          languageCode: AppLocalizations.of(context).locale.languageCode),
     );
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => provider));
   }

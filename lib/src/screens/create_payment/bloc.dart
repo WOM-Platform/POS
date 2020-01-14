@@ -43,7 +43,10 @@ class CreatePaymentRequestBloc extends Bloc {
 
   final PaymentRequest draftRequest;
 
-  CreatePaymentRequestBloc({@required this.draftRequest}) {
+  final String languageCode;
+
+  CreatePaymentRequestBloc(
+      {@required this.draftRequest, @required this.languageCode}) {
     print("CreatePaymentRequestBloc()");
     nameController = TextEditingController(text: draftRequest?.name ?? "");
     amountController =
@@ -52,7 +55,7 @@ class CreatePaymentRequestBloc extends Bloc {
         text: draftRequest?.simpleFilter?.maxAge?.toString() ?? "");
     passwordController =
         TextEditingController(text: draftRequest?.password ?? "");
-    aimSelectionBloc = AimSelectionBloc();
+    aimSelectionBloc = AimSelectionBloc(languageCode ?? 'en');
     if (draftRequest?.aimCode != null) {
       aimSelectionBloc.setAimCode(draftRequest.aimCode);
     }
@@ -85,7 +88,7 @@ class CreatePaymentRequestBloc extends Bloc {
         amount: _amount,
         aim: aim,
         aimCode: aim?.code,
-        aimName: aim?.title,
+        aimName: (aim?.titles ?? const {})[languageCode ?? 'en'],
         location: currentPosition,
         persistent: persistentRequest ?? false,
         name: name,

@@ -41,19 +41,19 @@ class _HomeScreenState extends State<HomeScreen> {
         BlocProvider.of<AuthenticationBloc>(context);
     return Scaffold(
       extendBody: true,
-//      appBar: AppBar(
-//        title: Text("WOM POS"),
-//        centerTitle: true,
-//        elevation: 0.0,
-//        actions: <Widget>[
-//          IconButton(
-//            icon: Icon(Icons.exit_to_app),
-//            onPressed: () => authenticationBloc.dispatch(
-//              LoggedOut(),
-//            ),
-//          ),
-//        ],
-//      ),
+      appBar: AppBar(
+        title: Text("WOM POS"),
+        centerTitle: true,
+        elevation: 0.0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () => authenticationBloc.dispatch(
+              LoggedOut(),
+            ),
+          ),
+        ],
+      ),
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -67,7 +67,35 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 50,
             ),
           ),
-          NestedScrollView(
+          BlocBuilder(
+            bloc: bloc,
+            builder: (BuildContext context, HomeState state) {
+              if (state is RequestLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (state is RequestLoaded) {
+                if (state.requests.isEmpty) {
+                  return Center(
+                    child: Text(
+                        AppLocalizations.of(context).translate('no_request')),
+                  );
+                }
+                return HomeList(
+                  requests: state.requests,
+                );
+              }
+
+              return Container(
+                child: Center(
+                    child: Text(AppLocalizations.of(context)
+                        .translate('error_screen_state'))),
+              );
+            },
+          ),
+/*          NestedScrollView(
             controller: _scrollViewController,
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
@@ -122,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-          ),
+          ),*/
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -131,7 +159,9 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () async {
           final provider = BlocProvider(
             child: GenerateWomScreen(),
-            builder: (context) => CreatePaymentRequestBloc(draftRequest: null),
+            builder: (ctx) => CreatePaymentRequestBloc(
+                draftRequest: null,
+                languageCode: AppLocalizations.of(context).locale.languageCode),
           );
           await Navigator.of(context)
               .push(MaterialPageRoute(builder: (ctx) => provider));

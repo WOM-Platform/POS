@@ -27,8 +27,8 @@ class AimSelectionBloc {
   String subAimCode;
   String subSubAimCode;
   AimRepository _aimRepository;
-
-  AimSelectionBloc() {
+  final String languageCode;
+  AimSelectionBloc(this.languageCode) {
     print("AimSelectionBloc()");
     _aimRepository = AimRepository();
     getAimListFromDb().then((list) {
@@ -60,29 +60,33 @@ class AimSelectionBloc {
 //  }
 
   getStringOfAimSelected() {
-    final String firstLevel = aimList
-        .firstWhere((aim) => aim.code == _selectedAimCode.value,
-            orElse: () => null)
-        ?.title;
+    final Aim firstLevelAim = aimList.firstWhere(
+        (aim) => aim.code == _selectedAimCode.value,
+        orElse: () => null);
 
-    if (firstLevel == null) {
+    if (firstLevelAim == null) {
       return "";
     }
+    final String firstLevel = firstLevelAim.titles[languageCode];
 
-    final String secondLevel = subAimList
-        .firstWhere((aim) => aim.code == subAimCode, orElse: () => null)
-        ?.title;
+    final Aim secondLevelAim = subAimList
+        .firstWhere((aim) => aim.code == subAimCode, orElse: () => null);
 
-    if (secondLevel == null) {
+    if (secondLevelAim == null) {
       return firstLevel;
     }
 
-    final String thirdLevel = subSubAimList
-        .firstWhere((aim) => aim.code == subSubAimCode, orElse: () => null)
-        ?.title;
-    if (thirdLevel == null) {
+    final String secondLevel = secondLevelAim.titles[languageCode];
+
+    final Aim thirdLevelAim = subSubAimList
+        .firstWhere((aim) => aim.code == subSubAimCode, orElse: () => null);
+
+    if (thirdLevelAim == null) {
       return firstLevel + " -> " + secondLevel;
     }
+
+    final String thirdLevel = thirdLevelAim.titles[languageCode];
+
     return firstLevel + " -> " + secondLevel + " -> " + thirdLevel;
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:wom_package/wom_package.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -131,9 +132,9 @@ class CardRequest2 extends StatelessWidget {
       {Key key, this.request, this.onDelete, this.onEdit, this.onDuplicate})
       : super(key: key);
 
-  /**/
   @override
   Widget build(BuildContext context) {
+    final languageCode = AppLocalizations.of(context).locale.languageCode;
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Card(
@@ -228,10 +229,15 @@ class CardRequest2 extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         ItemRow(t1: 'id ', t2: request.id.toString()),
-                        ItemRow(t1: 'aim ', t2: request?.aim?.title ?? '-'),
+                        ItemRow(
+                            t1: 'aim ',
+                            t2: (request?.aim?.titles ??
+                                    const {})[languageCode ?? 'en'] ??
+                                '-'),
 //                        ItemRow(t1: 'date ', t2: request.dateString),
-                        ItemRow(t1: 'persistent ', t2: request.persistent.toString()),
-
+                        ItemRow(
+                            t1: 'persistent ',
+                            t2: request.persistent.toString()),
                       ],
                     ),
                   ),

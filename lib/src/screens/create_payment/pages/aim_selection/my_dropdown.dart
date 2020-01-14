@@ -15,6 +15,7 @@ class MyDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final languageCode = AppLocalizations.of(context).locale.languageCode;
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: InputDecorator(
@@ -37,7 +38,7 @@ class MyDropdown extends StatelessWidget {
             items: list.map((Aim aim) {
               return DropdownMenuItem<String>(
                 value: aim.code,
-                child: Text(aim.title),
+                child: Text((aim?.titles ?? const {})[languageCode ?? "en"] ?? '-'),
               );
             }).toList(),
           ),
