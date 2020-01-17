@@ -1,3 +1,9 @@
+## 0.1.1
+
+* Add internet connection check
+* UX improvement
+* Slidable background color fixed
+
 ## 0.0.3
 
 * Fix miss PIN in payment request card
