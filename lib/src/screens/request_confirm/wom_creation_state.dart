@@ -10,8 +10,7 @@ class WomCreationRequestEmpty extends WomCreationState {}
 
 class WomCreationRequestLoading extends WomCreationState {}
 
-class WomCreationRequestComplete extends WomCreationState {
-}
+class WomCreationRequestComplete extends WomCreationState {}
 
 class WomCreationRequestError extends WomCreationState {
   final String error;
@@ -26,9 +25,18 @@ class WomVerifyCreationRequestComplete extends WomCreationState {
   WomVerifyCreationRequestComplete({@required this.response})
       : assert(response != null),
         super([response]);
+  @override
+  String toString() => 'WomVerifyCreationRequestComplete';
 }
 
 class WomVerifyCreationRequestError extends WomCreationState {
   final String error;
   WomVerifyCreationRequestError({this.error});
+  @override
+  String toString() => 'WomVerifyCreationRequestError';
+}
+
+class WomCreationRequestNoDataConnectionState extends WomCreationState {
+  @override
+  String toString() => 'WomCreationRequestNoDataConnectionState';
 }

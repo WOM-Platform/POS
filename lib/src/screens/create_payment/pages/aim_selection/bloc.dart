@@ -31,33 +31,24 @@ class AimSelectionBloc {
   AimSelectionBloc(this.languageCode) {
     print("AimSelectionBloc()");
     _aimRepository = AimRepository();
-    getAimListFromDb().then((list) {
-      aimList = list;
-    });
+    getAimListFromDb();
   }
 
-  Future<List<Aim>> getAimListFromDb() async {
-    return await _aimRepository.getAimList(database: AppDatabase.get().getDb());
+  Future<void> getAimListFromDb() async {
+    try {
+      aimList =
+          await _aimRepository.getAimList(database: AppDatabase.get().getDb());
+    } catch (ex) {
+      aimList = [];
+      print(ex.toString());
+    }
   }
 
-//  changeSelectedAimRoot(String newSelectedAim) {
-//    print("pre${_selectedAimCode.value}");
-//    print("new $newSelectedAim");
-
-//    if (newSelectedAim.substring(0, 1) != _selectedAimCode.value) {
-//      subAimCode = null;
-//      subSubAimCode = null;
-//    }
-
-//    _selectedAimCode.add(newSelectedAim);
-//
-//    if(subSubAimList.isEmpty){
-//      subSubAimCode = null;
-//    }
-//    if(subAimList.isEmpty){
-//      subAimCode = null;
-//    }
-//  }
+  updateAims() async {
+    aimList =
+        await _aimRepository.updateAim(database: AppDatabase.get().getDb());
+    _selectedAimCode.add(null);
+  }
 
   getStringOfAimSelected() {
     final Aim firstLevelAim = aimList.firstWhere(

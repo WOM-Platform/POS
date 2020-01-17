@@ -59,7 +59,6 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
                   AimSelectionPage(),
                   MaxAgeSelectionPage(),
                   PositionSelectionPage(),
-                  Page4(),
                 ],
               ),
               Positioned(

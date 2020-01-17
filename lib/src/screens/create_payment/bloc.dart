@@ -67,7 +67,6 @@ class CreatePaymentRequestBloc extends Bloc {
 //    final String password = passwordController.text;
     final String name = nameController.text;
 
-    //TODO aggiungi bounding box
     final SimpleFilters simpleFilter = SimpleFilters(
       aimCode: aim?.code,
       maxAge: maxAgeEnabled ? _maxAge : null,

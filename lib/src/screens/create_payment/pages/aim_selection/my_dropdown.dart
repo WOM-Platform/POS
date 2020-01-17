@@ -38,7 +38,8 @@ class MyDropdown extends StatelessWidget {
             items: list.map((Aim aim) {
               return DropdownMenuItem<String>(
                 value: aim.code,
-                child: Text((aim?.titles ?? const {})[languageCode ?? "en"] ?? '-'),
+                child: Text(
+                    (aim?.titles ?? const {})[languageCode ?? "en"] ?? '-'),
               );
             }).toList(),
           ),

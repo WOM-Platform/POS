@@ -26,5 +26,13 @@
   "secondary_aim": "Secondary AIM",
   "tiertiary_aim": "Tiertiary AIM",
   "error": "Error",
-  "choose": "Choose"
+  "choose": "Choose",
+  "go_to_website": "Go to website",
+  "more_info": "More info",
+  "logout_message": "Do you want to logout?",
+  "no_connection_title": "No internet connection available",
+  "no_connection_desc": "To accumulate or consume WOMs your device needs to be connected to the internet",
+  "no_connection_aim_desc": "Since this is the first time launching the app you need an active internet connection to download all necessary data for configuring your POS. \nTurn your network data on and click \"Retry\"",
+  "no_connection_transaction_desc": "To generate a payment request your device needs to have an active internet connection. \nTurn your network data on and click \"Retry\"",
+  "somethings_wrong": "Something is wrong"
 }

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/services/payment_registration/repository.dart';
@@ -26,31 +27,34 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
   Stream<WomCreationState> mapEventToState(event) async* {
     if (event is CreateWomRequest) {
       yield WomCreationRequestLoading();
-
-      final RequestVerificationResponse response =
-          await _repository.generateNewPaymentRequest(paymentRequest);
-      if (response.error != null) {
-        print(response.error);
-        insertRequestOnDb();
-        yield WomCreationRequestError(error: response.error);
-      } else {
-        final bool verificationResponse =
-            await _repository.verifyPaymentRequest(response);
-        if (verificationResponse) {
-          paymentRequest.deepLink =
-              DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build();
-          paymentRequest.status = RequestStatus.COMPLETE;
-          paymentRequest.registryUrl = response.registryUrl;
-          paymentRequest.password = response.password;
-          await insertRequestOnDb();
-          yield WomVerifyCreationRequestComplete(
-            response: response,
-          );
-        } else {
-          paymentRequest.status = RequestStatus.DRAFT;
+      if (await DataConnectionChecker().hasConnection) {
+        final RequestVerificationResponse response =
+            await _repository.generateNewPaymentRequest(paymentRequest);
+        if (response.error != null) {
+          print(response.error);
           insertRequestOnDb();
           yield WomCreationRequestError(error: response.error);
+        } else {
+          final bool verificationResponse =
+              await _repository.verifyPaymentRequest(response);
+          if (verificationResponse) {
+            paymentRequest.deepLink =
+                DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build();
+            paymentRequest.status = RequestStatus.COMPLETE;
+            paymentRequest.registryUrl = response.registryUrl;
+            paymentRequest.password = response.password;
+            await insertRequestOnDb();
+            yield WomVerifyCreationRequestComplete(
+              response: response,
+            );
+          } else {
+            paymentRequest.status = RequestStatus.DRAFT;
+            insertRequestOnDb();
+            yield WomCreationRequestError(error: response.error);
+          }
         }
+      } else {
+        yield WomCreationRequestNoDataConnectionState();
       }
     }
   }

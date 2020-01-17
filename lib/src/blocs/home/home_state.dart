@@ -21,3 +21,17 @@ class RequestLoaded extends HomeState {
     );
   }
 }
+
+class RequestsLoadingErrorState extends HomeState {
+  final String error;
+
+  RequestsLoadingErrorState(this.error) : super([error]);
+
+  @override
+  String toString() => "RequestsLoadingErrorState";
+}
+
+class NoDataConnectionState extends HomeState {
+  @override
+  String toString() => 'NoDataConnectionState';
+}

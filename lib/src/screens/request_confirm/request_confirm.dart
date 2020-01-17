@@ -23,6 +23,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   bool isComplete = false;
   bool isWrong = false;
+  bool noDataConnection = false;
 
   @override
   void initState() {
@@ -31,7 +32,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
   }
 
   Future<bool> onWillPop() {
-    if (isComplete || isWrong) {
+    if (isComplete || isWrong || noDataConnection) {
+      homeBloc.dispatch(LoadRequest());
       return Future.value(true);
     }
     return Future.value(false);
@@ -60,17 +62,14 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                 child: Text(AppLocalizations.of(context)
                     .translate('starting_creation_request')),
               );
-            }
-
-            if (state is WomCreationRequestLoading) {
+            } else if (state is WomCreationRequestLoading) {
               isWrong = false;
               isComplete = false;
+              noDataConnection = false;
               return Center(
                 child: CircularProgressIndicator(),
               );
-            }
-
-            if (state is WomCreationRequestError) {
+            } else if (state is WomCreationRequestError) {
               isWrong = true;
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -84,9 +83,40 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                   ),
                 ],
               );
-            }
-
-            if (state is WomVerifyCreationRequestComplete) {
+            } else if (state is WomCreationRequestNoDataConnectionState) {
+              noDataConnection = true;
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context)
+                          .translate('no_connection_title'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      AppLocalizations.of(context)
+                          .translate('no_connection_transaction_desc'),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RaisedButton(
+                        child: Text(AppLocalizations.of(context)
+                            .translate('try_again')),
+                        onPressed: () {
+                          bloc.dispatch(CreateWomRequest());
+                        }),
+                  ],
+                ),
+              );
+            } else if (state is WomVerifyCreationRequestComplete) {
               isComplete = true;
               return SummaryRequest(
                 paymentRequest: bloc.paymentRequest,

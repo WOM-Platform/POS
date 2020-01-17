@@ -15,6 +15,38 @@ class SelectAim extends StatelessWidget {
     return StreamBuilder<String>(
       stream: bloc.selectedAimCode,
       builder: (context, snapshot) {
+        if (bloc.aimList == null || bloc.aimList.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  AppLocalizations.of(context).translate('no_connection_title'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  AppLocalizations.of(context)
+                      .translate('no_connection_aim_desc'),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                RaisedButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate('try_again')),
+                    onPressed: () {
+                      bloc.updateAims();
+                    }),
+              ],
+            ),
+          );
+        }
         return Column(
           children: <Widget>[
             MyDropdown(

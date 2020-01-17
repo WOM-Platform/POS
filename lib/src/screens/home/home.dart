@@ -8,6 +8,8 @@ import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
 import 'package:wom_package/wom_package.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -45,13 +47,47 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text("WOM POS"),
         centerTitle: true,
         elevation: 0.0,
+        leading: IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              Alert(
+                context: context,
+                title: AppLocalizations.of(context).translate('logout_message'),
+                buttons: [
+                  DialogButton(
+                    child: Text(AppLocalizations.of(context).translate('yes')),
+                    onPressed: () {
+                      authenticationBloc.dispatch(LoggedOut());
+                    },
+                  ),
+                  DialogButton(
+                    child: Text('No'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ).show();
+            }),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () => authenticationBloc.dispatch(
-              LoggedOut(),
-            ),
-          ),
+              icon: Icon(Icons.info),
+              onPressed: () {
+                Alert(
+                  context: context,
+                  title: AppLocalizations.of(context).translate('more_info'),
+                  desc: 'www.wom.social',
+                  buttons: [
+                    DialogButton(
+                      child: Text(AppLocalizations.of(context)
+                          .translate('go_to_website')),
+                      onPressed: () {
+                        _launchURL();
+                      },
+                    )
+                  ],
+                ).show();
+              }),
         ],
       ),
       body: Stack(
@@ -74,9 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              }
-
-              if (state is RequestLoaded) {
+              } else if (state is RequestLoaded) {
                 if (state.requests.isEmpty) {
                   return Center(
                     child: Text(
@@ -85,6 +119,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 return HomeList(
                   requests: state.requests,
+                );
+              } else if (state is RequestsLoadingErrorState) {
+                return Center(
+                  child: Text(
+                    AppLocalizations.of(context).translate(state.error),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              } else if (state is NoDataConnectionState) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        AppLocalizations.of(context)
+                            .translate('no_connection_title'),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        AppLocalizations.of(context)
+                            .translate('no_connection_aim_desc'),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      RaisedButton(
+                          child: Text(AppLocalizations.of(context)
+                              .translate('try_again')),
+                          onPressed: () {
+                            bloc.dispatch(LoadRequest());
+                          }),
+                    ],
+                  ),
                 );
               }
 
@@ -168,6 +241,15 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  _launchURL() async {
+    const url = 'https://wom.social';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override

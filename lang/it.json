@@ -1,6 +1,6 @@
 {
   "starting_creation_request": "Inizio Creazione richiesta",
-  "try_again": "Prova di nuovo",
+  "try_again": "Riprova",
   "error_screen_state": "Errore stato schermata",
   "request_name": "Nome della richiesta",
   "what_is_the_request_name": "Quale è il nome della richiesta?",
@@ -26,5 +26,13 @@
   "secondary_aim": "AIM secondario",
   "tiertiary_aim": "AIM terziario",
   "error": "Errore",
-  "choose": "Scegli"
+  "choose": "Scegli",
+  "go_to_website": "Vai al sito",
+  "more_info": "Maggiori info",
+  "logout_message": "Vuoi effettuare il logout?",
+  "no_connection_title": "Connessione dati assente",
+  "no_connection_desc": "Per accumulare o consumare WOM è necessario che il dispositivo sia connesso a internet",
+  "no_connection_aim_desc": "Per il primo avvio dell'app è necessario avere la connessione dati attiva in modo da poter scaricare i dati necessari al funzionamento del POS.\nAttiva i dati e premi il pulsante \"Riprova\"",
+  "no_connection_transaction_desc": "Per generare una richiesta di pagamento è necessario che il dispositivo sia connesso a internet.\nAttiva i dati e premi il pulsante \"Riprova\"",
+  "somethings_wrong": "Si è verificato un errore imprevisto!"
 }
