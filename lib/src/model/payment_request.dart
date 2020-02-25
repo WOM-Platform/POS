@@ -117,7 +117,7 @@ class PaymentRequest {
     this.name = map[NAME];
     this.nonce = map[NONCE];
     this.password = map[PASSWORD];
-    this.posId = map[POS_ID];
+    this.posId = map[POS_ID].toString();
     this.status = RequestStatus.values[map[STATUS]];
     this.registryUrl = map[URL];
     this.pocketAckUrl = map[POCKET_ACK_URL];
@@ -163,7 +163,7 @@ class PaymentRequest {
     map[NONCE] = this.nonce;
     map[POS_ID] = this.posId;
     map[STATUS] = this.status.index;
-    map[PERSISTENT] = this.persistent ? 1: 0;
+    map[PERSISTENT] = this.persistent ? 1 : 0;
     map[SimpleFilters.MAX_AGE] = this.simpleFilter?.maxAge;
     if (simpleFilter?.bounds != null) {
       map[BoundingBox.LEFT_TOP_LAT] =

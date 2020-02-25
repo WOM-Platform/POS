@@ -1,5 +1,7 @@
 import 'package:clippy_flutter/arc.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/localization/app_localizations.dart';
@@ -7,9 +9,10 @@ import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
+import 'package:pos/src/screens/settings/settings.dart';
 import 'package:wom_package/wom_package.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../main_common.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -18,11 +21,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomeBloc bloc;
-  ScrollController _scrollViewController;
 
   @override
   void initState() {
-    _scrollViewController = ScrollController(keepScrollOffset: false);
+    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+      if (isFirstOpen) {
+        _showTutorial(context);
+      }
+    });
     super.initState();
   }
 
@@ -47,47 +53,38 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text("WOM POS"),
         centerTitle: true,
         elevation: 0.0,
-        leading: IconButton(
-            icon: Icon(Icons.exit_to_app),
+        leading: DescribedFeatureOverlay(
+          featureId: 'show_logout_info',
+          // Unique id that identifies this overlay.
+          tapTarget: const Icon(Icons.exit_to_app),
+          // The widget that will be displayed as the tap target.
+          title: Text('Premi qui se vuoi effettuare il logout'),
+          backgroundColor: Theme.of(context).accentColor,
+          targetColor: Colors.white,
+          textColor: Theme.of(context).primaryColor,
+          child: IconButton(
+            icon: const Icon(Icons.exit_to_app),
             onPressed: () {
-              Alert(
-                context: context,
-                title: AppLocalizations.of(context).translate('logout_message'),
-                buttons: [
-                  DialogButton(
-                    child: Text(AppLocalizations.of(context).translate('yes')),
-                    onPressed: () {
-                      authenticationBloc.dispatch(LoggedOut());
-                    },
-                  ),
-                  DialogButton(
-                    child: Text('No'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              ).show();
-            }),
+              _showLogoutDialog(() {
+                authenticationBloc.dispatch(LoggedOut());
+              });
+            },
+          ),
+        ),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.info),
-              onPressed: () {
-                Alert(
-                  context: context,
-                  title: AppLocalizations.of(context).translate('more_info'),
-                  desc: 'www.wom.social',
-                  buttons: [
-                    DialogButton(
-                      child: Text(AppLocalizations.of(context)
-                          .translate('go_to_website')),
-                      onPressed: () {
-                        _launchURL();
-                      },
-                    )
-                  ],
-                ).show();
-              }),
+            icon: Icon(Icons.info),
+            onPressed: () {
+              _clearTutorial(context);
+              _showTutorial(context);
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              _goToSettingsScreen();
+            },
+          ),
         ],
       ),
       body: Stack(
@@ -168,92 +165,89 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-/*          NestedScrollView(
-            controller: _scrollViewController,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                new SliverAppBar(
-                  title: new Text('WOM POS'),
-                  centerTitle: true,
-                  pinned: true,
-                  floating: false,
-                  forceElevated: innerBoxIsScrolled,
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.exit_to_app),
-                      onPressed: () => authenticationBloc.dispatch(
-                        LoggedOut(),
-                      ),
-                    ),
-//                    IconButton(
-//                        icon: Icon(Icons.close),
-//                        onPressed: () {
-//                          AppDatabase.get().closeDatabase();
-//                        },),
-                  ],
-                ),
-              ];
-            },
-            body: BlocBuilder(
-              bloc: bloc,
-              builder: (BuildContext context, HomeState state) {
-                if (state is RequestLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                if (state is RequestLoaded) {
-                  if (state.requests.isEmpty) {
-                    return Center(
-                      child: Text(
-                          AppLocalizations.of(context).translate('no_request')),
-                    );
-                  }
-                  return HomeList(
-                    requests: state.requests,
-                  );
-                }
-
-                return Container(
-                  child: Center(
-                      child: Text(AppLocalizations.of(context)
-                          .translate('error_screen_state'))),
-                );
-              },
-            ),
-          ),*/
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: Key("HomeFab"),
-        child: Icon(Icons.add),
-        onPressed: () async {
-          final provider = BlocProvider(
-            child: GenerateWomScreen(),
-            builder: (ctx) => CreatePaymentRequestBloc(
-                draftRequest: null,
-                languageCode: AppLocalizations.of(context).locale.languageCode),
-          );
-          await Navigator.of(context)
-              .push(MaterialPageRoute(builder: (ctx) => provider));
-        },
+      floatingActionButton: DescribedFeatureOverlay(
+        featureId: 'show_fab_info',
+        // Unique id that identifies this overlay.
+        tapTarget: const Icon(Icons.add),
+        // The widget that will be displayed as the tap target.
+        title: Text('Genera una richiesta di pagamento'),
+        description: Text('Testo testo testo testo'),
+        backgroundColor: Theme.of(context).accentColor,
+        targetColor: Colors.white,
+        textColor: Theme.of(context).primaryColor,
+        child: FloatingActionButton(
+          heroTag: Key("HomeFab"),
+          child: Icon(Icons.add),
+          onPressed: () async {
+            await _goToCreatePaymentScreen(context);
+          },
+        ),
       ),
     );
-  }
-
-  _launchURL() async {
-    const url = 'https://wom.social';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future _goToCreatePaymentScreen(context) async {
+    final provider = BlocProvider(
+      child: GenerateWomScreen(),
+      builder: (ctx) => CreatePaymentRequestBloc(
+          draftRequest: null,
+          languageCode: AppLocalizations.of(context).locale.languageCode),
+    );
+    await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => provider));
+  }
+
+  void _goToSettingsScreen() {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (BuildContext context) => SettingsScreen()));
+  }
+
+  void _showLogoutDialog(Function logout) {
+    Alert(
+      context: context,
+      title: AppLocalizations.of(context).translate('logout_message'),
+      buttons: [
+        DialogButton(
+          child: Text(AppLocalizations.of(context).translate('yes')),
+          onPressed: () {
+            Navigator.of(context).pop();
+            logout();
+          },
+        ),
+        DialogButton(
+          child: Text('No'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    ).show();
+  }
+
+  void _clearTutorial(context) {
+    FeatureDiscovery.clearPreferences(
+      context,
+      const <String>{
+        'show_fab_info',
+        'show_logout_info',
+      },
+    );
+  }
+
+  void _showTutorial(BuildContext context) {
+    FeatureDiscovery.discoverFeatures(
+      context,
+      const <String>{
+        'show_fab_info',
+        'show_logout_info',
+      },
+    );
   }
 }

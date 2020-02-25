@@ -54,7 +54,7 @@ class _HomeListState extends State<HomeList> {
                 widget.requests[index].status == RequestStatus.COMPLETE
                     ? MySlideAction(
                         icon: Icons.control_point_duplicate,
-                        color: Colors.indigo,
+                        color: Colors.yellow,
                         onTap: () => onDuplicate(index),
                       )
                     : MySlideAction(
@@ -64,11 +64,11 @@ class _HomeListState extends State<HomeList> {
                       ),
               ],
               secondaryActions: <Widget>[
-                MySlideAction(
+                /*MySlideAction(
                   icon: Icons.archive,
                   color: Colors.yellow,
                   onTap: () => _showSnackBar(context, 'Archive'),
-                ),
+                ),*/
                 MySlideAction(
                   icon: Icons.delete,
                   color: Colors.red,
@@ -130,30 +130,33 @@ class MySlideAction extends StatelessWidget {
   final Function onTap;
   final IconData icon;
   final Color color;
+  final String caption;
 
-  const MySlideAction({Key key, this.onTap, this.icon, this.color})
+  const MySlideAction(
+      {Key key, this.onTap, this.icon, this.color, this.caption})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SlideAction(
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Card(
-          color: color,
-          elevation: 8.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-          ),
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      color: Colors.transparent,
+      child: Card(
+        color: color,
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: IconSlideAction(
+          caption: caption,
+          color: Colors.transparent,
+          foregroundColor: Colors.white,
+          icon: icon,
+          onTap: onTap,
         ),
       ),
-      onTap: onTap,
     );
   }
 }

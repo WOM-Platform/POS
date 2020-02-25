@@ -34,5 +34,6 @@
   "no_connection_desc": "Per accumulare o consumare WOM è necessario che il dispositivo sia connesso a internet",
   "no_connection_aim_desc": "Per il primo avvio dell'app è necessario avere la connessione dati attiva in modo da poter scaricare i dati necessari al funzionamento del POS.\nAttiva i dati e premi il pulsante \"Riprova\"",
   "no_connection_transaction_desc": "Per generare una richiesta di pagamento è necessario che il dispositivo sia connesso a internet.\nAttiva i dati e premi il pulsante \"Riprova\"",
-  "somethings_wrong": "Si è verificato un errore imprevisto!"
+  "somethings_wrong": "Si è verificato un errore imprevisto!",
+  "settings_title": "Impostazioni"
 }

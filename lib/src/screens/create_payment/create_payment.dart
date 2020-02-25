@@ -7,7 +7,6 @@ import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/aim_selection_page.dart';
 import 'package:pos/src/screens/create_payment/pages/name_selection/name_selection.dart';
-import 'package:pos/src/screens/create_payment/pages/pin_selection/pin_page.dart';
 import 'package:pos/src/screens/create_payment/pages/position_selection/position_selection_page.dart';
 import 'package:pos/src/screens/create_payment/pages/amount_selection/amount_selection_page.dart';
 

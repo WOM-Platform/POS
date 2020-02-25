@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:wom_package/wom_package.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class CardRequest extends StatelessWidget {
