@@ -45,6 +45,7 @@ dependencies:
   wom_package:
     git:
       url: git://github.com/WOM-Platform/WOM-Package.git
+      ref: loginUpdate
 
 
 dev_dependencies:

@@ -10,9 +10,10 @@ import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
 import 'package:pos/src/screens/settings/settings.dart';
-import 'package:wom_package/wom_package.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:wom_package/wom_package.dart';
 import '../../../main_common.dart';
+import '../../utils.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -50,7 +51,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-        title: Text("WOM POS"),
+        title: bloc.myPos.isNotEmpty
+            ? StatefulBuilder(
+                builder: (BuildContext context,
+                    void Function(void Function()) setWidgetState) {
+                  return DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      value: bloc.posSelected,
+                      items: <DropdownMenuItem<int>>[
+                        for (int i = 0; i < bloc.myPos.length; i++)
+                          DropdownMenuItem(
+                            child: Text(
+                              bloc.myPos[i].name,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            value: i,
+                          ),
+                      ],
+                      onChanged: (int value) {
+                        setWidgetState(() => bloc.posSelected = value);
+                      },
+                    ),
+                  );
+                },
+              )
+            : Text('No POS'),
         centerTitle: true,
         elevation: 0.0,
         leading: DescribedFeatureOverlay(
@@ -58,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // Unique id that identifies this overlay.
           tapTarget: const Icon(Icons.exit_to_app),
           // The widget that will be displayed as the tap target.
-          title: Text('Premi qui se vuoi effettuare il logout'),
+          title: Text('Da qui potrai effettuare il logout'),
           backgroundColor: Theme.of(context).accentColor,
           targetColor: Colors.white,
           textColor: Theme.of(context).primaryColor,
@@ -124,6 +149,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     textAlign: TextAlign.center,
                   ),
                 );
+              } else if (state is NoPosState) {
+                return Column(
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context).translate('no_pos_alert'),
+                      textAlign: TextAlign.center,
+                    ),
+                    RaisedButton(
+                        child: Text(AppLocalizations.of(context)
+                            .translate('go_to_website')),
+                        onPressed: () {
+                          launchUrl('https://wom.social');
+                        }),
+                  ],
+                );
               } else if (state is NoDataConnectionState) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -173,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
         tapTarget: const Icon(Icons.add),
         // The widget that will be displayed as the tap target.
         title: Text('Genera una richiesta di pagamento'),
-        description: Text('Testo testo testo testo'),
+        description: Text(''),
         backgroundColor: Theme.of(context).accentColor,
         targetColor: Colors.white,
         textColor: Theme.of(context).primaryColor,
@@ -197,6 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final provider = BlocProvider(
       child: GenerateWomScreen(),
       builder: (ctx) => CreatePaymentRequestBloc(
+          posId: bloc.selectedPosId,
           draftRequest: null,
           languageCode: AppLocalizations.of(context).locale.languageCode),
     );
@@ -231,8 +272,8 @@ class _HomeScreenState extends State<HomeScreen> {
     ).show();
   }
 
-  void _clearTutorial(context) {
-    FeatureDiscovery.clearPreferences(
+  Future _clearTutorial(context) async {
+    await FeatureDiscovery.clearPreferences(
       context,
       const <String>{
         'show_fab_info',

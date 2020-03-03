@@ -10,7 +10,7 @@ import 'package:wom_package/wom_package.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   TextEditingController amountController = TextEditingController();
-
+  User user;
   AimRepository _aimRepository;
   PaymentDatabase _requestDb;
 
@@ -20,12 +20,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     //TODO spostare aggiornamento aim in appBloc
     _aimRepository.updateAim(database: AppDatabase.get().getDb()).then((aims) {
       print("HomeBloc: updateAim in costructor: $aims");
-      dispatch(LoadRequest());
+//      dispatch(LoadRequest());
     });
   }
 
+  int posSelected = 0;
+
+  List<Pos> get myPos => user?.actors ?? [];
+
+  Pos get selectedPos =>
+      user.actors.isNotEmpty ? user?.actors[posSelected] : null;
+
+  String get selectedPosId => selectedPos.id;
+
   @override
-  get initialState => RequestLoading();
+  HomeState get initialState => RequestLoading();
 
   @override
   Stream<HomeState> mapEventToState(event) async* {
@@ -50,7 +59,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         print('aim letti : ${aims.length}');
 
-        final List<PaymentRequest> requests = await _requestDb.getRequests();
+        final List<PaymentRequest> requests =
+            await _requestDb.getRequests(selectedPosId);
         for (PaymentRequest r in requests) {
           final Aim aim = aims.firstWhere((a) {
             return a.code == r.aimCode;
@@ -63,6 +73,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } catch (ex) {
         print(ex.toString());
         yield RequestsLoadingErrorState('somethings_wrong');
+      }
+    } else if (event is LoadPos) {
+      print('load POS');
+//      this.user = event.user;
+      if (user.actors.isEmpty) {
+        yield NoPosState();
+      } else {
+        dispatch(LoadRequest());
       }
     }
   }

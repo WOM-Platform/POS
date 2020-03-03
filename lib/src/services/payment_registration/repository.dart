@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:simple_rsa/simple_rsa.dart';
@@ -16,16 +17,21 @@ class PaymentRegistrationRepository {
   }
 
   Future generateNewPaymentRequest(PaymentRequest paymentRequest) async {
+    debugPrint("generateNewPaymentRequest");
     try {
       final payloadMap = paymentRequest.toPayloadMap();
 
-      print(payloadMap);
+      debugPrint('JSON Payment Request payload');
+      debugPrint(payloadMap.toString());
 
       //encode map to json string
       final payloadMapEncoded = json.encode(payloadMap);
 
 //      final privateKeyString1 = await _loadKey('assets/pos.pem');
-      final privateKeyString = user.privateKey;
+      final privateKeyString = user.actors
+          .where((element) => element.id == paymentRequest.posId)
+          .first
+          .privateKey;
       final String publicKeyString = await getPublicKey();
 //      final publicKeyString1 = user.publicKey;
 
@@ -35,12 +41,13 @@ class PaymentRegistrationRepository {
       final encrypted = await encryptString(payloadMapEncoded, publicKeyString);
 
       final Map<String, dynamic> map = {
-        "PosId": paymentRequest.posId,
-        "Nonce": paymentRequest.nonce,
-        "Payload": encrypted,
+        "posId": paymentRequest.posId,
+        "nonce": paymentRequest.nonce,
+        "payload": encrypted,
       };
-      print("generateNewPaymentRequest");
-      print(map);
+      debugPrint("generateNewPaymentRequest");
+      debugPrint('JSON PAYLOAD');
+      debugPrint(map.toString());
 
       final responseBody =
           await HttpHelper.genericHttpPost(URL_PAYMENT_REGISTRATION, map);
@@ -53,20 +60,20 @@ class PaymentRegistrationRepository {
 
       //decode decrypted paylod into json
       final Map<String, dynamic> jsonDecrypted = json.decode(decryptedPayload);
-      print(jsonDecrypted.toString());
+      debugPrint('JSON PAYLOAD');
+      debugPrint(jsonDecrypted.toString());
       return RequestVerificationResponse.fromMap(jsonDecrypted);
     } catch (ex) {
       return RequestVerificationResponse(ex.toString());
     }
   }
 
-  Future<bool> verifyPaymentRequest(
-      RequestVerificationResponse response) async {
+  Future<bool> verifyPaymentRequest(response) async {
     final Map<String, String> payloadMap = {
-      "Otc": response.otc,
+      "otc": response.otc,
     };
 
-    print(payloadMap);
+    debugPrint(payloadMap.toString());
 
     try {
       final String payloadMapEncoded = json.encode(payloadMap);
@@ -76,7 +83,7 @@ class PaymentRegistrationRepository {
           await encryptString(payloadMapEncoded, publicKeyString);
 
       final Map<String, dynamic> map = {
-        "Payload": payloadEncrypted,
+        "payload": payloadEncrypted,
       };
 
       return await HttpHelper.genericHttpPost(URL_PAYMENT_VERIFICATION, map) !=

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/services/payment_registration/repository.dart';
@@ -31,7 +32,7 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
         final RequestVerificationResponse response =
             await _repository.generateNewPaymentRequest(paymentRequest);
         if (response.error != null) {
-          print(response.error);
+          debugPrint(response.error);
           insertRequestOnDb();
           yield WomCreationRequestError(error: response.error);
         } else {

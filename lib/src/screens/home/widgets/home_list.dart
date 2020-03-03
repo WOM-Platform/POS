@@ -108,6 +108,7 @@ class _HomeListState extends State<HomeList> {
     final provider = BlocProvider(
       child: GenerateWomScreen(),
       builder: (ctx) => CreatePaymentRequestBloc(
+          posId: bloc.selectedPosId,
           draftRequest: widget.requests[index],
           languageCode: AppLocalizations.of(context).locale.languageCode),
     );

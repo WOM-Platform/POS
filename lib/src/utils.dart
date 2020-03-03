@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mmkv_flutter/mmkv_flutter.dart';
 
@@ -26,4 +27,12 @@ Future<bool> readIsFirstOpen() async {
 Future setIsFirstOpen(bool value) async {
   final mmkv = await MmkvFlutter.getInstance();
   mmkv.setBool(IS_FIRST_OPEN_KEY, !value);
+}
+
+Future launchUrl(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }

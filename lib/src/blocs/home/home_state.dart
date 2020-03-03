@@ -35,3 +35,8 @@ class NoDataConnectionState extends HomeState {
   @override
   String toString() => 'NoDataConnectionState';
 }
+
+class NoPosState extends HomeState {
+  @override
+  String toString() => 'NoPosState';
+}

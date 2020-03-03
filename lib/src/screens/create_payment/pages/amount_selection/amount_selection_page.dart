@@ -38,7 +38,7 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "How many WOMs?",
+                    AppLocalizations.of(context).translate('how_wom'),
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,

@@ -4,48 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/splash/splash.dart';
-import 'package:pos/src/utils.dart';
 import 'package:wom_package/wom_package.dart';
 import 'localization/app_localizations.dart';
 import 'src/screens/home/home.dart';
-
-//class App extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    return BlocProvider(
-//      bloc: HomeBloc(),
-//      child: MaterialApp(
-//          theme: ThemeData(
-//            primaryColor: Colors.orange,
-//            backgroundColor: Colors.red,
-////        canvasColor: backgroundColor,
-//          ),
-//          home: SplashScreen(),
-//          routes: {
-////          '/': (context) => SplashScreen(),
-////          '/home': (context) {
-////            final homeProvider =
-////                BlocProvider<HomeBloc>(child: HomeScreen(), bloc: HomeBloc());
-////            return homeProvider;
-////          },
-////          '/generate': (context) {
-////            return BlocProvider<CreatePaymentRequestBloc>(
-////              child: GenerateWomScreen(),
-////              bloc: CreatePaymentRequestBloc(),
-////            );
-////          },
-////          '/intro': (context) {
-////            return IntroScreen();
-////          },
-////          '/settings': (context) {
-////            final settingsProvider = myBlocProvider.BlocProvider(
-////                child: SettingsScreen(), bloc: SettingsBloc());
-////            return settingsProvider;
-////          },
-//          }),
-//    );
-//  }
-//}
 
 User user;
 
@@ -116,7 +77,9 @@ class _AppState extends State<App> {
             if (state is AuthenticationUninitialized) {
               return SplashScreen();
             } else if (state is AuthenticationAuthenticated) {
-              userRepository.readUser().then((res) => user = res);
+              user = state.user;
+              homeBloc.user = state.user;
+              homeBloc.dispatch(LoadPos());
               return FeatureDiscovery(child: HomeScreen());
             } else if (state is AuthenticationUnauthenticated) {
               user = null;

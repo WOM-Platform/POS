@@ -92,20 +92,20 @@ class PaymentRequest {
 
   Map<String, dynamic> toPayloadMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data[POS_ID] = this.posId;
-    data[NONCE] = this.nonce;
-    data[PASSWORD] = this.password;
-    data[AMOUNT] = this.amount;
-    data[SIMPLE_FILTER] = this.simpleFilter?.toJson();
-    data[POS_ACK_URL] = this.posAckUrl;
-    data[POCKET_ACK_URL] = this.pocketAckUrl;
-    data[PERSISTENT] = this.persistent;
+    data['posId'] = this.posId;
+    data['nonce'] = this.nonce;
+    data['password'] = this.password;
+    data['amount'] = this.amount;
+    data['simpleFilter'] = this.simpleFilter?.toJson();
+    data['posAckUrl'] = this.posAckUrl;
+    data['pocketAckUrl'] = this.pocketAckUrl;
+    data['persistent'] = this.persistent;
     return data;
   }
 
   String get dateString => DateFormat.yMMMd().format(dateTime);
 
-  PaymentRequest.fromMap(Map<String, dynamic> map) {
+  PaymentRequest.fromDBMap(Map<String, dynamic> map) {
     this.id = map[ID];
     this.amount = map[AMOUNT];
     this.dateTime = DateTime.fromMillisecondsSinceEpoch(map[DATE]);
@@ -150,7 +150,7 @@ class PaymentRequest {
     }
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toDBMap() {
     final Map<String, dynamic> map = Map();
     map[AMOUNT] = this.amount;
     map[URL] = this.registryUrl;

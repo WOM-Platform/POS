@@ -28,7 +28,7 @@ class CreatePaymentRequestBloc extends Bloc {
 //  RequestType requestType = RequestType.SINGLE;
   bool persistentRequest = false;
   final PageController pageController = PageController();
-
+  final String posId;
   LatLng currentPosition;
   LatLng lastPosition;
   List<LatLng> locationPoints = [];
@@ -45,8 +45,11 @@ class CreatePaymentRequestBloc extends Bloc {
 
   final String languageCode;
 
-  CreatePaymentRequestBloc(
-      {@required this.draftRequest, @required this.languageCode}) {
+  CreatePaymentRequestBloc({
+    @required this.draftRequest,
+    @required this.languageCode,
+    @required this.posId,
+  }) {
     print("CreatePaymentRequestBloc()");
     nameController = TextEditingController(text: draftRequest?.name ?? "");
     amountController =
@@ -82,7 +85,7 @@ class CreatePaymentRequestBloc extends Bloc {
     );
 
     final PaymentRequest paymentRequest = PaymentRequest(
-        posId: user.id.toString(),
+        posId: this.posId,
         dateTime: DateTime.now(),
         amount: _amount,
         aim: aim,

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:wom_package/wom_package.dart';
+import 'package:wom_package/wom_package.dart' show RequestVerificationResponse;
 
 abstract class WomCreationState extends Equatable {
   WomCreationState([List props = const []]) : super(props);

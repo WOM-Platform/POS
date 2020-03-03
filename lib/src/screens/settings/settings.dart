@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pos/localization/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import '../../utils.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -25,19 +26,19 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          ListTile(
-            title: Text('Demo'),
-            subtitle: Text('Impara ad utilizzare l\'app'),
-            trailing: Icon(Icons.arrow_forward_ios),
-            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
-            onTap: () => _launchUrl('https://wom.social/demo/pos'),
-          ),
+//          ListTile(
+//            title: Text('Demo'),
+//            subtitle: Text('Impara ad utilizzare l\'app'),
+//            trailing: Icon(Icons.arrow_forward_ios),
+//            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+//            onTap: () => _launchUrl('https://wom.social/demo/pos'),
+//          ),
           ListTile(
             title: Text('Info'),
             subtitle: Text('Visita il nostro sito'),
             trailing: Icon(Icons.arrow_forward_ios),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
-            onTap: () => _launchUrl('https://wom.social'),
+            onTap: () => launchUrl('https://wom.social'),
           ),
           VersionInfo(),
           /*if (Config.appFlavor == Flavor.DEVELOPMENT) ...[
@@ -56,14 +57,6 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  _launchUrl(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }
 
