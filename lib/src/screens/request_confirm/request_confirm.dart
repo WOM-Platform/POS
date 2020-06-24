@@ -33,7 +33,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   Future<bool> onWillPop() {
     if (isComplete || isWrong || noDataConnection) {
-      homeBloc.dispatch(LoadRequest());
+      homeBloc.add(LoadRequest());
       return Future.value(true);
     }
     return Future.value(false);
@@ -77,7 +77,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                 children: <Widget>[
                   Text(state.error),
                   FloatingActionButton.extended(
-                    onPressed: () => bloc.dispatch(CreateWomRequest()),
+                    onPressed: () => bloc.add(CreateWomRequest()),
                     label: Text(
                         AppLocalizations.of(context).translate('try_again')),
                   ),
@@ -111,7 +111,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                         child: Text(AppLocalizations.of(context)
                             .translate('try_again')),
                         onPressed: () {
-                          bloc.dispatch(CreateWomRequest());
+                          bloc.add(CreateWomRequest());
                         }),
                   ],
                 ),
@@ -134,8 +134,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   @override
   void dispose() {
-    homeBloc.dispatch(LoadRequest());
-    bloc.dispose();
+    homeBloc.add(LoadRequest());
+    bloc.close();
     super.dispose();
   }
 }

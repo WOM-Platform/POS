@@ -112,14 +112,14 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
 
     if (result ?? false) {
       await bloc.saveDraftRequest();
-      homeBloc.dispatch(LoadRequest());
+      homeBloc.add(LoadRequest());
     }
     Navigator.of(context).pop();
   }
 
   @override
   void dispose() {
-    bloc.dispose();
+    bloc.close();
     super.dispose();
   }
 }

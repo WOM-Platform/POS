@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc() {
     Future.delayed(Duration(seconds: 1), () {
-      dispatch(SplashEvent.LOAD);
+      add(SplashEvent.LOAD);
     });
   }
 
@@ -16,7 +16,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       case SplashEvent.LOAD:
         yield SplashState.LOADING;
         Future.delayed(Duration(seconds: 1), () {
-          dispatch(SplashEvent.GOTOHOME);
+          add(SplashEvent.GOTOHOME);
         });
         break;
       case SplashEvent.GOTOHOME:

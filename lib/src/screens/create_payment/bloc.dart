@@ -250,14 +250,13 @@ class CreatePaymentRequestBloc extends Bloc {
   }
 
   @override
-  void dispose() {
+  Future<void> close() {
     pageController.dispose();
     nameController.dispose();
     passwordController.dispose();
     amountController.dispose();
     aimSelectionBloc.dispose();
     maxAgeController.dispose();
-//    _streamPage.close();
-    super.dispose();
+    return super.close();
   }
 }

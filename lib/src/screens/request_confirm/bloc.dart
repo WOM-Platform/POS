@@ -18,7 +18,7 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
   RequestConfirmBloc({@required this.paymentRequest}) {
     _repository = PaymentRegistrationRepository();
     _requestDb = PaymentDatabase.get();
-    dispatch(CreateWomRequest());
+    add(CreateWomRequest());
   }
 
   @override

@@ -20,18 +20,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     //TODO spostare aggiornamento aim in appBloc
     _aimRepository.updateAim(database: AppDatabase.get().getDb()).then((aims) {
       print("HomeBloc: updateAim in costructor: $aims");
-//      dispatch(LoadRequest());
+//      add(LoadRequest());
     });
   }
 
-  int posSelected = 0;
+  String _selectedPosId;
+  String get selectedPosId => _selectedPosId;
+  String selectedMerchantId;
 
-  List<Pos> get myPos => user?.actors ?? [];
+  set selectedPosId(String id) {
+    if (id != _selectedPosId) {
+      _selectedPosId = id;
+      add(LoadRequest());
+    }
+  }
+
+  List<Merchant> get merchants => user?.merchants ?? [];
+
+  Merchant get selectedMerchant => merchants
+      .firstWhere((m) => m.id == selectedMerchantId, orElse: () => null);
 
   Pos get selectedPos =>
-      user.actors.isNotEmpty ? user?.actors[posSelected] : null;
+      selectedMerchant?.posList.firstWhere((p) => p.id == selectedPosId);
 
-  String get selectedPosId => selectedPos.id;
+//String get selectedPosId => selectedPos.id;
 
   @override
   HomeState get initialState => RequestLoading();
@@ -60,7 +72,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         print('aim letti : ${aims.length}');
 
         final List<PaymentRequest> requests =
-            await _requestDb.getRequests(selectedPosId);
+            await _requestDb.getRequestsByPosId(selectedPosId);
         for (PaymentRequest r in requests) {
           final Aim aim = aims.firstWhere((a) {
             return a.code == r.aimCode;
@@ -80,7 +92,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (user.actors.isEmpty) {
         yield NoPosState();
       } else {
-        dispatch(LoadRequest());
+        add(LoadRequest());
       }
     }
   }
@@ -90,8 +102,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   @override
-  void dispose() {
+  Future<void> close() {
     amountController.dispose();
-    super.dispose();
+    return super.close();
   }
 }

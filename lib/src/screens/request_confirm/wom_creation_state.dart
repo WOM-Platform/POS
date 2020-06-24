@@ -3,21 +3,36 @@ import 'package:meta/meta.dart';
 import 'package:wom_package/wom_package.dart' show RequestVerificationResponse;
 
 abstract class WomCreationState extends Equatable {
-  WomCreationState([List props = const []]) : super(props);
+  WomCreationState([List props = const []]);
 }
 
-class WomCreationRequestEmpty extends WomCreationState {}
+class WomCreationRequestEmpty extends WomCreationState {
+  @override
+  List<Object> get props => [];
+}
 
-class WomCreationRequestLoading extends WomCreationState {}
+class WomCreationRequestLoading extends WomCreationState {
+  @override
+  List<Object> get props => [];
+}
 
-class WomCreationRequestComplete extends WomCreationState {}
+class WomCreationRequestComplete extends WomCreationState {
+  @override
+  List<Object> get props => [];
+}
 
 class WomCreationRequestError extends WomCreationState {
   final String error;
   WomCreationRequestError({this.error});
+
+  @override
+  List<Object> get props => [error];
 }
 
-class WomVerifyCreationRequestLoading extends WomCreationState {}
+class WomVerifyCreationRequestLoading extends WomCreationState {
+  @override
+  List<Object> get props => [];
+}
 
 class WomVerifyCreationRequestComplete extends WomCreationState {
   final RequestVerificationResponse response;
@@ -27,6 +42,9 @@ class WomVerifyCreationRequestComplete extends WomCreationState {
         super([response]);
   @override
   String toString() => 'WomVerifyCreationRequestComplete';
+
+  @override
+  List<Object> get props => [response];
 }
 
 class WomVerifyCreationRequestError extends WomCreationState {
@@ -34,9 +52,14 @@ class WomVerifyCreationRequestError extends WomCreationState {
   WomVerifyCreationRequestError({this.error});
   @override
   String toString() => 'WomVerifyCreationRequestError';
+
+  @override
+  List<Object> get props => [error];
 }
 
 class WomCreationRequestNoDataConnectionState extends WomCreationState {
   @override
   String toString() => 'WomCreationRequestNoDataConnectionState';
+  @override
+  List<Object> get props => [];
 }

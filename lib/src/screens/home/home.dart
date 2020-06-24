@@ -9,6 +9,7 @@ import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/screens/create_payment/bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
+import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
 import 'package:pos/src/screens/settings/settings.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:wom_package/wom_package.dart';
@@ -16,6 +17,7 @@ import '../../../main_common.dart';
 import '../../utils.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const String routeName = '/home';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -48,34 +50,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final AuthenticationBloc authenticationBloc =
         BlocProvider.of<AuthenticationBloc>(context);
+
+//    return BlocBuilder(builder: (BuildContext context, state) {
+//
+//    },);
+
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-        title: bloc.myPos.isNotEmpty
-            ? StatefulBuilder(
-                builder: (BuildContext context,
-                    void Function(void Function()) setWidgetState) {
-                  return DropdownButtonHideUnderline(
-                    child: DropdownButton<int>(
-                      value: bloc.posSelected,
-                      items: <DropdownMenuItem<int>>[
-                        for (int i = 0; i < bloc.myPos.length; i++)
-                          DropdownMenuItem(
-                            child: Text(
-                              bloc.myPos[i].name,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            value: i,
-                          ),
-                      ],
-                      onChanged: (int value) {
-                        setWidgetState(() => bloc.posSelected = value);
-                      },
-                    ),
-                  );
-                },
-              )
-            : Text('No POS'),
+        title: GestureDetector(
+          onTap: () {
+            Navigator.of(context)
+                .pushReplacementNamed(PosSelectionPage.routeName);
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(bloc.selectedPos.name),
+              Icon(
+                Icons.arrow_drop_down,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
         elevation: 0.0,
         leading: DescribedFeatureOverlay(
@@ -91,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
               _showLogoutDialog(() {
-                authenticationBloc.dispatch(LoggedOut());
+                authenticationBloc.add(LoggedOut());
               });
             },
           ),
@@ -191,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text(AppLocalizations.of(context)
                               .translate('try_again')),
                           onPressed: () {
-                            bloc.dispatch(LoadRequest());
+                            bloc.add(LoadRequest());
                           }),
                     ],
                   ),
@@ -236,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future _goToCreatePaymentScreen(context) async {
     final provider = BlocProvider(
       child: GenerateWomScreen(),
-      builder: (ctx) => CreatePaymentRequestBloc(
+      create: (ctx) => CreatePaymentRequestBloc(
           posId: bloc.selectedPosId,
           draftRequest: null,
           languageCode: AppLocalizations.of(context).locale.languageCode),
@@ -258,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
         DialogButton(
           child: Text(AppLocalizations.of(context).translate('yes')),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context, rootNavigator: true).pop();
             logout();
           },
         ),

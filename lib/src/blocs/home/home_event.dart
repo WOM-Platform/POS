@@ -1,23 +1,21 @@
 import 'package:equatable/equatable.dart';
 
 abstract class HomeEvent extends Equatable {
-  HomeEvent([List props = const []]) : super(props);
+  HomeEvent([List props = const []]);
 }
 
 class LoadRequest extends HomeEvent {
-//  final String id;
-//
-//  LoadRequest(this.id);
-
   @override
   String toString() => 'LoadRequest';
+
+  @override
+  List<Object> get props => [];
 }
 
 class LoadPos extends HomeEvent {
-//  final User user;
-//
-//  LoadPos(this.user);
-
   @override
   String toString() => 'LoadPos';
+
+  @override
+  List<Object> get props => [];
 }

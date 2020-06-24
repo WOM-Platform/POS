@@ -41,7 +41,9 @@ dependencies:
   data_connection_checker: ^0.3.4
   feature_discovery: ^0.8.0
   firebase_crashlytics: ^0.1.0+2
+  flutter_sticky_header: ^0.4.2
   package_info: ^0.4.0+14
+  rxdart:
   wom_package:
     git:
       url: git://github.com/WOM-Platform/WOM-Package.git

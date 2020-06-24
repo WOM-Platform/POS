@@ -5,7 +5,7 @@ import 'package:wom_package/wom_package.dart' show AimRepository, Aim;
 class AimSelectionBloc {
   BehaviorSubject<String> _selectedAimCode = BehaviorSubject<String>();
 
-  Observable<String> get selectedAimCode => _selectedAimCode.stream;
+  Stream<String> get selectedAimCode => _selectedAimCode.stream;
 
   Function get changeSelectedAimRoot => _selectedAimCode.add;
 

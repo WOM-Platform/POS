@@ -26,7 +26,9 @@ class PaymentRequest {
   static String SIMPLE_FILTER = "SimpleFilter";
   static String POCKET_ACK_URL = "PocketAckUrl";
   static String POS_ACK_URL = "PosAckUrl";
+
   static String PERSISTENT = "Persistent";
+  static String ON_CLOUD = "onCloud";
 
   String posId;
   String nonce;
@@ -49,6 +51,7 @@ class PaymentRequest {
   String aimName;
   SimpleFilters simpleFilter;
   bool persistent;
+  bool onCloud;
 
   /*      {
         "PosId": 1,
@@ -69,24 +72,26 @@ class PaymentRequest {
 
     */
 
-  PaymentRequest(
-      {this.id,
-      this.amount,
-      this.dateTime,
-      this.password,
-      this.registryUrl,
-      this.name,
-      this.aim,
-      this.status,
-      this.aimCode,
-      this.aimName,
-      this.posId,
-      this.location,
-      this.simpleFilter,
-      this.deepLink,
-      @required this.pocketAckUrl,
-      this.posAckUrl,
-      this.persistent = false}) {
+  PaymentRequest({
+    this.id,
+    this.amount,
+    this.dateTime,
+    this.password,
+    this.registryUrl,
+    this.name,
+    this.aim,
+    this.status,
+    this.aimCode,
+    this.aimName,
+    this.posId,
+    this.location,
+    this.simpleFilter,
+    this.deepLink,
+    @required this.pocketAckUrl,
+    this.posAckUrl,
+    this.persistent = false,
+    this.onCloud = false,
+  }) {
     this.nonce = generateGUID();
   }
 
@@ -100,6 +105,7 @@ class PaymentRequest {
     data['posAckUrl'] = this.posAckUrl;
     data['pocketAckUrl'] = this.pocketAckUrl;
     data['persistent'] = this.persistent;
+    data['onCloud'] = this.onCloud;
     return data;
   }
 
@@ -123,6 +129,7 @@ class PaymentRequest {
     this.pocketAckUrl = map[POCKET_ACK_URL];
     this.posAckUrl = map[POS_ACK_URL];
     this.persistent = map[PERSISTENT] == 0 ? false : true;
+    this.onCloud = map[ON_CLOUD] == 0 ? false : true;
     this.deepLink = map[DEEP_LINK];
     final maxAge = map[SimpleFilters.MAX_AGE];
     final aimCode = map[AIM_CODE];
@@ -164,6 +171,7 @@ class PaymentRequest {
     map[POS_ID] = this.posId;
     map[STATUS] = this.status.index;
     map[PERSISTENT] = this.persistent ? 1 : 0;
+    map[ON_CLOUD] = this.onCloud ? 1 : 0;
     map[SimpleFilters.MAX_AGE] = this.simpleFilter?.maxAge;
     if (simpleFilter?.bounds != null) {
       map[BoundingBox.LEFT_TOP_LAT] =
@@ -196,6 +204,7 @@ class PaymentRequest {
       pocketAckUrl: this.pocketAckUrl,
       posAckUrl: this.posAckUrl,
       persistent: this.persistent,
+      onCloud: this.onCloud,
     );
   }
 }

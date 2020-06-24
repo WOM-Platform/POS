@@ -107,7 +107,7 @@ class _HomeListState extends State<HomeList> {
   onEdit(int index) {
     final provider = BlocProvider(
       child: GenerateWomScreen(),
-      builder: (ctx) => CreatePaymentRequestBloc(
+      create: (ctx) => CreatePaymentRequestBloc(
           posId: bloc.selectedPosId,
           draftRequest: widget.requests[index],
           languageCode: AppLocalizations.of(context).locale.languageCode),

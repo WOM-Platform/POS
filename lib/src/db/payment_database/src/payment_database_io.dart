@@ -15,7 +15,7 @@ class PaymentDatabase extends PaymentDatabaseBase {
     return _requestDb;
   }
 
-  Future<List<PaymentRequest>> getRequests(String id) async {
+  Future<List<PaymentRequest>> getRequestsByPosId(String id) async {
     print("getRequests");
     var db = await _appDatabase.getDb();
     try {

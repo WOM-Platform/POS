@@ -162,6 +162,10 @@ class CardRequest2 extends StatelessWidget {
                     ),
                   ),
                   Spacer(),
+                  Icon(request.onCloud ? Icons.cloud_done : Icons.cloud_off),
+                  SizedBox(
+                    width: 8.0,
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
