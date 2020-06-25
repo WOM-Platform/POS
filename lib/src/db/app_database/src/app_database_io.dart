@@ -63,6 +63,7 @@ class AppDatabase extends AppDatabaseBase {
         "${PaymentRequest.AMOUNT} INTEGER,"
         "${PaymentRequest.STATUS} INTEGER,"
         "${PaymentRequest.PERSISTENT} INTEGER,"
+        "${PaymentRequest.ON_CLOUD} INTEGER,"
         "${PaymentRequest.POCKET_ACK_URL} TEXT,"
         "${PaymentRequest.POS_ACK_URL} TEXT,"
         "${SimpleFilters.MAX_AGE} INTEGER,"

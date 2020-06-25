@@ -23,8 +23,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  HomeBloc bloc;
-
   @override
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
@@ -46,32 +44,35 @@ class _HomeScreenState extends State<HomeScreen> {
         systemNavigationBarColor: Theme.of(context).primaryColor,
       ),
     );
-    bloc = BlocProvider.of<HomeBloc>(context);
-
-    final AuthenticationBloc authenticationBloc =
-        BlocProvider.of<AuthenticationBloc>(context);
-
-//    return BlocBuilder(builder: (BuildContext context, state) {
-//
-//    },);
 
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-        title: GestureDetector(
-          onTap: () {
-            Navigator.of(context)
-                .pushReplacementNamed(PosSelectionPage.routeName);
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(bloc.selectedPos.name),
-              Icon(
-                Icons.arrow_drop_down,
-                color: Colors.white,
-              ),
-            ],
+        title: DescribedFeatureOverlay(
+          featureId: 'show_pos_selection_info',
+          tapTarget: Text('POS'),
+          title: Text('Premendo qui potrai selezionare il POS da gestire'),
+          backgroundColor: Theme.of(context).accentColor,
+          targetColor: Colors.white,
+          textColor: Theme.of(context).primaryColor,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PosSelectionPage(),
+                ),
+              );
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(context.bloc<HomeBloc>().selectedPos.name),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.white,
+                ),
+              ],
+            ),
           ),
         ),
         centerTitle: true,
@@ -89,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
               _showLogoutDialog(() {
-                authenticationBloc.add(LoggedOut());
+                context.bloc<AuthenticationBloc>().add(LoggedOut());
               });
             },
           ),
@@ -97,8 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.info),
-            onPressed: () {
-              _clearTutorial(context);
+            onPressed: () async {
+              await _clearTutorial(context);
               _showTutorial(context);
             },
           ),
@@ -123,8 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 50,
             ),
           ),
-          BlocBuilder(
-            bloc: bloc,
+          BlocBuilder<HomeBloc, HomeState>(
             builder: (BuildContext context, HomeState state) {
               if (state is RequestLoading) {
                 return Center(
@@ -189,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text(AppLocalizations.of(context)
                               .translate('try_again')),
                           onPressed: () {
-                            bloc.add(LoadRequest());
+                            context.bloc<HomeBloc>().add(LoadRequest());
                           }),
                     ],
                   ),
@@ -226,16 +226,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future _goToCreatePaymentScreen(context) async {
     final provider = BlocProvider(
       child: GenerateWomScreen(),
       create: (ctx) => CreatePaymentRequestBloc(
-          posId: bloc.selectedPosId,
+          posId: ctx.bloc<HomeBloc>().selectedPos.id,
           draftRequest: null,
           languageCode: AppLocalizations.of(context).locale.languageCode),
     );
@@ -254,18 +249,18 @@ class _HomeScreenState extends State<HomeScreen> {
       title: AppLocalizations.of(context).translate('logout_message'),
       buttons: [
         DialogButton(
+          child: Text('No'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        DialogButton(
           child: Text(AppLocalizations.of(context).translate('yes')),
           onPressed: () {
             Navigator.of(context, rootNavigator: true).pop();
             logout();
           },
         ),
-        DialogButton(
-          child: Text('No'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        )
       ],
     ).show();
   }
@@ -275,6 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       const <String>{
         'show_fab_info',
+        'show_pos_selection_info',
         'show_logout_info',
       },
     );
@@ -285,6 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       const <String>{
         'show_fab_info',
+        'show_pos_selection_info',
         'show_logout_info',
       },
     );

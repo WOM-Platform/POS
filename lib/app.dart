@@ -1,47 +1,34 @@
-import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
-import 'package:pos/src/screens/home/home.dart';
-import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
-import 'package:pos/src/splash/splash.dart';
+import 'package:pos/src/screens/root/root.dart';
 import 'package:wom_package/wom_package.dart';
 import 'localization/app_localizations.dart';
+import 'src/screens/intro/intro.dart';
+import 'package:provider/provider.dart';
 
 User user;
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
+  final bool isFirstOpen;
   final UserRepository userRepository;
-
-  App({Key key, @required this.userRepository}) : super(key: key);
-
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  AuthenticationBloc authenticationBloc;
-  HomeBloc homeBloc;
-
-  UserRepository get userRepository => widget.userRepository;
-
-  @override
-  void initState() {
-    homeBloc = HomeBloc();
-    authenticationBloc = AuthenticationBloc(userRepository: userRepository);
-    authenticationBloc.add(AppStarted());
-    super.initState();
-  }
+  const App({Key key, this.isFirstOpen, this.userRepository}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
+        RepositoryProvider(
+          create: (BuildContext context) => UserRepository(UserType.POS),
+        ),
         BlocProvider<AuthenticationBloc>(
-            create: (context) => authenticationBloc),
+          create: (context) => AuthenticationBloc(
+            userRepository: RepositoryProvider.of<UserRepository>(context),
+          )..add(AppStarted()),
+        ),
         BlocProvider<HomeBloc>(
-          create: (context) => homeBloc,
+          create: (context) => HomeBloc(),
         ),
       ],
       child: MaterialApp(
@@ -72,66 +59,8 @@ class _AppState extends State<App> {
           primaryColor: Colors.blue,
           accentColor: Colors.yellow,
         ),
-        home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          bloc: authenticationBloc,
-          builder: (BuildContext context, AuthenticationState state) {
-            if (state is AuthenticationUninitialized) {
-              return SplashScreen();
-            } else if (state is AuthenticationAuthenticated) {
-              user = state.user;
-              user.merchants = List.generate(
-                4,
-                (i) => Merchant(
-                  id: 'id_$i',
-                  name: 'name_$i',
-                  address: 'address_$i',
-                  cap: 'cap_$i',
-                  city: 'city_$i',
-                  vatNumber: 'vat_$i',
-                  profileImgUrl: 'img_$i',
-                  posList: List.generate(
-                    5,
-                    (index) => Pos('id_$index', 'm_$i: name_$index',
-                        'url_$index', 'privateKey_$index', [12.2, 10.3]),
-                  ),
-                ),
-              );
-              homeBloc.user = user;
-//              homeBloc.add(LoadPos())
-
-              return Navigator(
-                initialRoute: PosSelectionPage.routeName,
-                onGenerateRoute: (RouteSettings settings) {
-                  final route = settings.name;
-                  if (route == HomeScreen.routeName) {
-                    return MaterialPageRoute(builder: (BuildContext context) {
-                      return FeatureDiscovery(child: HomeScreen());
-                    });
-                  } else {
-                    return MaterialPageRoute(builder: (BuildContext context) {
-                      return PosSelectionPage();
-                    });
-                  }
-                },
-              );
-            } else if (state is AuthenticationUnauthenticated) {
-              user = null;
-              return LoginScreen(userRepository: userRepository);
-            }
-            return Container(
-              child: Center(
-                child: Text(AppLocalizations.of(context)
-                    .translate('error_screen_state')),
-              ),
-            );
-          },
-        ),
+        home: isFirstOpen ? IntroScreen() : RootScreen(),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

@@ -175,40 +175,6 @@ class CardRequest2 extends StatelessWidget {
                           : Colors.orange,
                     ),
                   ),
-//                  Expanded(
-//                    child: Row(
-//                      mainAxisAlignment: MainAxisAlignment.end,
-//                      children: <Widget>[
-//                        IconButton(
-//                          icon: Icon(Icons.share, size: 20.0),
-//                          onPressed: null,
-//                        ),
-//                        IconButton(
-//                          icon: Icon(
-//                            request.status == RequestStatus.COMPLETE
-//                                ? Icons.control_point_duplicate
-//                                : Icons.edit,
-//                            size: 20.0,
-//                          ),
-//                          onPressed: request.status == RequestStatus.COMPLETE
-//                              ? onDuplicate
-//                              : onEdit,
-//                        ),
-//                        IconButton(
-//                            icon: Icon(Icons.delete, size: 20.0),
-//                            onPressed: onDelete),
-//                      ],
-//                    ),
-//                  ),
-//                  Hero(
-//                    tag: Key(request.deepLink),
-//                    child: QrImage(
-//                      padding: EdgeInsets.all(0),
-//                      data: request.deepLink,
-//                      version: 4,
-//                      size: 50.0,
-//                    ),
-//                  ),
                 ],
               ),
               Divider(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pos/localization/app_localizations.dart';
+import 'package:pos/src/screens/intro/intro.dart';
 
 import '../../utils.dart';
 
@@ -39,6 +40,19 @@ class SettingsScreen extends StatelessWidget {
             trailing: Icon(Icons.arrow_forward_ios),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () => launchUrl('https://wom.social'),
+          ),
+          ListTile(
+            title: Text('Tutorial'),
+            subtitle: Text('Visita il tutorial iniziale'),
+            trailing: Icon(Icons.arrow_forward_ios),
+            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => IntroScreen(
+                        fromSettings: true,
+                      )),
+            ),
           ),
           VersionInfo(),
           /*if (Config.appFlavor == Flavor.DEVELOPMENT) ...[

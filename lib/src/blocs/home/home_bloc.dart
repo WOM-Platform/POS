@@ -20,7 +20,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     //TODO spostare aggiornamento aim in appBloc
     _aimRepository.updateAim(database: AppDatabase.get().getDb()).then((aims) {
       print("HomeBloc: updateAim in costructor: $aims");
-//      add(LoadRequest());
+      add(LoadRequest());
     });
   }
 
@@ -37,11 +37,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   List<Merchant> get merchants => user?.merchants ?? [];
 
-  Merchant get selectedMerchant => merchants
-      .firstWhere((m) => m.id == selectedMerchantId, orElse: () => null);
+  Merchant get selectedMerchant => selectedMerchantId != null
+      ? merchants.firstWhere((m) => m.id == selectedMerchantId,
+          orElse: () => null)
+      : merchants.first;
 
-  Pos get selectedPos =>
-      selectedMerchant?.posList.firstWhere((p) => p.id == selectedPosId);
+  Pos get selectedPos => selectedPosId != null
+      ? selectedMerchant.posList.firstWhere((p) => p.id == selectedPosId)
+      : selectedMerchant.posList.first;
 
 //String get selectedPosId => selectedPos.id;
 
@@ -72,7 +75,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         print('aim letti : ${aims.length}');
 
         final List<PaymentRequest> requests =
-            await _requestDb.getRequestsByPosId(selectedPosId);
+            await _requestDb.getRequestsByPosId(selectedPos.id);
         for (PaymentRequest r in requests) {
           final Aim aim = aims.firstWhere((a) {
             return a.code == r.aimCode;

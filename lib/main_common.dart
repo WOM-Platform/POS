@@ -11,5 +11,5 @@ Future<void> mainCommon() async {
   if (isFirstOpen) {
     await setIsFirstOpen(false);
   }
-  runApp(App(userRepository: UserRepository(UserType.POS)));
+  runApp(App(isFirstOpen: isFirstOpen));
 }

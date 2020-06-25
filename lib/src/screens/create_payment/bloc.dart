@@ -205,9 +205,10 @@ class CreatePaymentRequestBloc extends Bloc {
 
   saveDraftRequest() async {
     print("saveDraftRequest");
-    final db = PaymentDatabase.get();
-    final paymentRequest = await createModelForCreationRequest();
     try {
+      final db = PaymentDatabase.get();
+      final paymentRequest = await createModelForCreationRequest();
+
       if (draftRequest == null) {
         await db.insertRequest(paymentRequest);
       } else {
