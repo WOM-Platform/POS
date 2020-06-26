@@ -66,6 +66,8 @@ class AppDatabase extends AppDatabaseBase {
         "${PaymentRequest.ON_CLOUD} INTEGER,"
         "${PaymentRequest.POCKET_ACK_URL} TEXT,"
         "${PaymentRequest.POS_ACK_URL} TEXT,"
+        "${PaymentRequest.LATITUDE} LONG,"
+        "${PaymentRequest.LONGITUDE} LONG,"
         "${SimpleFilters.MAX_AGE} INTEGER,"
         "${BoundingBox.LEFT_TOP_LAT} LONG,"
         "${BoundingBox.LEFT_TOP_LONG} LONG,"

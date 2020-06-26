@@ -1,8 +1,13 @@
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:wom_package/wom_package.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+
+import '../../../../custom_icons.dart';
 
 class CardRequest extends StatelessWidget {
   final PaymentRequest request;
@@ -126,116 +131,261 @@ class CardRequest2 extends StatelessWidget {
   final Function onDelete;
   final Function onEdit;
   final Function onDuplicate;
-
-  const CardRequest2(
+  GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+  CardRequest2(
       {Key key, this.request, this.onDelete, this.onEdit, this.onDuplicate})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final languageCode = AppLocalizations.of(context).locale.languageCode;
-    return Padding(
+    return Container(
+      height: 275,
       padding: const EdgeInsets.all(4.0),
-      child: Card(
-        elevation: 8.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        '${request.amount} WOM',
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold),
+      child: FlipCard(
+        key: cardKey,
+        flipOnTouch: false,
+        front: Card(
+          elevation: 8.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          '${request.name}',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                  ),
-                  Spacer(),
-                  Icon(request.onCloud ? Icons.cloud_done : Icons.cloud_off),
-                  SizedBox(
-                    width: 8.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: CircleAvatar(
-                      radius: 10,
-                      backgroundColor: request.status == RequestStatus.COMPLETE
-                          ? Colors.green
-                          : Colors.orange,
+                    Spacer(),
+                    Tooltip(
+                      child: Icon(
+                          request.onCloud ? Icons.cloud_done : Icons.cloud_off),
+                      message: 'From cloud',
                     ),
-                  ),
-                ],
-              ),
-              Divider(
-                height: 2,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Text(
-                  request.name,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.start,
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: CircleAvatar(
+                        radius: 10,
+                        backgroundColor:
+                            request.status == RequestStatus.COMPLETE
+                                ? Colors.green
+                                : Colors.orange,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Row(
-//              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-//                Spacer(),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        ItemRow(t1: 'id ', t2: request.id.toString()),
-                        ItemRow(
-                            t1: 'aim ',
-                            t2: (request?.aim?.titles ??
+                Divider(
+                  height: 2,
+                ),
+//              Padding(
+//                padding: const EdgeInsets.symmetric(vertical: 4.0),
+//                child: Text(
+//                  request.name,
+//                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+//                  textAlign: TextAlign.start,
+//                ),
+//              ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          ItemRow2(
+                            tooltip: 'Request ID',
+                            icon: MdiIcons.identifier,
+                            text: request.id.toString(),
+                          ),
+                          ItemRow2(
+                            tooltip: 'Persistent',
+                            icon: MdiIcons.infinity,
+                            text: request.persistent
+                                ? AppLocalizations.of(context).translate('yes')
+                                : 'No',
+                          ),
+                          ItemRow2(
+                            tooltip: 'Aim',
+                            icon: MdiIcons.shapeOutline,
+                            text: (request?.aim?.titles ??
                                     const {})[languageCode ?? 'en'] ??
-                                '-'),
+                                '-',
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          ItemRow2(
+                            tooltip: 'Pin',
+                            icon: request?.password != null
+                                ? MdiIcons.lockOutline
+                                : MdiIcons.lockOpenOutline,
+                            text: request?.password ?? '-',
+                          ),
+                          ItemRow2(
+                            tooltip: 'Max age',
+                            icon: request?.simpleFilter?.maxAge != null
+                                ? MdiIcons.timerSand
+                                : MdiIcons.timerSandEmpty,
+                            text: request?.simpleFilter?.maxAge?.toString() ??
+                                '-',
+                          ),
+                          ItemRow2(
+                            tooltip: 'Bounding Box',
+                            onPressed: () {
+                              if (request.location != null) {
+                                cardKey.currentState.toggleCard();
+                              }
+                            },
+                            icon: request?.simpleFilter?.bounds != null
+                                ? MdiIcons.mapCheckOutline
+                                : MdiIcons.mapOutline,
+                            text: request?.simpleFilter?.bounds?.toString() ??
+                                '-',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Divider(
+                  height: 2,
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Spacer(),
+                    Tooltip(
+                      message: 'WOM',
+                      child: Container(
+                        padding: const EdgeInsets.all(4.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1.0,
+                                color: Theme.of(context).primaryColor),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8),
+                            )),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text(
+                              '${request.amount}',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Icon(
+                              CustomIcons.wom_logo,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                /*Row(
+//              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+//                Spacer(),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          ItemRow(t1: 'id ', t2: request.id.toString()),
+                          ItemRow(
+                              t1: 'aim ',
+                              t2: (request?.aim?.titles ??
+                                      const {})[languageCode ?? 'en'] ??
+                                  '-'),
 //                        ItemRow(t1: 'date ', t2: request.dateString),
-                        ItemRow(
-                            t1: 'persistent ',
-                            t2: request.persistent.toString()),
-                      ],
+                          ItemRow(
+                              t1: 'persistent ',
+                              t2: request.persistent.toString()),
+                        ],
+                      ),
                     ),
-                  ),
 //                Spacer(),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        ItemRow(t1: 'password ', t2: request?.password ?? '-'),
-                        ItemRow(
-                            t1: 'maxAge ',
-                            t2: request?.simpleFilter?.maxAge?.toString() ??
-                                '-'),
-                        ItemRow(
-                            t1: 'bounding box ',
-                            t2: request?.simpleFilter?.bounds?.toString() ??
-                                '-'),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          ItemRow(t1: 'password ', t2: request?.password ?? '-'),
+                          ItemRow(
+                              t1: 'maxAge ',
+                              t2: request?.simpleFilter?.maxAge?.toString() ??
+                                  '-'),
+                          ItemRow(
+                              t1: 'bounding box ',
+                              t2: request?.simpleFilter?.bounds?.toString() ??
+                                  '-'),
+                        ],
+                      ),
                     ),
-                  ),
 //                Spacer(),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              )
-            ],
+                  ],
+                ),*/
+              ],
+            ),
           ),
         ),
+        back: request.location != null
+            ? Container(
+                height: 275,
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  elevation: 8.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: GoogleMap(
+                    onTap: (lat) => cardKey.currentState.toggleCard(),
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(request.location.latitude,
+                          request.location.longitude),
+                      zoom: 16,
+                    ),
+                    rotateGesturesEnabled: false,
+                    scrollGesturesEnabled: false,
+                    zoomGesturesEnabled: false,
+                    tiltGesturesEnabled: false,
+                    compassEnabled: false,
+                    mapToolbarEnabled: false,
+                    markers: {
+                      Marker(
+                          markerId: MarkerId(request.id.toString()),
+                          position: request.location),
+                    },
+                  ),
+                ),
+              )
+            : Container(),
       ),
     );
   }
@@ -255,20 +405,52 @@ class ItemRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Expanded(
-            child: AutoSizeText(
-          ' $t1',
-          style: TextStyle(color: Colors.grey),
-          maxLines: 1,
-          textAlign: TextAlign.end,
-        )),
+          child: AutoSizeText(
+            ' $t1',
+            style: TextStyle(color: Colors.grey),
+            maxLines: 1,
+            textAlign: TextAlign.end,
+          ),
+        ),
         Expanded(
-            child: AutoSizeText(
-          ' $t2',
-          maxLines: 1,
-          minFontSize: 9,
-          stepGranularity: 0.1,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        )),
+          child: AutoSizeText(
+            ' $t2',
+            maxLines: 1,
+            minFontSize: 9,
+            stepGranularity: 0.1,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ItemRow2 extends StatelessWidget {
+  final String text;
+  final String tooltip;
+  final IconData icon;
+  final Function onPressed;
+  const ItemRow2({Key key, this.text, this.icon, this.tooltip, this.onPressed})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        IconButton(
+          tooltip: tooltip,
+          icon: Icon(icon),
+          onPressed: onPressed ?? () {},
+        ),
+        Expanded(
+          child: AutoSizeText(
+            text,
+            maxLines: 2,
+            minFontSize: 9,
+            stepGranularity: 0.1,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
       ],
     );
   }

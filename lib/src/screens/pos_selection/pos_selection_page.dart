@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/src/screens/home/home.dart';
@@ -21,17 +22,21 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Seleziona POS')),
+      appBar: AppBar(
+        title: Text('Seleziona POS'),
+        elevation: 0,
+      ),
       body: CustomScrollView(
         slivers: <Widget>[
           for (int i = 0; i < bloc.merchants.length; i++)
             SliverStickyHeaderBuilder(
               builder: (context, state) => Container(
-                color: (state.isPinned ? Colors.pink : Colors.lightBlue)
+                color: (state.isPinned ? Colors.blue : Colors.blue[200])
                     .withOpacity(1.0 - state.scrollPercentage),
-                alignment: Alignment.centerLeft,
                 child: ListTile(
-                  leading: CircleAvatar(),
+                  leading: CircleAvatar(
+                    child: Text('M'),
+                  ),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -54,6 +59,7 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => ListTile(
+                    leading: Icon(MdiIcons.storeOutline),
                     title: Text(bloc.merchants[i].posList[index].name),
                     onTap: () {
                       BlocProvider.of<HomeBloc>(context).selectedMerchantId =

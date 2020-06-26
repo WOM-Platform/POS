@@ -164,6 +164,8 @@ class PaymentRequest {
     map[PASSWORD] = this.password;
     map[NAME] = this.name;
     map[DATE] = this.dateTime?.millisecondsSinceEpoch;
+    map[LATITUDE] = this.location?.latitude;
+    map[LONGITUDE] = this.location?.longitude;
     map[AIM_CODE] = this.aimCode;
     map[AIM_NAME] = this.aimName;
     map[DEEP_LINK] = this.deepLink;
