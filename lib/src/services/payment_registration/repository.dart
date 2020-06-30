@@ -28,9 +28,13 @@ class PaymentRegistrationRepository {
       final payloadMapEncoded = json.encode(payloadMap);
 
 //      final privateKeyString1 = await _loadKey('assets/pos.pem');
-      final privateKeyString = user.actors
-          .where((element) => element.id == paymentRequest.posId)
-          .first
+      final privateKeyString = user.merchants
+          .firstWhere((element) =>
+              element.posList
+                  .firstWhere((pos) => pos.id == paymentRequest.posId) !=
+              null)
+          .posList
+          .firstWhere((pos) => pos.id == paymentRequest.posId)
           .privateKey;
       final String publicKeyString = await getPublicKey();
 //      final publicKeyString1 = user.publicKey;

@@ -3,6 +3,7 @@ import 'package:package_info/package_info.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/screens/intro/intro.dart';
 
+import '../../../app.dart';
 import '../../utils.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -27,24 +28,23 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-//          ListTile(
-//            title: Text('Demo'),
-//            subtitle: Text('Impara ad utilizzare l\'app'),
-//            trailing: Icon(Icons.arrow_forward_ios),
-//            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
-//            onTap: () => _launchUrl('https://wom.social/demo/pos'),
-//          ),
           ListTile(
-            title: Text('Info'),
-            subtitle: Text('Visita il nostro sito'),
-            trailing: Icon(Icons.arrow_forward_ios),
+            leading: Icon(Icons.account_circle),
+            title: Text('${user.name} ${user.surname}'),
+            subtitle: Text(user.email),
+            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+          ),
+          ListTile(
+            title: Text('La piattaforma WOM'),
+            subtitle: Text('Visita il sito'),
+            leading: Icon(Icons.public),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () => launchUrl('https://wom.social'),
           ),
           ListTile(
             title: Text('Tutorial'),
             subtitle: Text('Visita il tutorial iniziale'),
-            trailing: Icon(Icons.arrow_forward_ios),
+            leading: Icon(Icons.info),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () => Navigator.push(
               context,
@@ -125,7 +125,7 @@ class VersionInfo extends StatelessWidget {
           return ListTile(
             title: Text('Versione dell\'app'),
             subtitle: Text(pkg.version),
-            trailing: Icon(Icons.info),
+            leading: Icon(Icons.perm_device_information),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: null,
           );

@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mmkv_flutter/mmkv_flutter.dart';
+import 'dart:math' as math;
 
 const String IS_FIRST_OPEN_KEY = 'isFirstOpen';
 const String lorem =
@@ -35,4 +37,31 @@ Future launchUrl(String url) async {
   } else {
     throw 'Could not launch $url';
   }
+}
+
+measureDistanceBetween2Points(lat1, lon1, lat2, lon2) {
+  var R = 6378.137;
+  var dLat = lat2 * math.pi / 180 - lat1 * math.pi / 180;
+  var dLon = lon2 * math.pi / 180 - lon1 * math.pi / 180;
+  var a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+      math.cos(lat1 * math.pi / 180) *
+          math.cos(lat2 * math.pi / 180) *
+          math.sin(dLon / 2) *
+          math.sin(dLon / 2);
+  var c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+  var d = R * c;
+  return d * 1000; // meters
+}
+
+double getRadiusFromBoundingBox(
+    List<double> leftTop, List<double> rightBottom) {
+  final distance = measureDistanceBetween2Points(
+      leftTop[0], leftTop[1], rightBottom[0], leftTop[1]);
+  return distance / 2;
+}
+
+onWidgetDidBuild(Function callback) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    callback();
+  });
 }

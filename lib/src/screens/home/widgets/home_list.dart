@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
+import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
-import 'package:pos/src/screens/create_payment/bloc.dart';
+
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/card_request.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';

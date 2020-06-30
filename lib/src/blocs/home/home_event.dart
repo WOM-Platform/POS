@@ -11,11 +11,3 @@ class LoadRequest extends HomeEvent {
   @override
   List<Object> get props => [];
 }
-
-class LoadPos extends HomeEvent {
-  @override
-  String toString() => 'LoadPos';
-
-  @override
-  List<Object> get props => [];
-}

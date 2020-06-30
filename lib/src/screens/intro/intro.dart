@@ -40,7 +40,12 @@ class IntroScreenState extends State<IntroScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final titleStyle = Theme.of(context)
+        .textTheme
+        .display1
+        .copyWith(color: Theme.of(context).primaryColor);
     return IntroSlider(
+      colorActiveDot: Theme.of(context).primaryColor,
       styleNameDoneBtn: Theme.of(context)
           .textTheme
           .headline
@@ -57,10 +62,7 @@ class IntroScreenState extends State<IntroScreen> {
       slides: [
         Slide(
           maxLineTitle: 10,
-          styleTitle: Theme.of(context)
-              .textTheme
-              .title
-              .copyWith(color: Theme.of(context).primaryColor),
+          styleTitle: titleStyle,
           styleDescription: Theme.of(context).textTheme.body1,
           backgroundColor: Colors.white,
           heightImage: 200,
@@ -75,10 +77,7 @@ class IntroScreenState extends State<IntroScreen> {
         ),
         Slide(
           maxLineTitle: 10,
-          styleTitle: Theme.of(context)
-              .textTheme
-              .title
-              .copyWith(color: Theme.of(context).primaryColor),
+          styleTitle: titleStyle,
           styleDescription: Theme.of(context).textTheme.body1,
           backgroundColor: Colors.white,
           heightImage: 200,
@@ -91,10 +90,7 @@ class IntroScreenState extends State<IntroScreen> {
         ),
         Slide(
           maxLineTitle: 10,
-          styleTitle: Theme.of(context)
-              .textTheme
-              .title
-              .copyWith(color: Theme.of(context).primaryColor),
+          styleTitle: titleStyle,
           styleDescription: Theme.of(context).textTheme.body1,
           backgroundColor: Colors.white,
           heightImage: 200,
@@ -107,10 +103,7 @@ class IntroScreenState extends State<IntroScreen> {
         ),
         Slide(
           maxLineTitle: 10,
-          styleTitle: Theme.of(context)
-              .textTheme
-              .title
-              .copyWith(color: Theme.of(context).primaryColor),
+          styleTitle: titleStyle,
           styleDescription: Theme.of(context).textTheme.body1,
           backgroundColor: Colors.white,
           heightImage: 200,

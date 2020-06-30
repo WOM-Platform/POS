@@ -1,12 +1,16 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/screens/root/root.dart';
-import 'package:wom_package/wom_package.dart';
+import 'package:pos/src/services/auth_local_data_sources.dart';
 import 'localization/app_localizations.dart';
 import 'src/screens/intro/intro.dart';
 import 'package:provider/provider.dart';
+
+import 'src/services/user_repository.dart';
 
 User user;
 
@@ -20,7 +24,9 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         RepositoryProvider(
-          create: (BuildContext context) => UserRepository(UserType.POS),
+          create: (BuildContext context) => UserRepository(
+              AuthRemoteDataSourcesImpl(UserType.POS),
+              AuthLocalDataSourcesImpl()),
         ),
         BlocProvider<AuthenticationBloc>(
           create: (context) => AuthenticationBloc(

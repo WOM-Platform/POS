@@ -3,7 +3,6 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos/src/screens/home/home.dart';
 
 class PosSelectionPage extends StatefulWidget {
   static const String routeName = '/pos_selection';
@@ -23,7 +22,7 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Seleziona POS'),
+        title: Text('Seleziona il POS da gestire'),
         elevation: 0,
       ),
       body: CustomScrollView(
@@ -42,16 +41,24 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
                     children: <Widget>[
                       Text(
                         bloc.merchants[i].name,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 30),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 4,
                       ),
                       Text(
                         bloc.merchants[i].address,
                       ),
                       Text(
-                        '${bloc.merchants[i].cap} - ${bloc.merchants[i].city}',
+                        '${bloc.merchants[i].zipCode} - ${bloc.merchants[i].city}',
                       ),
-                      Text(bloc.merchants[i].vatNumber),
+                      Text(bloc.merchants[i].fiscalCode),
+                      const SizedBox(
+                        height: 4,
+                      ),
                     ],
                   ),
                 ),
@@ -59,7 +66,10 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => ListTile(
-                    leading: Icon(MdiIcons.storeOutline),
+                    leading: CircleAvatar(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        child: Icon(MdiIcons.storeOutline)),
                     title: Text(bloc.merchants[i].posList[index].name),
                     onTap: () {
                       BlocProvider.of<HomeBloc>(context).selectedMerchantId =

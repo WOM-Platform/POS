@@ -9,7 +9,6 @@ import 'package:mmkv_flutter/mmkv_flutter.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:wom_package/wom_package.dart';
 import 'dart:math' as math;
-import '../../../app.dart';
 import '../../constants.dart';
 
 enum RequestType {

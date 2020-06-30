@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/localization/app_localizations.dart';
-import 'package:pos/src/screens/create_payment/bloc.dart';
+import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 class NameSelectionPage extends StatefulWidget {
   @override

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/src/blocs/home/home_event.dart';
@@ -6,16 +7,16 @@ import 'package:pos/src/blocs/home/home_state.dart';
 import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
-import 'package:wom_package/wom_package.dart';
+import 'package:wom_package/wom_package.dart' as womPack;
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   TextEditingController amountController = TextEditingController();
   User user;
-  AimRepository _aimRepository;
+  womPack.AimRepository _aimRepository;
   PaymentDatabase _requestDb;
 
   HomeBloc() {
-    _aimRepository = AimRepository();
+    _aimRepository = womPack.AimRepository();
     _requestDb = PaymentDatabase.get();
     //TODO spostare aggiornamento aim in appBloc
     _aimRepository.updateAim(database: AppDatabase.get().getDb()).then((aims) {
@@ -42,7 +43,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           orElse: () => null)
       : merchants.first;
 
-  Pos get selectedPos => selectedPosId != null
+  PointOfSale get selectedPos => selectedPosId != null
       ? selectedMerchant.posList.firstWhere((p) => p.id == selectedPosId)
       : selectedMerchant.posList.first;
 
@@ -54,7 +55,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(event) async* {
     if (event is LoadRequest) {
-      List<Aim> aims = await _aimRepository.getFlatAimList(
+      List<womPack.Aim> aims = await _aimRepository.getFlatAimList(
           database: AppDatabase.get().getDb());
 
       try {
@@ -77,7 +78,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final List<PaymentRequest> requests =
             await _requestDb.getRequestsByPosId(selectedPos.id);
         for (PaymentRequest r in requests) {
-          final Aim aim = aims.firstWhere((a) {
+          final womPack.Aim aim = aims.firstWhere((a) {
             return a.code == r.aimCode;
           }, orElse: () {
             return null;
@@ -88,14 +89,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } catch (ex) {
         print(ex.toString());
         yield RequestsLoadingErrorState('somethings_wrong');
-      }
-    } else if (event is LoadPos) {
-      print('load POS');
-//      this.user = event.user;
-      if (user.actors.isEmpty) {
-        yield NoPosState();
-      } else {
-        add(LoadRequest());
       }
     }
   }

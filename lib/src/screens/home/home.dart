@@ -5,14 +5,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/localization/app_localizations.dart';
+import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
-import 'package:pos/src/screens/create_payment/bloc.dart';
+import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
 import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
 import 'package:pos/src/screens/settings/settings.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:wom_package/wom_package.dart';
 import '../../../main_common.dart';
 import '../../utils.dart';
 

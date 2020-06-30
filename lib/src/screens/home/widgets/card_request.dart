@@ -6,8 +6,10 @@ import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:wom_package/wom_package.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-
+import 'dart:math' as math;
+import 'package:vector_math/vector_math.dart' as vec_math;
 import '../../../../custom_icons.dart';
+import '../../../utils.dart';
 
 class CardRequest extends StatelessWidget {
   final PaymentRequest request;
@@ -124,8 +126,6 @@ class MyRichText extends StatelessWidget {
   }
 }
 
-//if(request?.simpleFilter?.bounds != null)
-//                GoogleMap();
 class CardRequest2 extends StatelessWidget {
   final PaymentRequest request;
   final Function onDelete;
@@ -174,19 +174,24 @@ class CardRequest2 extends StatelessWidget {
                     Tooltip(
                       child: Icon(
                           request.onCloud ? Icons.cloud_done : Icons.cloud_off),
-                      message: 'From cloud',
+                      message: request.onCloud ? 'In cloud' : 'In locale',
                     ),
                     SizedBox(
                       width: 8.0,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: CircleAvatar(
-                        radius: 10,
-                        backgroundColor:
-                            request.status == RequestStatus.COMPLETE
-                                ? Colors.green
-                                : Colors.orange,
+                      child: Tooltip(
+                        message: request.status == RequestStatus.COMPLETE
+                            ? 'Completa'
+                            : 'Bozza',
+                        child: CircleAvatar(
+                          radius: 10,
+                          backgroundColor:
+                              request.status == RequestStatus.COMPLETE
+                                  ? Colors.green
+                                  : Colors.orange,
+                        ),
                       ),
                     ),
                   ],
@@ -194,14 +199,6 @@ class CardRequest2 extends StatelessWidget {
                 Divider(
                   height: 2,
                 ),
-//              Padding(
-//                padding: const EdgeInsets.symmetric(vertical: 4.0),
-//                child: Text(
-//                  request.name,
-//                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-//                  textAlign: TextAlign.start,
-//                ),
-//              ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
@@ -309,48 +306,6 @@ class CardRequest2 extends StatelessWidget {
                     ),
                   ],
                 ),
-                /*Row(
-//              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-//                Spacer(),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          ItemRow(t1: 'id ', t2: request.id.toString()),
-                          ItemRow(
-                              t1: 'aim ',
-                              t2: (request?.aim?.titles ??
-                                      const {})[languageCode ?? 'en'] ??
-                                  '-'),
-//                        ItemRow(t1: 'date ', t2: request.dateString),
-                          ItemRow(
-                              t1: 'persistent ',
-                              t2: request.persistent.toString()),
-                        ],
-                      ),
-                    ),
-//                Spacer(),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          ItemRow(t1: 'password ', t2: request?.password ?? '-'),
-                          ItemRow(
-                              t1: 'maxAge ',
-                              t2: request?.simpleFilter?.maxAge?.toString() ??
-                                  '-'),
-                          ItemRow(
-                              t1: 'bounding box ',
-                              t2: request?.simpleFilter?.bounds?.toString() ??
-                                  '-'),
-                        ],
-                      ),
-                    ),
-//                Spacer(),
-                  ],
-                ),*/
               ],
             ),
           ),
@@ -376,7 +331,21 @@ class CardRequest2 extends StatelessWidget {
                     zoomGesturesEnabled: false,
                     tiltGesturesEnabled: false,
                     compassEnabled: false,
+                    myLocationButtonEnabled: false,
+                    myLocationEnabled: false,
                     mapToolbarEnabled: false,
+                    circles: {
+                      Circle(
+                        circleId: CircleId('bb'),
+                        radius: getRadiusFromBoundingBox(
+                            request.simpleFilter.bounds.leftTop,
+                            request.simpleFilter.bounds.rightBottom),
+                        strokeColor: Colors.green,
+                        strokeWidth: 1,
+                        center: request.location,
+                        fillColor: Colors.green.withOpacity(0.3),
+                      )
+                    },
                     markers: {
                       Marker(
                           markerId: MarkerId(request.id.toString()),
