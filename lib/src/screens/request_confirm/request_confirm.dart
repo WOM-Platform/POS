@@ -27,7 +27,9 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   @override
   void initState() {
-    bloc = RequestConfirmBloc(paymentRequest: widget.paymentRequest);
+    bloc = RequestConfirmBloc(
+        pos: context.bloc<HomeBloc>().selectedPos,
+        paymentRequest: widget.paymentRequest);
     super.initState();
   }
 

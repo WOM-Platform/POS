@@ -3,6 +3,7 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class PosSelectionPage extends StatefulWidget {
   static const String routeName = '/pos_selection';
@@ -30,9 +31,10 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
           for (int i = 0; i < bloc.merchants.length; i++)
             SliverStickyHeaderBuilder(
               builder: (context, state) => Container(
+//                padding: EdgeInsets.all(4.0),
                 color: (state.isPinned ? Colors.blue : Colors.blue[200])
                     .withOpacity(1.0 - state.scrollPercentage),
-                child: ListTile(
+                /*  child: ListTile(
                   leading: CircleAvatar(
                     child: Text('M'),
                   ),
@@ -61,6 +63,41 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
                       ),
                     ],
                   ),
+                ),*/
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      bloc.merchants[i].name,
+                    ),
+                    Spacer(),
+                    IconButton(
+                        icon: Icon(Icons.info),
+                        color: Colors.white,
+                        onPressed: () {
+                          Alert(
+                            context: context,
+                            style: AlertStyle(isCloseButton: false),
+                            title: bloc.merchants[i].name,
+                            content: Column(
+                              children: <Widget>[
+                                Text(
+                                  bloc.merchants[i].address,
+                                ),
+                                Text(
+                                  '${bloc.merchants[i].zipCode} - ${bloc.merchants[i].city}',
+                                ),
+                                Text(bloc.merchants[i].fiscalCode),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                              ],
+                            ),
+                          ).show();
+                        }),
+                  ],
                 ),
               ),
               sliver: SliverList(
@@ -70,12 +107,12 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
                         backgroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                         child: Icon(MdiIcons.storeOutline)),
+                    trailing: Icon(Icons.arrow_right),
                     title: Text(bloc.merchants[i].posList[index].name),
                     onTap: () {
-                      BlocProvider.of<HomeBloc>(context).selectedMerchantId =
-                          bloc.merchants[i].id;
-                      BlocProvider.of<HomeBloc>(context).selectedPosId =
-                          bloc.merchants[i].posList[index].id;
+                      context.bloc<HomeBloc>().setMerchantAndPosId(
+                          bloc.merchants[i].id,
+                          bloc.merchants[i].posList[index].id);
                       Navigator.of(context).pop();
                     },
                   ),

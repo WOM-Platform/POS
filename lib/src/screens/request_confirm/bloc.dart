@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/services/payment_registration/repository.dart';
@@ -15,7 +17,8 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
 
   PaymentDatabase _requestDb;
 
-  RequestConfirmBloc({@required this.paymentRequest}) {
+  final PointOfSale pos;
+  RequestConfirmBloc({@required this.pos, @required this.paymentRequest}) {
     _repository = PaymentRegistrationRepository();
     _requestDb = PaymentDatabase.get();
     add(CreateWomRequest());
@@ -30,7 +33,7 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
       yield WomCreationRequestLoading();
       if (await DataConnectionChecker().hasConnection) {
         final RequestVerificationResponse response =
-            await _repository.generateNewPaymentRequest(paymentRequest);
+            await _repository.generateNewPaymentRequest(paymentRequest, pos);
         if (response.error != null) {
           debugPrint(response.error);
           insertRequestOnDb();
@@ -64,7 +67,6 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
     try {
       if (paymentRequest.id == null) {
         int id = await _requestDb.insertRequest(paymentRequest);
-        print(id);
         paymentRequest.id = id;
         print(paymentRequest.id);
       } else {

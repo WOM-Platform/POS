@@ -59,6 +59,19 @@ class UserRepository {
     return readPosUser(name, surname, email);
   }
 
+  saveLastPosId(String posId, String merchantId) async {
+    final mmkv = await MmkvFlutter.getInstance();
+    await mmkv.setString('lastPosId', posId);
+    await mmkv.setString('lastMerchantId', merchantId);
+  }
+
+  readLastPosId() async {
+    final mmkv = await MmkvFlutter.getInstance();
+    final merchantId = await mmkv.getString('lastMerchantId');
+    final posId = await mmkv.getString('lastPosId');
+    return [merchantId, posId];
+  }
+
   Future<User> readPosUser(String name, String surname, String email) async {
     final actorsJsonArray = await secureStorage.read(key: 'actors');
     final actorsArray = json.decode(actorsJsonArray);

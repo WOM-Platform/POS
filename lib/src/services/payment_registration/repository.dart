@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:simple_rsa/simple_rsa.dart';
 import 'package:wom_package/wom_package.dart';
 
-import '../../../app.dart';
 import '../../constants.dart';
 
 class PaymentRegistrationRepository {
@@ -16,7 +16,8 @@ class PaymentRegistrationRepository {
 //    _apiProvider = HttpHelper();
   }
 
-  Future generateNewPaymentRequest(PaymentRequest paymentRequest) async {
+  Future generateNewPaymentRequest(
+      PaymentRequest paymentRequest, PointOfSale pos) async {
     debugPrint("generateNewPaymentRequest");
     try {
       final payloadMap = paymentRequest.toPayloadMap();
@@ -28,14 +29,8 @@ class PaymentRegistrationRepository {
       final payloadMapEncoded = json.encode(payloadMap);
 
 //      final privateKeyString1 = await _loadKey('assets/pos.pem');
-      final privateKeyString = user.merchants
-          .firstWhere((element) =>
-              element.posList
-                  .firstWhere((pos) => pos.id == paymentRequest.posId) !=
-              null)
-          .posList
-          .firstWhere((pos) => pos.id == paymentRequest.posId)
-          .privateKey;
+
+      final privateKeyString = pos.privateKey;
       final String publicKeyString = await getPublicKey();
 //      final publicKeyString1 = user.publicKey;
 

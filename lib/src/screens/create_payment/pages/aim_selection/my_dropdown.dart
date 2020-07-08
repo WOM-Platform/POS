@@ -26,7 +26,12 @@ class MyDropdown extends StatelessWidget {
           labelStyle: TextStyle(
             color: Colors.white,
           ),
-          border: OutlineInputBorder(),
+          hintStyle: TextStyle(
+            color: Colors.white,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
           filled: true,
           fillColor: Theme.of(context).primaryColor,
         ),
@@ -39,7 +44,8 @@ class MyDropdown extends StatelessWidget {
               return DropdownMenuItem<String>(
                 value: aim.code,
                 child: Text(
-                    (aim?.titles ?? const {})[languageCode ?? "en"] ?? '-'),
+                  (aim?.titles ?? const {})[languageCode ?? "en"] ?? '-',
+                ),
               );
             }).toList(),
           ),

@@ -11,7 +11,7 @@
   "back": "Indietro",
   "no_request": "Nessuna richiesta di pagamento",
   "is_a_persistent_request": "È una richiesta persistente?",
-  "duplicate": "Duplica",
+  "duplicate": "Rinnova",
   "how_recent_wom": "Quanto devono essere recenti i Wom?",
   "insert_value_grather": "Inserisci un valore compreso tra 1 e 1000",
   "how_many_days": "Quanti giorni?",
@@ -36,5 +36,6 @@
   "no_connection_transaction_desc": "Per generare una richiesta di pagamento è necessario che il dispositivo sia connesso a internet.\nAttiva i dati e premi il pulsante \"Riprova\"",
   "somethings_wrong": "Si è verificato un errore imprevisto!",
   "settings_title": "Impostazioni",
-  "no_pos_alert": "Attenzione non ha nessun POS\nPremi il pulsante sottostante per creare un POS"
+  "no_pos_alert": "Attenzione non ha nessun POS\nPremi il pulsante sottostante per creare un POS",
+  "selection_pos_suggestion": "Premi qui per selezionare il POS da gestire"
 }

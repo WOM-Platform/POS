@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import 'src/services/user_repository.dart';
 
-User user;
+User globalUser;
 
 class App extends StatelessWidget {
   final bool isFirstOpen;
@@ -28,13 +28,16 @@ class App extends StatelessWidget {
               AuthRemoteDataSourcesImpl(UserType.POS),
               AuthLocalDataSourcesImpl()),
         ),
+        BlocProvider<HomeBloc>(
+          create: (context) => HomeBloc(
+            userRepository: RepositoryProvider.of<UserRepository>(context),
+          ),
+        ),
         BlocProvider<AuthenticationBloc>(
           create: (context) => AuthenticationBloc(
+            homeBloc: context.bloc<HomeBloc>(),
             userRepository: RepositoryProvider.of<UserRepository>(context),
           )..add(AppStarted()),
-        ),
-        BlocProvider<HomeBloc>(
-          create: (context) => HomeBloc(),
         ),
       ],
       child: MaterialApp(

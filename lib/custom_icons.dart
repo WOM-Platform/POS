@@ -19,8 +19,11 @@ class CustomIcons {
   CustomIcons._();
 
   static const _kFontFam = 'CustomIcons';
+  static const _kFontMerchant = 'MerchantIcons';
   static const _kFontPkg = null;
 
   static const IconData wom_logo =
       IconData(0xe811, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData merchant_logo =
+      IconData(0xe800, fontFamily: _kFontMerchant, fontPackage: _kFontPkg);
 }

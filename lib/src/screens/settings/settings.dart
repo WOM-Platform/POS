@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pos/localization/app_localizations.dart';
+import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/screens/intro/intro.dart';
-
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../app.dart';
 import '../../utils.dart';
 
@@ -30,8 +32,8 @@ class SettingsScreen extends StatelessWidget {
         children: <Widget>[
           ListTile(
             leading: Icon(Icons.account_circle),
-            title: Text('${user.name} ${user.surname}'),
-            subtitle: Text(user.email),
+            title: Text('${globalUser.name} ${globalUser.surname}'),
+            subtitle: Text(globalUser.email),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
           ),
           ListTile(
@@ -54,6 +56,17 @@ class SettingsScreen extends StatelessWidget {
                       )),
             ),
           ),
+          ListTile(
+            title: Text('Esci'),
+            subtitle: Text('Effettua il logout'),
+            leading: Icon(Icons.info),
+            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+            onTap: () {
+              _showLogoutDialog(context, () {
+                context.bloc<AuthenticationBloc>().add(LoggedOut());
+              });
+            },
+          ),
           VersionInfo(),
           /*if (Config.appFlavor == Flavor.DEVELOPMENT) ...[
             ListTile(
@@ -71,6 +84,29 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _showLogoutDialog(BuildContext context, Function logout) {
+    Alert(
+      context: context,
+      title: AppLocalizations.of(context).translate('logout_message'),
+      buttons: [
+        DialogButton(
+          child: Text('No'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        DialogButton(
+          child: Text(AppLocalizations.of(context).translate('yes')),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.of(context).pop();
+            logout();
+          },
+        ),
+      ],
+    ).show();
   }
 }
 

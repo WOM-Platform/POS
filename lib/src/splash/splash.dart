@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos/src/screens/home/home.dart';
 import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
 import 'package:pos/src/splash/bloc.dart';
 

@@ -33,27 +33,6 @@ class SummaryRequest extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-//                  Row(
-//                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                    children: <Widget>[
-//                      Padding(
-//                        padding: const EdgeInsets.all(8.0),
-//                        child: Text(paymentRequest.dateTime
-//                            .toIso8601String()
-//                            .substring(0, 10),style: TextStyle(color: Colors.white),),
-//                      ),
-////                      Padding(
-////                        padding: const EdgeInsets.all(8.0),
-////                        child: Text("id ${paymentRequest.id}"),
-////                      ),
-//                      Padding(
-//                        padding: const EdgeInsets.all(8.0),
-//                        child: Text(paymentRequest.aimName ?? ""),
-//                      ),
-//
-//                    ],
-//                  ),
-
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: RichText(
@@ -103,53 +82,26 @@ class SummaryRequest extends StatelessWidget {
                 SizedBox(
                   height: 80.0,
                 ),
-//                  Row(
-//                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                    children: <Widget>[
-//                      OutlineButton(
-//                          child: Text('Duplicate'),
-//                          onPressed: () {
-//                            Navigator.of(context).pushReplacement(
-//                              MaterialPageRoute(
-//                                builder: (ctx) => RequestConfirmScreen(
-//                                  paymentRequest: paymentRequest.copyFrom(),
-//                                ),
-//                              ),
-//                            );
-//                          }),
-//                      OutlineButton.icon(
-//                        color: Colors.white,
-//                        splashColor: Colors.blue,
-//                        highlightedBorderColor: Colors.green,
-//                        disabledBorderColor: Colors.red,
-//                        highlightColor: Colors.yellow,
-//                        textColor: Colors.purple,
-//                        highlightElevation: 4,
-//                        onPressed: () {
-//                          Navigator.of(context).pop();
-//                        },
-//                        icon: Icon(Icons.check),
-//                        label: Text('Home'),
-//                      ),
-//                    ],
-//                  ),
-//                  Spacer(),
               ],
             ),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (ctx) => RequestConfirmScreen(
-                    paymentRequest: paymentRequest.copyFrom(),
-                  ),
-                ),
-              );
-            },
-            label: Text(AppLocalizations.of(context).translate('duplicate'))),
+        floatingActionButton: paymentRequest.persistent
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (ctx) => RequestConfirmScreen(
+                        paymentRequest: paymentRequest.copyFrom(),
+                      ),
+                    ),
+                  );
+                },
+                label:
+                    Text(AppLocalizations.of(context).translate('duplicate')),
+              ),
       ),
     );
   }

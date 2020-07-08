@@ -2,6 +2,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
+import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/home/home_bloc.dart';
 import 'package:pos/src/screens/login/login_screen.dart';
 import 'package:pos/src/services/user_repository.dart';
@@ -18,7 +19,6 @@ class RootScreen extends StatelessWidget {
         if (state is AuthenticationUninitialized) {
           return SplashScreen();
         } else if (state is AuthenticationAuthenticated) {
-          user = state.user;
 //          user.merchants = List.generate(
 //            4,
 //            (i) => Merchant(
@@ -36,8 +36,6 @@ class RootScreen extends StatelessWidget {
 //              ),
 //            ),
 //          );
-          context.bloc<HomeBloc>().user = user;
-//              homeBloc.add(LoadPos())
 
           return FeatureDiscovery(child: HomeScreen());
           /*  return Navigator(
@@ -56,7 +54,7 @@ class RootScreen extends StatelessWidget {
             },
           );*/
         } else if (state is AuthenticationUnauthenticated) {
-          user = null;
+          globalUser = null;
           return LoginScreen(
             userRepository: RepositoryProvider.of<UserRepository>(context),
           );

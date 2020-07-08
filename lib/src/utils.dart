@@ -28,7 +28,19 @@ Future<bool> readIsFirstOpen() async {
 
 Future setIsFirstOpen(bool value) async {
   final mmkv = await MmkvFlutter.getInstance();
-  mmkv.setBool(IS_FIRST_OPEN_KEY, !value);
+  await mmkv.setBool(IS_FIRST_OPEN_KEY, !value);
+}
+
+Future<DateTime> getLastAimCheckDateTime() async {
+  final mmkv = await MmkvFlutter.getInstance();
+  final timestamp = await mmkv.getLong('lastCheckAimDateTime');
+  if (timestamp == null) return DateTime.fromMillisecondsSinceEpoch(0);
+  return DateTime.fromMillisecondsSinceEpoch(timestamp);
+}
+
+Future setAimCheckDateTime(DateTime dateTime) async {
+  final mmkv = await MmkvFlutter.getInstance();
+  await mmkv.setLong('lastCheckAimDateTime', dateTime.millisecondsSinceEpoch);
 }
 
 Future launchUrl(String url) async {

@@ -111,19 +111,36 @@ class PaymentRequest {
 
   String get dateString => DateFormat.yMMMd().format(dateTime);
 
+  List<LatLng> get bbPoints => simpleFilter?.bounds != null
+      ? [
+          LatLng(
+              simpleFilter.bounds.leftTop[0], simpleFilter.bounds.leftTop[1]),
+          LatLng(simpleFilter.bounds.rightBottom[0],
+              simpleFilter.bounds.leftTop[1]),
+          LatLng(simpleFilter.bounds.rightBottom[0],
+              simpleFilter.bounds.rightBottom[1]),
+          LatLng(simpleFilter.bounds.leftTop[0],
+              simpleFilter.bounds.rightBottom[1]),
+          LatLng(
+              simpleFilter.bounds.leftTop[0], simpleFilter.bounds.leftTop[1]),
+        ]
+      : [];
+
   PaymentRequest.fromDBMap(Map<String, dynamic> map) {
     this.id = map[ID];
     this.amount = map[AMOUNT];
-    this.dateTime = DateTime.fromMillisecondsSinceEpoch(map[DATE]);
+    this.dateTime = map[DATE] != null
+        ? DateTime.fromMillisecondsSinceEpoch(map[DATE])
+        : null;
     this.aimCode = map[AIM_CODE];
     this.aimName = map[AIM_NAME];
     this.location = (map[LATITUDE] != null && map[LONGITUDE] != null)
-        ? LatLng(map[LATITUDE], map[LONGITUDE])
+        ? LatLng(map[LATITUDE].toDouble(), map[LONGITUDE].toDouble())
         : null;
     this.name = map[NAME];
     this.nonce = map[NONCE];
     this.password = map[PASSWORD];
-    this.posId = map[POS_ID].toString();
+    this.posId = map[POS_ID]?.toString();
     this.status = RequestStatus.values[map[STATUS]];
     this.registryUrl = map[URL];
     this.pocketAckUrl = map[POCKET_ACK_URL];
@@ -192,6 +209,7 @@ class PaymentRequest {
 
   PaymentRequest copyFrom() {
     return PaymentRequest(
+      id: this.id,
       amount: this.amount,
       dateTime: DateTime.now(),
       registryUrl: this.registryUrl,

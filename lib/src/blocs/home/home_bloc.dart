@@ -7,6 +7,8 @@ import 'package:pos/src/blocs/home/home_state.dart';
 import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
+import 'package:pos/src/services/user_repository.dart';
+import 'package:pos/src/utils.dart';
 import 'package:wom_package/wom_package.dart' as womPack;
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
@@ -14,38 +16,46 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   User user;
   womPack.AimRepository _aimRepository;
   PaymentDatabase _requestDb;
-
-  HomeBloc() {
+  UserRepository userRepository;
+  HomeBloc({this.userRepository}) {
     _aimRepository = womPack.AimRepository();
     _requestDb = PaymentDatabase.get();
     //TODO spostare aggiornamento aim in appBloc
     _aimRepository.updateAim(database: AppDatabase.get().getDb()).then((aims) {
       print("HomeBloc: updateAim in costructor: $aims");
-      add(LoadRequest());
     });
+  }
+
+  clear() {
+    _selectedPosId = null;
+    _selectedMerchantId = null;
   }
 
   String _selectedPosId;
   String get selectedPosId => _selectedPosId;
-  String selectedMerchantId;
+  String _selectedMerchantId;
 
-  set selectedPosId(String id) {
-    if (id != _selectedPosId) {
-      _selectedPosId = id;
+  void setMerchantAndPosId(String merchantId, String posId) {
+    if (posId != _selectedPosId) {
+      userRepository.saveLastPosId(posId, merchantId);
+      _selectedMerchantId = merchantId;
+      _selectedPosId = posId;
       add(LoadRequest());
     }
   }
 
   List<Merchant> get merchants => user?.merchants ?? [];
 
-  Merchant get selectedMerchant => selectedMerchantId != null
-      ? merchants.firstWhere((m) => m.id == selectedMerchantId,
-          orElse: () => null)
-      : merchants.first;
+  Merchant get selectedMerchant =>
+      _selectedMerchantId != null && _selectedMerchantId.isNotEmpty
+          ? merchants.firstWhere((m) => m.id == _selectedMerchantId,
+              orElse: () => null)
+          : merchants.first;
 
-  PointOfSale get selectedPos => selectedPosId != null
-      ? selectedMerchant.posList.firstWhere((p) => p.id == selectedPosId)
-      : selectedMerchant.posList.first;
+  PointOfSale get selectedPos =>
+      _selectedPosId != null && _selectedPosId.isNotEmpty
+          ? selectedMerchant.posList.firstWhere((p) => p.id == _selectedPosId)
+          : selectedMerchant.posList.first;
 
 //String get selectedPosId => selectedPos.id;
 
@@ -59,13 +69,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           database: AppDatabase.get().getDb());
 
       try {
-        //Se non ho gli aim salvati nel db li scarico da internet
-        if (aims == null || aims.isEmpty) {
+        final lastCheck = await getLastAimCheckDateTime();
+        final aimsAreOld = DateTime.now().difference(lastCheck).inHours > 5;
+        //Se non ho gli aim salvati nel db o sono vecchi li scarico da internet
+        if (aims == null || aims.isEmpty || aimsAreOld) {
           if (await DataConnectionChecker().hasConnection) {
             // final repo = AppRepository();
             print("HomeBloc: trying to update Aim from internet");
             aims = await _aimRepository.updateAim(
                 database: AppDatabase.get().getDb());
+            await setAimCheckDateTime(DateTime.now());
           } else {
             print("Aims null or empty and No internet connection");
             yield NoDataConnectionState();
@@ -102,4 +115,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     amountController.dispose();
     return super.close();
   }
+}
+
+extension StringExt on String {
+  bool isEmptyOrNull() => this == null || this.isEmpty;
 }

@@ -52,17 +52,19 @@ class _HomeListState extends State<HomeList> {
                     Share.share('${widget.requests[index].deepLink}');
                   },
                 ),
-                widget.requests[index].status == RequestStatus.COMPLETE
-                    ? MySlideAction(
-                        icon: Icons.control_point_duplicate,
-                        color: Colors.yellow,
-                        onTap: () => onDuplicate(index),
-                      )
-                    : MySlideAction(
-                        icon: Icons.edit,
-                        color: Colors.orange,
-                        onTap: () => onEdit(index),
-                      ),
+                if (widget.requests[index].status == RequestStatus.COMPLETE)
+                  if (widget.requests[index].persistent)
+                    MySlideAction(
+                      icon: Icons.refresh,
+                      color: Colors.yellow,
+                      onTap: () => onDuplicate(index),
+                    ),
+                if (widget.requests[index].status != RequestStatus.COMPLETE)
+                  MySlideAction(
+                    icon: Icons.edit,
+                    color: Colors.orange,
+                    onTap: () => onEdit(index),
+                  ),
               ],
               secondaryActions: <Widget>[
                 /*MySlideAction(
@@ -142,21 +144,23 @@ class MySlideAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: double.infinity,
+//      height: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       color: Colors.transparent,
-      child: Card(
-        color: color,
-        elevation: 8.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: IconSlideAction(
-          caption: caption,
-          color: Colors.transparent,
-          foregroundColor: Colors.white,
-          icon: icon,
-          onTap: onTap,
+      child: Center(
+        child: Card(
+          color: color,
+          elevation: 8.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: IconSlideAction(
+            caption: caption,
+            color: Colors.transparent,
+            foregroundColor: Colors.white,
+            icon: icon,
+            onTap: onTap,
+          ),
         ),
       ),
     );

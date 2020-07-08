@@ -6,10 +6,7 @@ import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:wom_package/wom_package.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'dart:math' as math;
-import 'package:vector_math/vector_math.dart' as vec_math;
 import '../../../../custom_icons.dart';
-import '../../../utils.dart';
 
 class CardRequest extends StatelessWidget {
   final PaymentRequest request;
@@ -140,7 +137,7 @@ class CardRequest2 extends StatelessWidget {
   Widget build(BuildContext context) {
     final languageCode = AppLocalizations.of(context).locale.languageCode;
     return Container(
-      height: 275,
+//      height: 275,
       padding: const EdgeInsets.all(4.0),
       child: FlipCard(
         key: cardKey,
@@ -158,25 +155,29 @@ class CardRequest2 extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
+                    const SizedBox(
+                      width: 8.0,
+                    ),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          '${request.name}',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 22.0,
-                              fontWeight: FontWeight.bold),
-                        ),
+                      child: AutoSizeText(
+                        '${request.name}',
+                        maxLines: 1,
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Spacer(),
+                    const SizedBox(
+                      width: 8.0,
+                    ),
+                    const Spacer(),
                     Tooltip(
                       child: Icon(
                           request.onCloud ? Icons.cloud_done : Icons.cloud_off),
                       message: request.onCloud ? 'In cloud' : 'In locale',
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 8.0,
                     ),
                     Padding(
@@ -196,7 +197,7 @@ class CardRequest2 extends StatelessWidget {
                     ),
                   ],
                 ),
-                Divider(
+                const Divider(
                   height: 2,
                 ),
                 Row(
@@ -250,7 +251,8 @@ class CardRequest2 extends StatelessWidget {
                           ItemRow2(
                             tooltip: 'Bounding Box',
                             onPressed: () {
-                              if (request.location != null) {
+                              if ((request.location != null &&
+                                  request.simpleFilter?.bounds != null)) {
                                 cardKey.currentState.toggleCard();
                               }
                             },
@@ -265,10 +267,10 @@ class CardRequest2 extends StatelessWidget {
                     ),
                   ],
                 ),
-                Divider(
+                const Divider(
                   height: 2,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
                 Row(
@@ -310,9 +312,9 @@ class CardRequest2 extends StatelessWidget {
             ),
           ),
         ),
-        back: request.location != null
+        back: (request.location != null && request.simpleFilter?.bounds != null)
             ? Container(
-                height: 275,
+                height: 250,
                 child: Card(
                   clipBehavior: Clip.antiAlias,
                   elevation: 8.0,
@@ -321,10 +323,23 @@ class CardRequest2 extends StatelessWidget {
                   ),
                   child: GoogleMap(
                     onTap: (lat) => cardKey.currentState.toggleCard(),
+                    onMapCreated: (controller) {},
+                    cameraTargetBounds: CameraTargetBounds(
+                      LatLngBounds(
+                        southwest: LatLng(
+                          request.simpleFilter.bounds.rightBottom[0],
+                          request.simpleFilter.bounds.leftTop[1],
+                        ),
+                        northeast: LatLng(
+                          request.simpleFilter.bounds.leftTop[0],
+                          request.simpleFilter.bounds.rightBottom[1],
+                        ),
+                      ),
+                    ),
                     initialCameraPosition: CameraPosition(
                       target: LatLng(request.location.latitude,
                           request.location.longitude),
-                      zoom: 16,
+                      zoom: 12,
                     ),
                     rotateGesturesEnabled: false,
                     scrollGesturesEnabled: false,
@@ -334,22 +349,31 @@ class CardRequest2 extends StatelessWidget {
                     myLocationButtonEnabled: false,
                     myLocationEnabled: false,
                     mapToolbarEnabled: false,
-                    circles: {
-                      Circle(
-                        circleId: CircleId('bb'),
-                        radius: getRadiusFromBoundingBox(
-                            request.simpleFilter.bounds.leftTop,
-                            request.simpleFilter.bounds.rightBottom),
-                        strokeColor: Colors.green,
-                        strokeWidth: 1,
-                        center: request.location,
-                        fillColor: Colors.green.withOpacity(0.3),
-                      )
-                    },
+//                    circles: {
+//                      Circle(
+//                        circleId: CircleId('bb'),
+//                        radius: getRadiusFromBoundingBox(
+//                            request.simpleFilter.bounds.leftTop,
+//                            request.simpleFilter.bounds.rightBottom),
+//                        strokeColor: Colors.green,
+//                        strokeWidth: 1,
+//                        center: request.location,
+//                        fillColor: Colors.green.withOpacity(0.3),
+//                      )
+//                    },
                     markers: {
                       Marker(
                           markerId: MarkerId(request.id.toString()),
                           position: request.location),
+                    },
+                    polygons: {
+                      Polygon(
+                        polygonId: PolygonId('bounding_box'),
+                        points: request.bbPoints,
+                        fillColor: Colors.green.withOpacity(0.3),
+                        strokeColor: Colors.green.withOpacity(0.7),
+                        strokeWidth: 2,
+                      )
                     },
                   ),
                 ),
@@ -415,7 +439,7 @@ class ItemRow2 extends StatelessWidget {
           child: AutoSizeText(
             text,
             maxLines: 2,
-            minFontSize: 9,
+            minFontSize: 8,
             stepGranularity: 0.1,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),

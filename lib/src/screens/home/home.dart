@@ -5,7 +5,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/localization/app_localizations.dart';
-import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
@@ -51,7 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: DescribedFeatureOverlay(
           featureId: 'show_pos_selection_info',
           tapTarget: Text('POS'),
-          title: Text('Premendo qui potrai selezionare il POS da gestire'),
+          title: Text(AppLocalizations.of(context)
+              .translate('selection_pos_suggestion')),
           backgroundColor: Theme.of(context).accentColor,
           targetColor: Colors.white,
           textColor: Theme.of(context).primaryColor,
@@ -65,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(context.bloc<HomeBloc>().selectedPos.name),
                 Icon(
@@ -77,24 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         centerTitle: true,
         elevation: 0.0,
-        leading: DescribedFeatureOverlay(
-          featureId: 'show_logout_info',
-          // Unique id that identifies this overlay.
-          tapTarget: const Icon(Icons.exit_to_app),
-          // The widget that will be displayed as the tap target.
-          title: Text('Da qui potrai effettuare il logout'),
-          backgroundColor: Theme.of(context).accentColor,
-          targetColor: Colors.white,
-          textColor: Theme.of(context).primaryColor,
-          child: IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () {
-              _showLogoutDialog(() {
-                context.bloc<AuthenticationBloc>().add(LoggedOut());
-              });
-            },
-          ),
-        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.info),

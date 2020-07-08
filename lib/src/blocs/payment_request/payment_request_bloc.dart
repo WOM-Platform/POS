@@ -28,7 +28,7 @@ class CreatePaymentRequestBloc extends Bloc {
   bool persistentRequest = false;
   final PageController pageController = PageController();
   final String posId;
-  LatLng currentPosition;
+  LatLng currentPosition = LatLng(0.0, 0.0);
   LatLng lastPosition;
   List<LatLng> locationPoints = [];
 
@@ -61,6 +61,7 @@ class CreatePaymentRequestBloc extends Bloc {
     if (draftRequest?.aimCode != null) {
       aimSelectionBloc.setAimCode(draftRequest.aimCode);
     }
+    updatePolylines();
     getLastPosition();
   }
 
@@ -247,6 +248,7 @@ class CreatePaymentRequestBloc extends Bloc {
     LatLng se = getBoundingBoxFromCircle(currentPosition, -radius, radius);
     LatLng so = getBoundingBoxFromCircle(currentPosition, -radius, -radius);
     locationPoints = [no, ne, se, so, no];
+    locationPoints.forEach(print);
   }
 
   @override

@@ -26,13 +26,13 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
 
   Set<Marker> markers = Set();
-  Set<Polyline> polylines = Set();
+//  Set<Polyline> polylines = Set();
 
 //  LocationData _startLocation;
 //  LocationData _currentLocation;
 
   Location _locationService = new Location();
-  bool _permission = false;
+//  bool _permission = false;
 
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition _currentCameraPosition;
@@ -63,16 +63,16 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
   initPlatformState() async {
     await _locationService.changeSettings(
-        accuracy: LocationAccuracy.HIGH, interval: 1000);
+        accuracy: LocationAccuracy.high, interval: 1000);
 
     LocationData location;
     try {
       bool serviceStatus = await _locationService.serviceEnabled();
       print("Service status: $serviceStatus");
       if (serviceStatus) {
-        _permission = await _locationService.requestPermission();
-        print("Permission: $_permission");
-        if (_permission) {
+        final permissionStatus = await _locationService.requestPermission();
+        print("Permission: $permissionStatus");
+        if (permissionStatus == PermissionStatus.granted) {
 //          location = await _locationService.getLocation();
 //
 //          _locationSubscription = _locationService
@@ -195,18 +195,26 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
     final isValid = bloc.isValidPosition;
 
-    Marker marker = Marker(
-      markerId: MarkerId("my_position"),
-      position: bloc.currentPosition ?? bloc.lastPosition,
-      infoWindow: InfoWindow(title: 'Request Location', snippet: '*'),
-    );
+//    final marker = Marker(
+//      markerId: MarkerId("my_position"),
+//      position: bloc.currentPosition ?? bloc.lastPosition,
+//      infoWindow: InfoWindow(title: 'Request Location', snippet: '*'),
+//    );
 
-    Circle circle = Circle(
-        radius: bloc.radius,
-        strokeColor: Colors.red,
-        center: bloc.currentPosition ?? bloc.lastPosition,
-        fillColor: Colors.red.withOpacity(0.3),
-        circleId: CircleId("circle2"));
+//    final circle = Circle(
+//        radius: bloc.radius,
+//        strokeColor: Colors.red,
+//        center: bloc.currentPosition ?? bloc.lastPosition,
+//        fillColor: Colors.red.withOpacity(0.3),
+//        circleId: CircleId("circle2"));
+
+    final square = Polygon(
+      polygonId: PolygonId('bounding_box'),
+      points: bloc.locationPoints,
+      fillColor: Colors.green.withOpacity(0.3),
+      strokeColor: Colors.green.withOpacity(0.7),
+      strokeWidth: 2,
+    );
 
     final GoogleMap googleMap = GoogleMap(
       onMapCreated: _onMapCreated,
@@ -217,9 +225,8 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
       minMaxZoomPreference: _minMaxZoomPreference,
       myLocationEnabled: true,
       onCameraMove: _updateCameraPosition,
-//      markers: {marker},
-      circles: {circle},
-//      polylines: polylines,
+//      circles: {circle},
+      polygons: {square},
       onTap: _onTapMap,
 //      compassEnabled: _compassEnabled,
 //      cameraTargetBounds: _cameraTargetBounds,
@@ -288,24 +295,17 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                 min: 0.0,
                 max: sliderSteps.length.toDouble() - 1.0,
                 divisions: sliderSteps.length - 1,
-
-//                label: '${(bloc.radius / 1000).floor()}km',
                 label:
                     '${bloc.radius > 500 ? bloc.radius ~/ 1000 : bloc.radius.toInt()}${bloc.radius > 500 ? 'km' : 'm'}',
                 activeColor: Theme.of(context).accentColor,
                 inactiveColor: Colors.white,
-//                onChangeEnd: (value) {
-//                  _controller.future.then((c) {
-//                    c.animateCamera(CameraUpdate.zoomBy((bloc.radius/1000)/0.12));
-//                  });
-//                },
                 onChanged: bloc.boundingBoxEnabled
                     ? (value) {
                         sliderValue = value;
-//                        addSquare(bloc.currentPosition, value);
                         setState(() {
                           bloc.radius =
                               sliderSteps[sliderValue.toInt()].toDouble();
+                          bloc.updatePolylines();
                         });
                       }
                     : null,

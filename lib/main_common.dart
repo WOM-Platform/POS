@@ -1,6 +1,7 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/src/utils.dart';
-import 'package:wom_package/wom_package.dart';
 import 'package:pos/app.dart';
 
 bool isFirstOpen = false;
@@ -11,5 +12,8 @@ Future<void> mainCommon() async {
   if (isFirstOpen) {
     await setIsFirstOpen(false);
   }
-  runApp(App(isFirstOpen: isFirstOpen));
+  runApp(DevicePreview(
+    enabled: !kReleaseMode,
+    builder: (BuildContext context) => App(isFirstOpen: isFirstOpen),
+  ));
 }

@@ -1,6 +1,7 @@
-import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:meta/meta.dart';
+import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/services/user_repository.dart';
+import '../../../app.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'package:bloc/bloc.dart';
@@ -8,8 +9,9 @@ import 'package:bloc/bloc.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserRepository userRepository;
+  final HomeBloc homeBloc;
 
-  AuthenticationBloc({@required this.userRepository})
+  AuthenticationBloc({@required this.homeBloc, @required this.userRepository})
       : assert(userRepository != null);
 
   @override
@@ -21,8 +23,19 @@ class AuthenticationBloc
   ) async* {
     if (event is AppStarted) {
       try {
-        final User user = await userRepository.readUser();
+        final user = await userRepository.readUser();
+        final lastMerchantAndPosIdUsed = await userRepository.readLastPosId();
+        final merchantId = lastMerchantAndPosIdUsed[0];
+        final posId = lastMerchantAndPosIdUsed[1];
         if (user != null) {
+          globalUser = user;
+          homeBloc.user = user;
+          if (merchantId == null || merchantId.isEmpty) {
+            homeBloc.add(LoadRequest());
+          } else {
+            homeBloc.setMerchantAndPosId(merchantId, posId);
+          }
+
           yield AuthenticationAuthenticated(user);
         } else {
           yield AuthenticationUnauthenticated();
@@ -31,17 +44,18 @@ class AuthenticationBloc
         print(ex.toString());
         yield AuthenticationUnauthenticated();
       }
-    }
-
-    if (event is LoggedIn) {
+    } else if (event is LoggedIn) {
 //      yield AuthenticationLoading();
       await userRepository.persistToken(
           event.user, event.email, event.password);
-      yield AuthenticationAuthenticated(event.user);
-    }
+      globalUser = event.user;
+      homeBloc.user = event.user;
+      homeBloc.add(LoadRequest());
 
-    if (event is LoggedOut) {
+      yield AuthenticationAuthenticated(event.user);
+    } else if (event is LoggedOut) {
 //      yield AuthenticationLoading();
+      homeBloc.clear();
       await userRepository.deleteToken();
       yield AuthenticationUnauthenticated();
     }
