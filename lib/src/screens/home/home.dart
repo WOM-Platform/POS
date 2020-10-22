@@ -56,22 +56,26 @@ class _HomeScreenState extends State<HomeScreen> {
           targetColor: Colors.white,
           textColor: Theme.of(context).primaryColor,
           child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PosSelectionPage(),
-                ),
-              );
+            onTap: () async {
+              if (!context.bloc<HomeBloc>().isOnlyOneMerchantAndPos) {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PosSelectionPage(),
+                  ),
+                );
+                setState(() {});
+              }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(context.bloc<HomeBloc>().selectedPos.name),
-                Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.white,
-                ),
+                if (!context.bloc<HomeBloc>().isOnlyOneMerchantAndPos)
+                  Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.white,
+                  ),
               ],
             ),
           ),
@@ -190,10 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: DescribedFeatureOverlay(
         featureId: 'show_fab_info',
-        // Unique id that identifies this overlay.
         tapTarget: const Icon(Icons.add),
-        // The widget that will be displayed as the tap target.
-        title: Text('Genera una richiesta di pagamento'),
+        title: Text(AppLocalizations.of(context).translate('create_offer')),
         description: Text(''),
         backgroundColor: Theme.of(context).accentColor,
         targetColor: Colors.white,

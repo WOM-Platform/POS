@@ -1,11 +1,11 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
 import 'package:intl/intl.dart';
-import 'package:meta/meta.dart';
-import 'package:wom_package/wom_package.dart';
+import 'package:pos/src/model/request_status_enum.dart';
 
 import '../utils.dart';
 
-class PaymentRequest {
+class PaymentRequest extends RequestPaymentPayload {
   static String TABLE = "paymentRequest";
   static String ID = "id";
   static String DEEP_LINK = "deepLink";
@@ -30,15 +30,9 @@ class PaymentRequest {
   static String PERSISTENT = "Persistent";
   static String ON_CLOUD = "onCloud";
 
-  String posId;
-  String nonce;
-  int amount;
   DateTime dateTime;
-  String password;
-  String registryUrl;
+  // String registryUrl;
   String name;
-  String pocketAckUrl;
-  String posAckUrl;
   String deepLink;
 
   RequestStatus status;
@@ -49,8 +43,6 @@ class PaymentRequest {
   LatLng location;
   Aim aim;
   String aimName;
-  SimpleFilters simpleFilter;
-  bool persistent;
   bool onCloud;
 
   /*      {
@@ -74,24 +66,32 @@ class PaymentRequest {
 
   PaymentRequest({
     this.id,
-    this.amount,
+    String posId,
+    int amount,
+    password,
+    SimpleFilter simpleFilter,
+    String pocketAckUrl,
+    String posAckUrl,
+    String nonce,
     this.dateTime,
-    this.password,
-    this.registryUrl,
+    // this.registryUrl,
     this.name,
     this.aim,
     this.status,
     this.aimCode,
     this.aimName,
-    this.posId,
     this.location,
-    this.simpleFilter,
     this.deepLink,
-    @required this.pocketAckUrl,
-    this.posAckUrl,
-    this.persistent = false,
+    bool persistent = false,
     this.onCloud = false,
-  }) {
+  }) : super(
+            posId: posId,
+            amount: amount,
+            password: password,
+            simpleFilter: simpleFilter,
+            pocketAckUrl: pocketAckUrl,
+            posAckUrl: posAckUrl,
+            persistent: persistent) {
     this.nonce = generateGUID();
   }
 
@@ -101,7 +101,7 @@ class PaymentRequest {
     data['nonce'] = this.nonce;
     data['password'] = this.password;
     data['amount'] = this.amount;
-    data['simpleFilter'] = this.simpleFilter?.toJson();
+    data['simpleFilter'] = this.simpleFilter?.toMap();
     data['posAckUrl'] = this.posAckUrl;
     data['pocketAckUrl'] = this.pocketAckUrl;
     data['persistent'] = this.persistent;
@@ -126,58 +126,63 @@ class PaymentRequest {
         ]
       : [];
 
-  PaymentRequest.fromDBMap(Map<String, dynamic> map) {
-    this.id = map[ID];
-    this.amount = map[AMOUNT];
-    this.dateTime = map[DATE] != null
-        ? DateTime.fromMillisecondsSinceEpoch(map[DATE])
-        : null;
-    this.aimCode = map[AIM_CODE];
-    this.aimName = map[AIM_NAME];
-    this.location = (map[LATITUDE] != null && map[LONGITUDE] != null)
-        ? LatLng(map[LATITUDE].toDouble(), map[LONGITUDE].toDouble())
-        : null;
-    this.name = map[NAME];
-    this.nonce = map[NONCE];
-    this.password = map[PASSWORD];
-    this.posId = map[POS_ID]?.toString();
-    this.status = RequestStatus.values[map[STATUS]];
-    this.registryUrl = map[URL];
-    this.pocketAckUrl = map[POCKET_ACK_URL];
-    this.posAckUrl = map[POS_ACK_URL];
-    this.persistent = map[PERSISTENT] == 0 ? false : true;
-    this.onCloud = map[ON_CLOUD] == 0 ? false : true;
-    this.deepLink = map[DEEP_LINK];
-    final maxAge = map[SimpleFilters.MAX_AGE];
+  factory PaymentRequest.fromDBMap(Map<String, dynamic> map) {
+    final maxAge = map[SimpleFilter.MAX_AGE];
     final aimCode = map[AIM_CODE];
-    final leftTopLat = map[BoundingBox.LEFT_TOP_LAT];
-    final leftTopLong = map[BoundingBox.LEFT_TOP_LONG];
-    final rightBottomLat = map[BoundingBox.RIGHT_BOT_LAT];
-    final rightBottomLong = map[BoundingBox.RIGHT_BOT_LONG];
+    final leftTopLat = map[Bounds.LEFT_TOP_LAT];
+    final leftTopLong = map[Bounds.LEFT_TOP_LONG];
+    final rightBottomLat = map[Bounds.RIGHT_BOT_LAT];
+    final rightBottomLong = map[Bounds.RIGHT_BOT_LONG];
 
-    BoundingBox bounds;
+    SimpleFilter simpleFilter;
+    Bounds bounds;
     if (leftTopLat != null &&
         leftTopLong != null &&
         rightBottomLat != null &&
         rightBottomLong != null) {
-      bounds = BoundingBox(
+      bounds = Bounds(
         leftTop: [leftTopLat, leftTopLong],
         rightBottom: [rightBottomLat, rightBottomLong],
       );
     }
     if (aimCode != null || maxAge != null || bounds != null) {
-      this.simpleFilter = SimpleFilters(
+      simpleFilter = SimpleFilter(
         maxAge: maxAge,
         aimCode: aimCode,
         bounds: bounds,
       );
     }
+
+    return PaymentRequest(
+      id: map[ID],
+      amount: map[AMOUNT],
+      dateTime: map[DATE] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map[DATE])
+          : null,
+      aimCode: map[AIM_CODE],
+      aimName: map[AIM_NAME],
+      location: (map[LATITUDE] != null && map[LONGITUDE] != null)
+          ? LatLng(map[LATITUDE].toDouble(), map[LONGITUDE].toDouble())
+          : null,
+      name: map[NAME],
+      nonce: map[NONCE],
+      password: map[PASSWORD],
+      posId: map[POS_ID]?.toString(),
+      status: RequestStatus.values[map[STATUS]],
+      // registryUrl: map[URL],
+      pocketAckUrl: map[POCKET_ACK_URL],
+      posAckUrl: map[POS_ACK_URL],
+      persistent: map[PERSISTENT] == 0 ? false : true,
+      onCloud: map[ON_CLOUD] == 0 ? false : true,
+      deepLink: map[DEEP_LINK],
+      simpleFilter: simpleFilter,
+    );
   }
 
   Map<String, dynamic> toDBMap() {
     final Map<String, dynamic> map = Map();
     map[AMOUNT] = this.amount;
-    map[URL] = this.registryUrl;
+    // map[URL] = this.registryUrl;
     map[PASSWORD] = this.password;
     map[NAME] = this.name;
     map[DATE] = this.dateTime?.millisecondsSinceEpoch;
@@ -191,15 +196,13 @@ class PaymentRequest {
     map[STATUS] = this.status.index;
     map[PERSISTENT] = this.persistent ? 1 : 0;
     map[ON_CLOUD] = this.onCloud ? 1 : 0;
-    map[SimpleFilters.MAX_AGE] = this.simpleFilter?.maxAge;
+    map[SimpleFilter.MAX_AGE] = this.simpleFilter?.maxAge;
     if (simpleFilter?.bounds != null) {
-      map[BoundingBox.LEFT_TOP_LAT] =
-          this.simpleFilter?.bounds?.leftTop[0] ?? null;
-      map[BoundingBox.LEFT_TOP_LONG] =
-          this.simpleFilter?.bounds?.leftTop[1] ?? null;
-      map[BoundingBox.RIGHT_BOT_LAT] =
+      map[Bounds.LEFT_TOP_LAT] = this.simpleFilter?.bounds?.leftTop[0] ?? null;
+      map[Bounds.LEFT_TOP_LONG] = this.simpleFilter?.bounds?.leftTop[1] ?? null;
+      map[Bounds.RIGHT_BOT_LAT] =
           this.simpleFilter?.bounds?.rightBottom[0] ?? null;
-      map[BoundingBox.RIGHT_BOT_LONG] =
+      map[Bounds.RIGHT_BOT_LONG] =
           this.simpleFilter?.bounds?.rightBottom[1] ?? null;
     }
     map[POCKET_ACK_URL] = this.pocketAckUrl;
@@ -207,12 +210,14 @@ class PaymentRequest {
     return map;
   }
 
-  PaymentRequest copyFrom() {
+  PaymentRequest copyFrom({String password}) {
     return PaymentRequest(
       id: this.id,
       amount: this.amount,
       dateTime: DateTime.now(),
-      registryUrl: this.registryUrl,
+      password: password ?? this.password,
+      // registryUrl: this.registryUrl,
+      nonce: this.nonce,
       name: this.name,
       aim: this.aim,
       aimCode: this.aimCode,
@@ -225,6 +230,7 @@ class PaymentRequest {
       posAckUrl: this.posAckUrl,
       persistent: this.persistent,
       onCloud: this.onCloud,
+      deepLink: this.deepLink,
     );
   }
 }

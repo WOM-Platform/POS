@@ -1,3 +1,4 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:meta/meta.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/services/user_repository.dart';
@@ -11,8 +12,10 @@ class AuthenticationBloc
   final UserRepository userRepository;
   final HomeBloc homeBloc;
 
-  AuthenticationBloc({@required this.homeBloc, @required this.userRepository})
-      : assert(userRepository != null);
+  AuthenticationBloc({
+    @required this.homeBloc,
+    @required this.userRepository,
+  }) : assert(userRepository != null);
 
   @override
   AuthenticationState get initialState => AuthenticationUninitialized();

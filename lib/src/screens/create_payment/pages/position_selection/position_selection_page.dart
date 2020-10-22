@@ -159,20 +159,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     bloc.currentPosition = target;
     bloc.updatePolylines();
     setState(() {});
-//    addSquare(target, bloc.radius);
-//    final MarkerId markerId = MarkerId('Request Position');
-//
-//    Marker marker = Marker(
-//      markerId: markerId,
-//      position: target,
-//      infoWindow: InfoWindow(title: 'Request Location', snippet: '*'),
-//    );
-
-    //TODO setState per aggiornare il marker
-//    setState(() {
-////      markers.clear();
-////      markers.add(marker);
-//    });
   }
 
   void addSquare(LatLng location, radius) {
@@ -194,20 +180,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
     final isValid = bloc.isValidPosition;
-
-//    final marker = Marker(
-//      markerId: MarkerId("my_position"),
-//      position: bloc.currentPosition ?? bloc.lastPosition,
-//      infoWindow: InfoWindow(title: 'Request Location', snippet: '*'),
-//    );
-
-//    final circle = Circle(
-//        radius: bloc.radius,
-//        strokeColor: Colors.red,
-//        center: bloc.currentPosition ?? bloc.lastPosition,
-//        fillColor: Colors.red.withOpacity(0.3),
-//        circleId: CircleId("circle2"));
-
     final square = Polygon(
       polygonId: PolygonId('bounding_box'),
       points: bloc.locationPoints,
@@ -228,13 +200,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 //      circles: {circle},
       polygons: {square},
       onTap: _onTapMap,
-//      compassEnabled: _compassEnabled,
-//      cameraTargetBounds: _cameraTargetBounds,
-//      mapType: _mapType,
-//      rotateGesturesEnabled: _rotateGesturesEnabled,
-//      scrollGesturesEnabled: _scrollGesturesEnabled,
-//      tiltGesturesEnabled: _tiltGesturesEnabled,
-//      zoomGesturesEnabled: _zoomGesturesEnabled,
     );
 
     return SafeArea(
@@ -246,21 +211,24 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
             SizedBox(
               height: 30.0,
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+              child: Text(
+                AppLocalizations.of(context).translate('what_are_interest'),
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      AppLocalizations.of(context)
-                          .translate('what_are_interest'),
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                Text(
+                  AppLocalizations.of(context)
+                      .translate('enable_disable_filter'),
+                  style: TextStyle(color: Colors.white),
                 ),
                 Switch(
                   value: bloc.boundingBoxEnabled,

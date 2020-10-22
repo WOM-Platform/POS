@@ -31,22 +31,29 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SizedBox(
                   height: 30.0,
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    AppLocalizations.of(context).translate('what_aim'),
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        AppLocalizations.of(context).translate('what_aim'),
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold),
-                      ),
+                    Text(
+                      AppLocalizations.of(context)
+                          .translate('enable_disable_filter'),
+                      style: TextStyle(color: Colors.white),
                     ),
                     Switch(
                       value: bloc.aimSelectionBloc.aimEnabled,
@@ -70,9 +77,19 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                   height: 10.0,
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
                     AppLocalizations.of(context).translate('aim_suggestion'),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    AppLocalizations.of(context).translate('aim_warning'),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,

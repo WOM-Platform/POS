@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/services/user_repository.dart';
+import '../../utils.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
@@ -45,6 +46,31 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         print(ex);
         yield LoginFailure(error: "Username e/o password non validi!");
       }
+    } else if (event is AnonymousLogin) {
+      print('anonimo');
+      final key = await getAnonymousPrivateKey();
+      user = User(
+        name: 'Anonymous',
+        surname: 'Anonymous',
+        email: 'anonymous@anonymous.it',
+        merchants: [
+          Merchant(
+            id: 'anonymousId',
+            posList: [
+              PointOfSale(
+                '5f69a60698e66631aaf79929',
+                'Anonymous',
+                '-',
+                key,
+                [0.0, 0.0],
+              )
+            ],
+          )
+        ],
+      );
+      authenticationBloc
+          .add(LoggedIn(user: user, email: user.email, password: 'password'));
+      yield LoginSuccessfull();
     }
   }
 

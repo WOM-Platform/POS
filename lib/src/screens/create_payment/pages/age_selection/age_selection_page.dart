@@ -46,15 +46,25 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                Switch(
-                  value: bloc.maxAgeEnabled,
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        bloc.maxAgeEnabled = value;
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context)
+                          .translate('enable_disable_filter'),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Switch(
+                      value: bloc.maxAgeEnabled,
+                      onChanged: (value) {
+                        setState(
+                          () {
+                            bloc.maxAgeEnabled = value;
+                          },
+                        );
                       },
-                    );
-                  },
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -81,6 +91,11 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.yellow)),
+                      errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red)),
+                      errorStyle: TextStyle(color: Colors.yellow),
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),

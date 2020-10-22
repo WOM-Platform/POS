@@ -2,8 +2,6 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
-import 'package:pos/src/blocs/home/bloc.dart';
-import 'package:pos/src/blocs/home/home_bloc.dart';
 import 'package:pos/src/screens/login/login_screen.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:pos/src/splash/splash.dart';

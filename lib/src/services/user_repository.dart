@@ -5,18 +5,17 @@ import 'package:mmkv_flutter/mmkv_flutter.dart';
 import 'package:pos/src/services/auth_local_data_sources.dart';
 
 class UserRepository {
-  final AuthRemoteDataSources authRemoteDataSources;
+  final Pos pos;
   final AuthLocalDataSources authLocalDataSources;
   final secureStorage = FlutterSecureStorage();
 
-  UserRepository(this.authRemoteDataSources, this.authLocalDataSources);
+  UserRepository(this.pos, this.authLocalDataSources);
 
   Future<User> authenticate({
     String username,
     String password,
   }) async {
-    return authRemoteDataSources.authenticate(
-        username: username, password: password);
+    return pos.authenticate(username, password);
   }
 
   Future<void> deleteToken() async {

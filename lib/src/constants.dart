@@ -1,11 +1,18 @@
-import 'package:wom_package/wom_package.dart'show Config;
+import 'package:pos/src/model/flavor_enum.dart';
 
-//URL
-final URL_CREATION_REQUEST = '${Config.baseUrl}voucher/create';
-final URL_CREATION_VERIFICATION = '${Config.baseUrl}voucher/verify';
-final URL_PAYMENT_REGISTRATION = '${Config.baseUrl}payment/register';
-final URL_PAYMENT_VERIFICATION = '${Config.baseUrl}payment/verify';
+String domain;
+String registryKey;
+Flavor flavor;
 
 //SHARED PREFERENCES
 const LAST_LATITUDE = "lastLatitude";
 const LAST_LONGITUDE = "lastLongitude";
+
+class AimDbKeys {
+  static const TABLE_NAME = 'aims';
+  static const ID = 'id';
+  static const CODE = 'code';
+  static const ICON_URL = 'iconFile';
+  static const CHILDREN = 'children';
+  static const TITLES = 'titles';
+}

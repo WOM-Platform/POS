@@ -28,14 +28,15 @@ class SummaryRequest extends StatelessWidget {
                 height: 50,
               ),
             ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            ListView(
+              // mainAxisSize: MainAxisSize.min,
+              // mainAxisAlignment: MainAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: RichText(
+                    textAlign: TextAlign.center,
                     text: TextSpan(
                       text: "${paymentRequest.amount} ",
                       style: TextStyle(
@@ -52,18 +53,24 @@ class SummaryRequest extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: height / 2.5,
-                  width: height / 2.5,
-                  child: Card(
-                    child: QrImage(
-                      padding: const EdgeInsets.all(20.0),
-                      data: paymentRequest.deepLink,
+                  height: height / 3,
+                  width: height / 3,
+                  child: Center(
+                    child: Card(
+                      child: QrImage(
+                        padding: const EdgeInsets.all(20.0),
+                        data: paymentRequest.deepLink,
+                      ),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: RichText(
+                    textAlign: TextAlign.center,
                     text: TextSpan(
                       text: 'PIN ',
                       style: TextStyle(

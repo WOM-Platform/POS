@@ -21,10 +21,6 @@ class LoadStuffButton extends StatefulWidget {
 typedef AniWidgetBuilder = Widget Function(BuildContext context, dynamic ani);
 
 class _LoadStuffButtonState extends State<LoadStuffButton> {
-  bool _startedLoading = false;
-  bool _firstAnimationFinished = false;
-  bool _dataAvailable = false;
-
   @override
   Widget build(BuildContext context) {
     final durationPart1 = const Duration(milliseconds: 400);

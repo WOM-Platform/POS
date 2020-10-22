@@ -79,3 +79,6 @@
 **/android/app/production/release/app.aab
 **/pubspec.lock
 **/.metadata
+
+assets/anonymous.pem
+assets/anonymous.pub

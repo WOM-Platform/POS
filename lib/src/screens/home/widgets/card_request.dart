@@ -4,100 +4,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/payment_request.dart';
-import 'package:wom_package/wom_package.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:pos/src/model/request_status_enum.dart';
 import '../../../../custom_icons.dart';
-
-class CardRequest extends StatelessWidget {
-  final PaymentRequest request;
-  final Function onDelete;
-  final Function onEdit;
-  final Function onDuplicate;
-
-  const CardRequest(
-      {Key key, this.request, this.onDelete, this.onEdit, this.onDuplicate})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(10),
-      clipBehavior: Clip.antiAlias,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 10.0,
-            color: request.status == RequestStatus.COMPLETE
-                ? Colors.green
-                : request.status == RequestStatus.DRAFT
-                    ? Colors.orange
-                    : Colors.red,
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  MyRichText(
-                    t1: 'ID: ',
-                    t2: '${request.id.toString()}',
-                  ),
-                  MyRichText(
-                    t1: 'Name: ',
-                    t2: request.name,
-                  ),
-                  MyRichText(
-                    t1: 'Date: ',
-                    t2: request.dateString,
-                  ),
-                  MyRichText(
-                    t1: 'Amount:',
-                    t2: request.amount.toString(),
-                  ),
-                  MyRichText(
-                    t1: "Aim: ",
-                    t2: request.aimName,
-                  ),
-                  MyRichText(
-                    t1: "Password: ",
-                    t2: request.password,
-                  ),
-                  MyRichText(
-                    t1: "MaxAge: ",
-                    t2: "${request?.simpleFilter?.maxAge}",
-                  ),
-                  MyRichText(
-                    t1: "Bounding Box: ",
-                    t2: "${request?.simpleFilter?.bounds.toString()}",
-                  ),
-                ],
-              ),
-            ),
-          ),
-//          Spacer(),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.share), onPressed: null),
-              IconButton(
-                  icon: Icon(request.status == RequestStatus.COMPLETE
-                      ? Icons.control_point_duplicate
-                      : Icons.edit),
-                  onPressed: request.status == RequestStatus.COMPLETE
-                      ? onDuplicate
-                      : onEdit),
-              IconButton(icon: Icon(Icons.delete), onPressed: onDelete),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
 
 class MyRichText extends StatelessWidget {
   final String t1;
@@ -123,13 +33,13 @@ class MyRichText extends StatelessWidget {
   }
 }
 
-class CardRequest2 extends StatelessWidget {
+class CardRequest extends StatelessWidget {
   final PaymentRequest request;
   final Function onDelete;
   final Function onEdit;
   final Function onDuplicate;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-  CardRequest2(
+  CardRequest(
       {Key key, this.request, this.onDelete, this.onEdit, this.onDuplicate})
       : super(key: key);
 

@@ -5,12 +5,13 @@ import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
+import 'package:pos/src/model/request_status_enum.dart';
 
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/card_request.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:pos/src/screens/request_datails/request_datails.dart';
-import 'package:wom_package/wom_package.dart';
+
 import 'package:share/share.dart';
 
 class HomeList extends StatefulWidget {
@@ -29,8 +30,12 @@ class _HomeListState extends State<HomeList> {
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<HomeBloc>(context);
     return ListView.builder(
-        itemCount: widget.requests.length,
+        itemCount: widget.requests.length + 1,
         itemBuilder: (context, index) {
+          if (index == widget.requests.length)
+            return SizedBox(
+              height: 80,
+            );
           return GestureDetector(
             onTap: widget.requests[index].status == RequestStatus.COMPLETE
                 ? () => goToDetails(index)
@@ -38,7 +43,7 @@ class _HomeListState extends State<HomeList> {
             child: Slidable(
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
-              child: CardRequest2(
+              child: CardRequest(
                 request: widget.requests[index],
                 onDelete: () => onDelete(index),
                 onEdit: () => onEdit(index),
@@ -53,7 +58,7 @@ class _HomeListState extends State<HomeList> {
                   },
                 ),
                 if (widget.requests[index].status == RequestStatus.COMPLETE)
-                  if (widget.requests[index].persistent)
+                  if (!widget.requests[index].persistent)
                     MySlideAction(
                       icon: Icons.refresh,
                       color: Colors.yellow,

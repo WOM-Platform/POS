@@ -1,19 +1,13 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pos/src/model/flavor_enum.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mmkv_flutter/mmkv_flutter.dart';
 import 'dart:math' as math;
 
 const String IS_FIRST_OPEN_KEY = 'isFirstOpen';
-const String lorem =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
-    "tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim "
-    "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea "
-    "commodo consequat. Duis aute irure dolor in reprehenderit in voluptate "
-    "velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat "
-    "cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id "
-    "est laborum.";
 
 String generateGUID() {
   var uuid = new Uuid();
@@ -76,4 +70,19 @@ onWidgetDidBuild(Function callback) {
   WidgetsBinding.instance.addPostFrameCallback((_) {
     callback();
   });
+}
+
+Future<String> getPublicKey(Flavor flavor) async {
+  if (flavor == Flavor.DEVELOPMENT) {
+    return await _loadKey('assets/registry_dev.pub');
+  }
+  return await _loadKey('assets/registry.pub');
+}
+
+Future<String> getAnonymousPrivateKey() async {
+  return await _loadKey('assets/anonymous.pem');
+}
+
+Future<String> _loadKey(String path) async {
+  return await rootBundle.loadString(path);
 }

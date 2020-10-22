@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:mmkv_flutter/mmkv_flutter.dart';
+import 'package:pos/src/model/request_status_enum.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
-import 'package:wom_package/wom_package.dart';
 import 'dart:math' as math;
 import '../../constants.dart';
 
@@ -70,11 +71,11 @@ class CreatePaymentRequestBloc extends Bloc {
 //    final String password = passwordController.text;
     final String name = nameController.text;
 
-    final SimpleFilters simpleFilter = SimpleFilters(
+    final SimpleFilter simpleFilter = SimpleFilter(
       aimCode: aim?.code,
       maxAge: maxAgeEnabled ? _maxAge : null,
       bounds: boundingBoxEnabled
-          ? BoundingBox(leftTop: [
+          ? Bounds(leftTop: [
               locationPoints[0].latitude,
               locationPoints[0].longitude
             ], rightBottom: [
@@ -96,7 +97,7 @@ class CreatePaymentRequestBloc extends Bloc {
         name: name,
         status: RequestStatus.DRAFT,
         simpleFilter: simpleFilter,
-        pocketAckUrl: "www.wom.social");
+        pocketAckUrl: 'www.$domain');
 
     if (draftRequest != null) {
       paymentRequest.id = draftRequest.id;

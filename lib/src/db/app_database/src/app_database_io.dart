@@ -1,13 +1,15 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:pos/src/db/aim_db.dart';
 import 'package:pos/src/db/app_database/src/app_database_base.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:pos/src/model/payment_request.dart';
-import 'package:wom_package/wom_package.dart'
-    show AimDatabase, SimpleFilters, BoundingBox, Aim;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:synchronized/synchronized.dart';
+
+import '../../../constants.dart';
 
 class AppDatabase extends AppDatabaseBase {
   static final AppDatabase _appDatabase = new AppDatabase._internal();
@@ -44,7 +46,7 @@ class AppDatabase extends AppDatabaseBase {
       await AimDatabase.createAimTable(db);
       await _createRequestTable(db);
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
-      await db.execute("DROP TABLE ${Aim.TABLE_NAME}");
+      await db.execute("DROP TABLE ${AimDbKeys.TABLE_NAME}");
       await AimDatabase.createAimTable(db);
       await _createRequestTable(db);
     });
@@ -68,11 +70,11 @@ class AppDatabase extends AppDatabaseBase {
         "${PaymentRequest.POS_ACK_URL} TEXT,"
         "${PaymentRequest.LATITUDE} LONG,"
         "${PaymentRequest.LONGITUDE} LONG,"
-        "${SimpleFilters.MAX_AGE} INTEGER,"
-        "${BoundingBox.LEFT_TOP_LAT} LONG,"
-        "${BoundingBox.LEFT_TOP_LONG} LONG,"
-        "${BoundingBox.RIGHT_BOT_LAT} LONG,"
-        "${BoundingBox.RIGHT_BOT_LONG} LONG,"
+        "${SimpleFilter.MAX_AGE} INTEGER,"
+        "${Bounds.LEFT_TOP_LAT} LONG,"
+        "${Bounds.LEFT_TOP_LONG} LONG,"
+        "${Bounds.RIGHT_BOT_LAT} LONG,"
+        "${Bounds.RIGHT_BOT_LONG} LONG,"
         "${PaymentRequest.URL} TEXT,"
         "${PaymentRequest.DATE} INTEGER);");
   }

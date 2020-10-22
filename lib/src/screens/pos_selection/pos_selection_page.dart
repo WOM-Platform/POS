@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -23,7 +24,7 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Seleziona il POS da gestire'),
+        title: Text(AppLocalizations.of(context).translate('select_pos')),
         elevation: 0,
       ),
       body: CustomScrollView(
@@ -32,8 +33,8 @@ class _PosSelectionPageState extends State<PosSelectionPage> {
             SliverStickyHeaderBuilder(
               builder: (context, state) => Container(
 //                padding: EdgeInsets.all(4.0),
-                color: (state.isPinned ? Colors.blue : Colors.blue[200])
-                    .withOpacity(1.0 - state.scrollPercentage),
+                color:
+                    Colors.blue[200].withOpacity(1.0 - state.scrollPercentage),
                 /*  child: ListTile(
                   leading: CircleAvatar(
                     child: Text('M'),

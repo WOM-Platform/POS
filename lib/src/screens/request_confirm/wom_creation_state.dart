@@ -1,6 +1,6 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:wom_package/wom_package.dart' show RequestVerificationResponse;
 
 abstract class WomCreationState extends Equatable {
   WomCreationState([List props = const []]);
@@ -35,7 +35,7 @@ class WomVerifyCreationRequestLoading extends WomCreationState {
 }
 
 class WomVerifyCreationRequestComplete extends WomCreationState {
-  final RequestVerificationResponse response;
+  final PaymentRequestResponse response;
 
   WomVerifyCreationRequestComplete({@required this.response})
       : assert(response != null),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
+import 'package:pos/src/constants.dart';
+import 'package:pos/src/model/flavor_enum.dart';
 import 'package:pos/src/screens/intro/intro.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,15 +39,17 @@ class SettingsScreen extends StatelessWidget {
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
           ),
           ListTile(
-            title: Text('La piattaforma WOM'),
-            subtitle: Text('Visita il sito'),
+            title: Text(AppLocalizations.of(context).translate('wom_platform')),
+            subtitle:
+                Text(AppLocalizations.of(context).translate('go_to_site')),
             leading: Icon(Icons.public),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () => launchUrl('https://wom.social'),
           ),
           ListTile(
             title: Text('Tutorial'),
-            subtitle: Text('Visita il tutorial iniziale'),
+            subtitle:
+                Text(AppLocalizations.of(context).translate('tutorial_desc')),
             leading: Icon(Icons.info),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () => Navigator.push(
@@ -57,8 +61,9 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Esci'),
-            subtitle: Text('Effettua il logout'),
+            title: Text(AppLocalizations.of(context).translate('sign_out')),
+            subtitle:
+                Text(AppLocalizations.of(context).translate('sign_out_desc')),
             leading: Icon(Icons.info),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () {
@@ -159,8 +164,9 @@ class VersionInfo extends StatelessWidget {
         if (snapshot.hasData) {
           final pkg = snapshot.data;
           return ListTile(
-            title: Text('Versione dell\'app'),
-            subtitle: Text(pkg.version),
+            title: Text(AppLocalizations.of(context).translate('version_app')),
+            subtitle: Text(
+                '${flavor == Flavor.DEVELOPMENT ? 'DEV ' : ''}${pkg.version}'),
             leading: Icon(Icons.perm_device_information),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: null,

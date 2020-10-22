@@ -1,3 +1,4 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/localization/app_localizations.dart';
@@ -28,7 +29,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
   @override
   void initState() {
     bloc = RequestConfirmBloc(
-        pos: context.bloc<HomeBloc>().selectedPos,
+        pos: context.repository<Pos>(),
+        pointOfSale: context.bloc<HomeBloc>().selectedPos,
         paymentRequest: widget.paymentRequest);
     super.initState();
   }
@@ -76,12 +78,19 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text(state.error),
-                  FloatingActionButton.extended(
-                    onPressed: () => bloc.add(CreateWomRequest()),
-                    label: Text(
-                        AppLocalizations.of(context).translate('try_again')),
+                  Text(
+                    state.error,
+                    textAlign: TextAlign.center,
+                  ),
+                  Center(
+                    child: FloatingActionButton.extended(
+                      onPressed: () => bloc.add(CreateWomRequest()),
+                      label: Text(
+                        AppLocalizations.of(context).translate('try_again'),
+                      ),
+                    ),
                   ),
                 ],
               );

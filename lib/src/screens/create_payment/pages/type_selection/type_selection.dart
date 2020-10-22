@@ -43,8 +43,6 @@ class TypeSelectionPage extends StatelessWidget {
               SizedBox(
                 height: 30.0,
               ),
-//              ChipSelection(bloc: bloc,),
-
               StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
                 return Switch(

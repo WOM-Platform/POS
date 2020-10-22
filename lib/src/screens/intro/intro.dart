@@ -1,11 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/custom_icons.dart';
+import 'package:pos/localization/app_localizations.dart';
 
+import '../../constants.dart';
 import '../../utils.dart';
 import '../root/root.dart';
 
@@ -72,10 +72,8 @@ class IntroScreenState extends State<IntroScreen> {
             MdiIcons.tools,
             size: 100,
           ),
-          title: "Benvenuto!",
-          description:
-              'Con questo strumento puoi impostare sconti e agevolazioni '
-              'che intendi offrire a chi ha compiuto azioni socialmente utili.',
+          title: AppLocalizations.of(context).translate('welcome'),
+          description: AppLocalizations.of(context).translate('welcome_desc'),
         ),
         Slide(
           maxLineTitle: 10,
@@ -91,17 +89,17 @@ class IntroScreenState extends State<IntroScreen> {
           widgetDescription: Column(
             children: <Widget>[
               Text(
-                'Per poter generare offerte devi essere registrato come merchant.\n'
-                'Se non l\'hai già fatto, registrati ora!',
+                AppLocalizations.of(context).translate('merchant_desc'),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.body1,
               ),
               SizedBox(height: 16),
               FloatingActionButton.extended(
                   onPressed: () {
-                    launchUrl('https://wom.social/user/register-merchant');
+                    launchUrl('https://$domain/user/register-merchant');
                   },
-                  label: Text('Registrati'))
+                  label:
+                      Text(AppLocalizations.of(context).translate('sign_up')))
             ],
           ),
         ),
@@ -112,12 +110,8 @@ class IntroScreenState extends State<IntroScreen> {
           backgroundColor: Colors.white,
           heightImage: 150,
           pathImage: "assets/slide4.png",
-          title: "Voucher per impegno sociale",
-          description:
-              "Molte delle azioni individuali generano valore sociale. "
-              "Tale valore è quantificato in termini di WOM, speciali voucher inclusi "
-              "tra gli strumenti di innovazione sociale digitale della "
-              "Commissione Europea.\n",
+          title: AppLocalizations.of(context).translate('wom'),
+          description: AppLocalizations.of(context).translate('wom_desc'),
         ),
         Slide(
           maxLineTitle: 10,
@@ -129,10 +123,9 @@ class IntroScreenState extends State<IntroScreen> {
             MdiIcons.piggyBank,
             size: 100,
           ),
-          title: 'Dà valore ai WOM',
+          title: AppLocalizations.of(context).translate('wom_suggestion'),
           description:
-              'Sapendo che ogni WOM corrisponde a un minuto di impegno, '
-              'decidi liberamente quanti WOM servono per meritare le tue offerte.',
+              AppLocalizations.of(context).translate('wom_suggestion_desc'),
         ),
       ],
     );

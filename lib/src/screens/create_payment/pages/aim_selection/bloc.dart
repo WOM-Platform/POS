@@ -1,6 +1,7 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:pos/src/db/app_database/app_database.dart';
+import 'package:pos/src/services/aim_repository.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:wom_package/wom_package.dart' show AimRepository, Aim;
 
 class AimSelectionBloc {
   BehaviorSubject<String> _selectedAimCode = BehaviorSubject<String>();

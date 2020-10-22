@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
+import '../../constants.dart';
 import '../../utils.dart';
 import 'load_stuff_button.dart';
 
@@ -44,122 +46,118 @@ class _LoginBoxState extends State<LoginBox> {
             },
           );
         }
-
-        /*return Form(
-          child: Column(
-            children: [
-              TextFormField(
-                decoration: InputDecoration(labelText: 'username'),
-                controller: _usernameController,
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'password'),
-                controller: _passwordController,
-                obscureText: true,
-              ),
-              RaisedButton(
-                onPressed:
-                    state is! LoginLoading ? _onLoginButtonPressed : null,
-                child: Text('Login'),
-              ),
-              Container(
-                child:
-                    state is LoginLoading ? CircularProgressIndicator() : null,
-              ),
-            ],
-          ),
-        );*/
-
-        return AspectRatio(
-          aspectRatio: 1,
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Spacer(),
-                    Image.asset(
-                      'assets/logo_wom.png',
-                      height: 50.0,
+        return Stack(
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
                     ),
-                    Spacer(),
-                    Spacer(),
-                    TextField(
-                      controller: _loginBloc.usernameController,
-//                      keyboardType: TextInputType.emailAddress,
-//                      onChanged: (value) {},
-//                      inputFormatters: [
-//                        ValidatorInputFormatter(
-//                          editingValidator: EmailEditingRegexValidator(),
-//                        ),
-//                      ],
-                      decoration: InputDecoration(
-                        hintText: "Username",
-                        prefixIcon: Icon(Icons.account_circle),
-                      ),
-                    ),
-                    Spacer(),
-                    TextField(
-                      obscureText: true,
-                      controller: _loginBloc.passwordController,
-                      decoration: InputDecoration(
-                        hintText: "Password",
-                        prefixIcon: Icon(Icons.lock),
-                      ),
-                    ),
-                    Spacer(),
-                    LoadStuffButton(
-                      loginBloc: _loginBloc,
-                      onTap: _onLoginButtonPressed,
-                    ),
-                    Spacer(),
-                    /*GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => HomeScreen(),
-                                ),
-                              );
-                            },
-                            child: Card(
-                              color: Theme.of(context).primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(10.0),
-                                child: Center(
-                                    child: Text(
-                                  "Login",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,fontSize: 20.0),
-                                )),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Spacer(),
+                            Image.asset(
+                              'assets/logo_wom.png',
+                              height: 50.0,
+                            ),
+                            Spacer(),
+                            Spacer(),
+                            TextField(
+                              controller: _loginBloc.usernameController,
+                              decoration: InputDecoration(
+                                hintText: "Username",
+                                prefixIcon: Icon(Icons.account_circle),
                               ),
                             ),
-                          ),*/
-                  ],
+                            Spacer(),
+                            TextField(
+                              obscureText: true,
+                              controller: _loginBloc.passwordController,
+                              decoration: InputDecoration(
+                                hintText: "Password",
+                                prefixIcon: Icon(Icons.lock),
+                              ),
+                            ),
+                            Spacer(),
+                            LoadStuffButton(
+                              loginBloc: _loginBloc,
+                              onTap: _onLoginButtonPressed,
+                            ),
+                            Spacer(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  margin: const EdgeInsets.all(4),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: InkWell(
+                        splashColor: Colors.green,
+                        borderRadius: BorderRadius.circular(15),
+                        onTap: () {
+                          _loginBloc.add(AnonymousLogin());
+                        },
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              'Accesso Anonimo',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () =>
+                    launchUrl('https://$domain/user/register-merchant'),
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Non sei registrato? ',
+                    children: [
+                      TextSpan(
+                        text: 'Clicca qui',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         );
       },
     );
   }
 
   _onLoginButtonPressed() {
-//    final mail = _usernameController.text;
     final password = _loginBloc.passwordController.text;
-//    bool isValidMail = EmailSubmitRegexValidator().isValid(mail);
-//    print(isValidMail);
     if (password.length > 5) {
       FocusScope.of(context).requestFocus(new FocusNode());
       _loginBloc.add(LoginButtonPressed(

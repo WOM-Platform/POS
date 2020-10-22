@@ -7,18 +7,18 @@ import 'package:pos/src/blocs/home/home_state.dart';
 import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
+import 'package:pos/src/services/aim_repository.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:pos/src/utils.dart';
-import 'package:wom_package/wom_package.dart' as womPack;
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   TextEditingController amountController = TextEditingController();
   User user;
-  womPack.AimRepository _aimRepository;
+  AimRepository _aimRepository;
   PaymentDatabase _requestDb;
   UserRepository userRepository;
   HomeBloc({this.userRepository}) {
-    _aimRepository = womPack.AimRepository();
+    _aimRepository = AimRepository();
     _requestDb = PaymentDatabase.get();
     //TODO spostare aggiornamento aim in appBloc
     _aimRepository.updateAim(database: AppDatabase.get().getDb()).then((aims) {
@@ -46,6 +46,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   List<Merchant> get merchants => user?.merchants ?? [];
 
+  bool get isOnlyOneMerchantAndPos =>
+      merchants.length == 1 && selectedMerchant.posList.length == 1;
+
   Merchant get selectedMerchant =>
       _selectedMerchantId != null && _selectedMerchantId.isNotEmpty
           ? merchants.firstWhere((m) => m.id == _selectedMerchantId,
@@ -65,7 +68,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(event) async* {
     if (event is LoadRequest) {
-      List<womPack.Aim> aims = await _aimRepository.getFlatAimList(
+      List<Aim> aims = await _aimRepository.getFlatAimList(
           database: AppDatabase.get().getDb());
 
       try {
@@ -91,7 +94,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final List<PaymentRequest> requests =
             await _requestDb.getRequestsByPosId(selectedPos.id);
         for (PaymentRequest r in requests) {
-          final womPack.Aim aim = aims.firstWhere((a) {
+          final Aim aim = aims.firstWhere((a) {
             return a.code == r.aimCode;
           }, orElse: () {
             return null;
@@ -115,8 +118,4 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     amountController.dispose();
     return super.close();
   }
-}
-
-extension StringExt on String {
-  bool isEmptyOrNull() => this == null || this.isEmpty;
 }

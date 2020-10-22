@@ -45,5 +45,7 @@ class AuthLocalDataSourcesImpl implements AuthLocalDataSources {
   }
 
   @override
-  Future<User> readUser() async {}
+  Future<User> readUser() async {
+    throw UnimplementedError();
+  }
 }
