@@ -13,6 +13,7 @@ import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
 import 'package:pos/src/screens/settings/settings.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../main_common.dart';
+import '../../my_logger.dart';
 import '../../utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Home build()");
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Theme.of(context).primaryColor,

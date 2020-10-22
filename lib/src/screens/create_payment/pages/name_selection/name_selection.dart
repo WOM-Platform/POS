@@ -59,7 +59,7 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
                       }
                     },
                     onEditingComplete: () {
-//                      print("onEditingComplete");
+//                      logger.i("onEditingComplete");
                       SystemChannels.textInput.invokeMethod('TextInput.hide');
                       if (isValid) {
                         bloc.goToNextPage();

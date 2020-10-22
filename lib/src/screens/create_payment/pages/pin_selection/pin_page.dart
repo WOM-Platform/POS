@@ -57,7 +57,7 @@
 //                    }
 //                  },
 //                  onEditingComplete: () {
-//                    print("onEditingComplete");
+//                    logger.i("onEditingComplete");
 //                    SystemChannels.textInput.invokeMethod('TextInput.hide');
 //                    if (isValid) {
 //                      goToRequestScreen();

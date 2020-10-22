@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
 import 'package:pos/src/splash/bloc.dart';
 
+import '../my_logger.dart';
+
 class SplashScreen extends StatelessWidget {
   final SplashBloc _bloc = SplashBloc();
 
@@ -22,7 +24,7 @@ class SplashScreen extends StatelessWidget {
         child: BlocBuilder(
           bloc: _bloc,
           builder: (context, splashState) {
-            print("builder state: $splashState");
+            logger.i("builder state: $splashState");
             if (splashState == SplashState.START) {
               return Center(
                 child: Text(

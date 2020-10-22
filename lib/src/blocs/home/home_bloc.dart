@@ -11,6 +11,8 @@ import 'package:pos/src/services/aim_repository.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:pos/src/utils.dart';
 
+import '../../my_logger.dart';
+
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   TextEditingController amountController = TextEditingController();
   User user;
@@ -22,7 +24,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     _requestDb = PaymentDatabase.get();
     //TODO spostare aggiornamento aim in appBloc
     _aimRepository.updateAim(database: AppDatabase.get().getDb()).then((aims) {
-      print("HomeBloc: updateAim in costructor: $aims");
+      logger.i("HomeBloc: updateAim in costructor: $aims");
     });
   }
 
@@ -78,18 +80,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (aims == null || aims.isEmpty || aimsAreOld) {
           if (await DataConnectionChecker().hasConnection) {
             // final repo = AppRepository();
-            print("HomeBloc: trying to update Aim from internet");
+            logger.i("HomeBloc: trying to update Aim from internet");
             aims = await _aimRepository.updateAim(
                 database: AppDatabase.get().getDb());
             await setAimCheckDateTime(DateTime.now());
           } else {
-            print("Aims null or empty and No internet connection");
+            logger.i("Aims null or empty and No internet connection");
             yield NoDataConnectionState();
             return;
           }
         }
 
-        print('aim letti : ${aims.length}');
+        logger.i('aim letti : ${aims.length}');
 
         final List<PaymentRequest> requests =
             await _requestDb.getRequestsByPosId(selectedPos.id);
@@ -103,7 +105,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
         yield RequestLoaded(requests: requests);
       } catch (ex) {
-        print(ex.toString());
+        logger.i(ex.toString());
         yield RequestsLoadingErrorState('somethings_wrong');
       }
     }

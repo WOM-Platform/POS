@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
+import '../../../../my_logger.dart';
 import '../../back_button_text.dart';
 
 class AmountSelectionPage extends StatefulWidget {
@@ -60,7 +61,7 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                       }
                     },
                     onEditingComplete: () {
-                      print("onEditingComplete");
+                      logger.i("onEditingComplete");
                       SystemChannels.textInput.invokeMethod('TextInput.hide');
                       if (isValid) {
                         bloc.goToNextPage();

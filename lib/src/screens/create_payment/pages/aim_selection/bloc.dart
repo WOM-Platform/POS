@@ -3,6 +3,8 @@ import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:pos/src/services/aim_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../../my_logger.dart';
+
 class AimSelectionBloc {
   BehaviorSubject<String> _selectedAimCode = BehaviorSubject<String>();
 
@@ -30,7 +32,7 @@ class AimSelectionBloc {
   AimRepository _aimRepository;
   final String languageCode;
   AimSelectionBloc(this.languageCode) {
-    print("AimSelectionBloc()");
+    logger.i("AimSelectionBloc()");
     _aimRepository = AimRepository();
     getAimListFromDb();
   }
@@ -41,7 +43,7 @@ class AimSelectionBloc {
           await _aimRepository.getAimList(database: AppDatabase.get().getDb());
     } catch (ex) {
       aimList = [];
-      print(ex.toString());
+      logger.e(ex.toString());
     }
   }
 

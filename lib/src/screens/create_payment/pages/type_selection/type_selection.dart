@@ -10,7 +10,6 @@ class TypeSelectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("TypeSelectionPage build");
     bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
 
     return GestureDetector(

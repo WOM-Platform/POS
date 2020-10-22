@@ -4,6 +4,7 @@ import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:clippy_flutter/arc.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SummaryRequest extends StatelessWidget {
   final PaymentRequest paymentRequest;

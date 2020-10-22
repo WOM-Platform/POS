@@ -53,7 +53,7 @@ dependencies:
     git:
       url: git://github.com/WOM-Platform/WOM-Package.git
       ref: loginUpdate
-
+  logger:
 
 dev_dependencies:
   flutter_test:

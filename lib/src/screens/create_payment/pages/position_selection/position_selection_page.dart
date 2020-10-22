@@ -8,6 +8,7 @@ import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 import 'package:location/location.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
+import '../../../../my_logger.dart';
 import '../../back_button_text.dart';
 
 class PositionSelectionPage extends StatefulWidget {
@@ -68,10 +69,10 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     LocationData location;
     try {
       bool serviceStatus = await _locationService.serviceEnabled();
-      print("Service status: $serviceStatus");
+      logger.i("Service status: $serviceStatus");
       if (serviceStatus) {
         final permissionStatus = await _locationService.requestPermission();
-        print("Permission: $permissionStatus");
+        logger.i("Permission: $permissionStatus");
         if (permissionStatus == PermissionStatus.granted) {
 //          location = await _locationService.getLocation();
 //
@@ -95,19 +96,20 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         }
       } else {
         bool serviceStatusResult = await _locationService.requestService();
-        print("Service status activated after request: $serviceStatusResult");
+        logger
+            .i("Service status activated after request: $serviceStatusResult");
         if (serviceStatusResult) {
           initPlatformState();
         }
       }
     } on PlatformException catch (e) {
-      print(e);
+      logger.i(e);
       if (e.code == 'PERMISSION_DENIED') {
-        print(e.message);
+        logger.i(e.message);
       } else if (e.code == 'SERVICE_STATUS_ERROR') {
-        print(e.message);
+        logger.i(e.message);
       }
-      print("location = null");
+      logger.i("location = null");
       location = null;
     }
 
@@ -123,28 +125,28 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   void _updateCameraPosition(CameraPosition position) {}
 
   _updateMyLocation() async {
-    print("_updateMyLocation");
+    logger.i("_updateMyLocation");
     LocationData location;
     try {
-      print("getLocation()");
+      logger.i("getLocation()");
       location = await _locationService.getLocation();
-      print(location.latitude.toString());
-      print(location.longitude.toString());
+      logger.i(location.latitude.toString());
+      logger.i(location.longitude.toString());
       final target = LatLng(location.latitude, location.longitude);
       _currentCameraPosition = CameraPosition(target: target, zoom: 17);
 
       final GoogleMapController controller = await _controller.future;
 
       if (mounted) {
-        print("updateCurrentLocation()");
+        logger.i("updateCurrentLocation()");
         _updateCurrentLocation(target);
         controller.animateCamera(
             CameraUpdate.newCameraPosition(_currentCameraPosition));
       }
     } on PlatformException catch (e) {
-      print(e.toString());
+      logger.i(e.toString());
       if (e.code == 'PERMISSION_DENIED') {
-        print('Permission denied');
+        logger.i('Permission denied');
       }
       location = null;
     }
@@ -369,7 +371,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
   @override
   void dispose() {
-    print("dispose map page");
+    logger.i("dispose map page");
     super.dispose();
   }
 }

@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:synchronized/synchronized.dart';
 
 import '../../../constants.dart';
+import '../../../my_logger.dart';
 
 class AppDatabase extends AppDatabaseBase {
   static final AppDatabase _appDatabase = new AppDatabase._internal();
@@ -38,7 +39,7 @@ class AppDatabase extends AppDatabaseBase {
   }
 
   Future _init() async {
-    print("AppDatabase: init database");
+    logger.i("AppDatabase: init database");
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "pos.db");
     _database = await openDatabase(path, version: 1,
@@ -83,7 +84,7 @@ class AppDatabase extends AppDatabaseBase {
     if (_database != null && _database.isOpen) {
       await _database.close();
       _database = null;
-      print("database closed");
+      logger.i("database closed");
     }
   }
 }

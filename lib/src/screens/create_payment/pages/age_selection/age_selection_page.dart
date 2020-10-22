@@ -78,7 +78,7 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                       }
                     },
                     onEditingComplete: () {
-//                      print("onEditingComplete");
+//                      logger.i("onEditingComplete");
                       SystemChannels.textInput.invokeMethod('TextInput.hide');
                       if (isValid) {
                         bloc.goToNextPage();

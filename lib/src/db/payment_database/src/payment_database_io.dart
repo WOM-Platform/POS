@@ -3,6 +3,8 @@ import 'package:pos/src/db/payment_database/src/payment_database_base.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../../my_logger.dart';
+
 class PaymentDatabase extends PaymentDatabaseBase {
   static final PaymentDatabase _requestDb =
       new PaymentDatabase._internal(AppDatabase.get());
@@ -16,7 +18,7 @@ class PaymentDatabase extends PaymentDatabaseBase {
   }
 
   Future<List<PaymentRequest>> getRequestsByPosId(String id) async {
-    print("getRequests");
+    logger.i("getRequests");
     var db = await _appDatabase.getDb();
     try {
 //      List<Map> maps = await db.query(
@@ -26,12 +28,12 @@ class PaymentDatabase extends PaymentDatabaseBase {
 //    LEFT OUTER JOIN ${Aim.TABLE_NAME} ON ${PaymentRequest.AIM_CODE} = ${Aim.CODE}
       List<Map> maps = await db.rawQuery(
           'SELECT * FROM ${PaymentRequest.TABLE} WHERE ${PaymentRequest.POS_ID} = "$id" ORDER BY ${PaymentRequest.DATE} DESC');
-      print("requests: ${maps.length}");
+      logger.i("requests: ${maps.length}");
       return maps.map((a) {
         return PaymentRequest.fromDBMap(a);
       }).toList();
     } catch (e) {
-      print(e.toString());
+      logger.i(e.toString());
       return List<PaymentRequest>();
     }
   }
@@ -47,7 +49,7 @@ class PaymentDatabase extends PaymentDatabaseBase {
       );
       return PaymentRequest.fromDBMap(maps.first);
     } catch (e) {
-      print(e.toString());
+      logger.i(e.toString());
       throw Exception("PaymentRequest not find: ${e.toString()}");
     }
   }
@@ -64,7 +66,7 @@ class PaymentDatabase extends PaymentDatabaseBase {
       });
       return result;
     } catch (ex) {
-      print(ex.toString());
+      logger.e(ex.toString());
       throw Exception(ex);
     }
   }
@@ -84,7 +86,7 @@ class PaymentDatabase extends PaymentDatabaseBase {
       });
       return result;
     } catch (ex) {
-      print(ex.toString());
+      logger.i(ex.toString());
       throw Exception(ex);
     }
   }

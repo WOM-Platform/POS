@@ -11,6 +11,7 @@ import 'package:pos/src/model/request_status_enum.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'dart:math' as math;
 import '../../constants.dart';
+import '../../my_logger.dart';
 
 enum RequestType {
   SINGLE,
@@ -50,7 +51,7 @@ class CreatePaymentRequestBloc extends Bloc {
     @required this.languageCode,
     @required this.posId,
   }) {
-    print("CreatePaymentRequestBloc()");
+    logger.i("CreatePaymentRequestBloc()");
     nameController = TextEditingController(text: draftRequest?.name ?? "");
     amountController =
         TextEditingController(text: draftRequest?.amount?.toString() ?? "");
@@ -134,16 +135,16 @@ class CreatePaymentRequestBloc extends Bloc {
 
   saveCurrentPosition() async {
     if (boundingBoxEnabled) {
-      print("saveCurrentPosition");
+      logger.i("saveCurrentPosition");
       MmkvFlutter mmkv = await MmkvFlutter.getInstance();
       mmkv.setDouble(LAST_LATITUDE, currentPosition.latitude);
       mmkv.setDouble(LAST_LONGITUDE, currentPosition.longitude);
-      print("currentPositionSaved");
+      logger.i("currentPositionSaved");
     }
   }
 
   getLastPosition() async {
-    print("getLastPosition");
+    logger.i("getLastPosition");
     MmkvFlutter mmkv = await MmkvFlutter.getInstance();
     final latitude = await mmkv.getDouble(LAST_LATITUDE);
     final longitude = await mmkv.getDouble(LAST_LONGITUDE);
@@ -151,7 +152,7 @@ class CreatePaymentRequestBloc extends Bloc {
     if (latitude == null || longitude == null) {
       lastPosition = null;
     }
-    print("lastPosition = $latitude, $longitude");
+    logger.i("lastPosition = $latitude, $longitude");
     lastPosition = LatLng(latitude, longitude);
   }
 
@@ -164,8 +165,8 @@ class CreatePaymentRequestBloc extends Bloc {
   }
 
   _validatePosition() {
-    print("_validatePosition");
-    print(currentPosition);
+    logger.i("_validatePosition");
+    logger.i(currentPosition);
     if (currentPosition != null || !boundingBoxEnabled) {
       return true;
     }
@@ -205,7 +206,7 @@ class CreatePaymentRequestBloc extends Bloc {
   }
 
   saveDraftRequest() async {
-    print("saveDraftRequest");
+    logger.i("saveDraftRequest");
     try {
       final db = PaymentDatabase.get();
       final paymentRequest = await createModelForCreationRequest();
@@ -216,7 +217,7 @@ class CreatePaymentRequestBloc extends Bloc {
         await db.updateRequest(paymentRequest);
       }
     } catch (ex) {
-      print(ex.toString());
+      logger.i(ex.toString());
     }
   }
 

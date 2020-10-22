@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/services/user_repository.dart';
 import '../../../app.dart';
+import '../../my_logger.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'package:bloc/bloc.dart';
@@ -44,7 +45,7 @@ class AuthenticationBloc
           yield AuthenticationUnauthenticated();
         }
       } catch (ex) {
-        print(ex.toString());
+        logger.i(ex.toString());
         yield AuthenticationUnauthenticated();
       }
     } else if (event is LoggedIn) {

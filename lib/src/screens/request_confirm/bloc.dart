@@ -10,6 +10,7 @@ import 'package:pos/src/screens/request_confirm/wom_creation_state.dart';
 import 'package:meta/meta.dart';
 
 import '../../constants.dart';
+import '../../my_logger.dart';
 
 class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
   // PaymentRegistrationRepository _repository;
@@ -52,12 +53,12 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
             response: response,
           );
         } on ServerException catch (ex) {
-          print(ex.error);
+          logger.e(ex.error);
           paymentRequest.status = RequestStatus.DRAFT;
           insertRequestOnDb();
           yield WomCreationRequestError(error: ex.error);
         } catch (ex) {
-          print(ex);
+          logger.e(ex);
           paymentRequest.status = RequestStatus.DRAFT;
           insertRequestOnDb();
           yield WomCreationRequestError(error: ex.toString());
@@ -73,12 +74,12 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
       if (paymentRequest.id == null) {
         int id = await _requestDb.insertRequest(paymentRequest);
         paymentRequest.id = id;
-        print(paymentRequest.id);
+        logger.i(paymentRequest.id);
       } else {
         await _requestDb.updateRequest(paymentRequest);
       }
     } catch (ex) {
-      print("insertRequestOnDb $ex");
+      logger.i("insertRequestOnDb $ex");
     }
   }
 }
@@ -92,8 +93,8 @@ class DeepLinkBuilder {
 
   String build() {
     final link =
-        "http://$domain/${type.toString().toLowerCase().replaceAll("transactiontype.", "")}/$otc";
-    print(link);
+        "https://$domain/${type.toString().toLowerCase().replaceAll("transactiontype.", "")}/$otc";
+    logger.i(link);
     return link;
   }
 }

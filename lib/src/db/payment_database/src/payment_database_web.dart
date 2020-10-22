@@ -1,6 +1,7 @@
 import 'dart:html';
 import 'package:pos/src/model/payment_request.dart';
 
+import '../../../my_logger.dart';
 import 'payment_database_base.dart';
 
 class PaymentDatabase extends PaymentDatabaseBase {
@@ -25,7 +26,7 @@ class PaymentDatabase extends PaymentDatabaseBase {
   }
 
   Future<List<PaymentRequest>> getRequests() async {
-    print("getRequests_web");
+    logger.i("getRequests_web");
     return [];
   }
 

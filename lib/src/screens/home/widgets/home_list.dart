@@ -14,6 +14,8 @@ import 'package:pos/src/screens/request_datails/request_datails.dart';
 
 import 'package:share/share.dart';
 
+import '../../../my_logger.dart';
+
 class HomeList extends StatefulWidget {
   final List<PaymentRequest> requests;
 
@@ -124,9 +126,9 @@ class _HomeListState extends State<HomeList> {
   }
 
   onDelete(int index) async {
-    debugPrint("onDelete");
+    logger.i("onDelete");
     final result = await bloc.deleteRequest(widget.requests[index].id);
-    debugPrint("onDelete from DB complete: $result");
+    logger.i("onDelete from DB complete: $result");
     if (result > 0) {
       setState(() {
         widget.requests.removeAt(index);
