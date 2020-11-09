@@ -53,7 +53,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       user = User(
         name: 'Anonymous',
         surname: 'Anonymous',
-        email: 'anonymous@anonymous.it',
+        email: '',
         merchants: [
           Merchant(
             id: 'anonymousId',

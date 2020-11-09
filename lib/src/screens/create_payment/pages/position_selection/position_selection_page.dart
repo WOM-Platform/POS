@@ -18,23 +18,10 @@ class PositionSelectionPage extends StatefulWidget {
 
 class _PositionSelectionPageState extends State<PositionSelectionPage> {
   CreatePaymentRequestBloc bloc;
-
-//  static final CameraPosition _kInitialPosition = const CameraPosition(
-//    target: LatLng(0, 0),
-//    zoom: 12.0,
-//  );
-
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
-
   Set<Marker> markers = Set();
-//  Set<Polyline> polylines = Set();
-
-//  LocationData _startLocation;
-//  LocationData _currentLocation;
-
   Location _locationService = new Location();
-//  bool _permission = false;
-
+  double sliderValue = 0.0;
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition _currentCameraPosition;
 
@@ -54,14 +41,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     1000000
   ];
 
-  double sliderValue = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-//    initPlatformState();
-  }
-
   initPlatformState() async {
     await _locationService.changeSettings(
         accuracy: LocationAccuracy.high, interval: 1000);
@@ -74,24 +53,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         final permissionStatus = await _locationService.requestPermission();
         logger.i("Permission: $permissionStatus");
         if (permissionStatus == PermissionStatus.granted) {
-//          location = await _locationService.getLocation();
-//
-//          _locationSubscription = _locationService
-//              .onLocationChanged()
-//              .listen((LocationData result) async {
-//            _currentCameraPosition = CameraPosition(
-//                target: LatLng(result.latitude, result.longitude), zoom: 16);
-//
-//            final GoogleMapController controller = await _controller.future;
-//            controller.animateCamera(
-//                CameraUpdate.newCameraPosition(_currentCameraPosition));
-//
-//            if (mounted) {
-//              setState(() {
-//                _currentLocation = result;
-//              });
-//            }
-//          });
           _updateMyLocation();
         }
       } else {
@@ -112,10 +73,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
       logger.i("location = null");
       location = null;
     }
-
-//    setState(() {
-//      _startLocation = location;
-//    });
   }
 
   _onMapCreated(GoogleMapController mapController) {
@@ -161,21 +118,6 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     bloc.currentPosition = target;
     bloc.updatePolylines();
     setState(() {});
-  }
-
-  void addSquare(LatLng location, radius) {
-//    final Polyline polyline = Polyline(
-//      polylineId: PolylineId("polyline1"),
-//      consumeTapEvents: true,
-//      color: Colors.orange,
-//      width: 15,
-//      points: bloc.locationPoints,
-//    );
-//
-//    polylines.clear();
-//    setState(() {
-//      polylines.add(polyline);
-//    });
   }
 
   @override

@@ -56,12 +56,12 @@ class RequestConfirmBloc extends Bloc<WomCreationEvent, WomCreationState> {
           logger.e(ex.error);
           paymentRequest.status = RequestStatus.DRAFT;
           insertRequestOnDb();
-          yield WomCreationRequestError(error: ex.error);
+          yield WomCreationRequestError(error: ex?.error);
         } catch (ex) {
           logger.e(ex);
           paymentRequest.status = RequestStatus.DRAFT;
           insertRequestOnDb();
-          yield WomCreationRequestError(error: ex.toString());
+          yield WomCreationRequestError(error: ex?.toString());
         }
       } else {
         yield WomCreationRequestNoDataConnectionState();

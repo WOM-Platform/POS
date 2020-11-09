@@ -52,13 +52,14 @@ class _HomeListState extends State<HomeList> {
                 onDuplicate: () => onDuplicate(index),
               ),
               actions: <Widget>[
-                MySlideAction(
-                  icon: Icons.share,
-                  color: Colors.green,
-                  onTap: () {
-                    Share.share('${widget.requests[index].deepLink}');
-                  },
-                ),
+                if (widget.requests[index].status == RequestStatus.COMPLETE)
+                  MySlideAction(
+                    icon: Icons.share,
+                    color: Colors.green,
+                    onTap: () {
+                      Share.share('${widget.requests[index].deepLink}');
+                    },
+                  ),
                 if (widget.requests[index].status == RequestStatus.COMPLETE)
                   if (!widget.requests[index].persistent)
                     MySlideAction(
@@ -118,7 +119,7 @@ class _HomeListState extends State<HomeList> {
     final provider = BlocProvider(
       child: GenerateWomScreen(),
       create: (ctx) => CreatePaymentRequestBloc(
-          posId: bloc.selectedPosId,
+          posId: ctx.bloc<HomeBloc>().selectedPos.id,
           draftRequest: widget.requests[index],
           languageCode: AppLocalizations.of(context).locale.languageCode),
     );

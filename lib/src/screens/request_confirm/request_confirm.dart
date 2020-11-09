@@ -81,7 +81,9 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Text(
-                    state.error,
+                    state.error ??
+                        AppLocalizations.of(context)
+                            .translate('somethings_wrong'),
                     textAlign: TextAlign.center,
                   ),
                   Center(
@@ -118,8 +120,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    RaisedButton(
-                        child: Text(AppLocalizations.of(context)
+                    FloatingActionButton.extended(
+                        label: Text(AppLocalizations.of(context)
                             .translate('try_again')),
                         onPressed: () {
                           bloc.add(CreateWomRequest());

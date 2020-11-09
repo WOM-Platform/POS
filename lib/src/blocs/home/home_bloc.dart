@@ -34,7 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   String _selectedPosId;
-  String get selectedPosId => _selectedPosId;
+  // String get selectedPosId => _selectedPosId;
   String _selectedMerchantId;
 
   void setMerchantAndPosId(String merchantId, String posId) {

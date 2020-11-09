@@ -50,7 +50,7 @@ class CreatePaymentRequestBloc extends Bloc {
     @required this.draftRequest,
     @required this.languageCode,
     @required this.posId,
-  }) {
+  }) : assert(posId != null) {
     logger.i("CreatePaymentRequestBloc()");
     nameController = TextEditingController(text: draftRequest?.name ?? "");
     amountController =
