@@ -1,3 +1,4 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -11,6 +12,7 @@ import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/card_request.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:pos/src/screens/request_datails/request_datails.dart';
+import 'package:pos/src/services/pdf_creator.dart';
 
 import 'package:share/share.dart';
 
@@ -52,7 +54,8 @@ class _HomeListState extends State<HomeList> {
                 onDuplicate: () => onDuplicate(index),
               ),
               actions: <Widget>[
-                if (widget.requests[index].status == RequestStatus.COMPLETE)
+                if (widget.requests[index].status ==
+                    RequestStatus.COMPLETE) ...[
                   MySlideAction(
                     icon: Icons.share,
                     color: Colors.green,
@@ -60,13 +63,26 @@ class _HomeListState extends State<HomeList> {
                       Share.share('${widget.requests[index].deepLink}');
                     },
                   ),
-                if (widget.requests[index].status == RequestStatus.COMPLETE)
-                  if (!widget.requests[index].persistent)
-                    MySlideAction(
-                      icon: Icons.refresh,
-                      color: Colors.yellow,
-                      onTap: () => onDuplicate(index),
-                    ),
+                  MySlideAction(
+                    icon: Icons.picture_as_pdf,
+                    color: Colors.pink,
+                    onTap: () async {
+                      final pdfCreator = PdfCreator();
+                      final file = await pdfCreator.buildPdf(
+                          widget.requests[index],
+                          context.bloc<HomeBloc>().selectedPos,
+                          AppLocalizations.of(context).locale?.languageCode);
+                      Share.shareFiles([file.path]);
+                    },
+                  ),
+                ],
+                // if (widget.requests[index].status == RequestStatus.COMPLETE)
+                //   if (!widget.requests[index].persistent)
+                //     MySlideAction(
+                //       icon: Icons.refresh,
+                //       color: Colors.yellow,
+                //       onTap: () => onDuplicate(index),
+                //     ),
                 if (widget.requests[index].status != RequestStatus.COMPLETE)
                   MySlideAction(
                     icon: Icons.edit,
