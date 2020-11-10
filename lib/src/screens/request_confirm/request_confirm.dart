@@ -80,11 +80,14 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text(
-                    state.error ??
-                        AppLocalizations.of(context)
-                            .translate('somethings_wrong'),
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      state.error ??
+                          AppLocalizations.of(context)
+                              .translate('somethings_wrong'),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   Center(
                     child: FloatingActionButton.extended(
@@ -103,14 +106,14 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context)
-                          .translate('no_connection_title'),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 10,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        AppLocalizations.of(context)
+                            .translate('no_connection_title'),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Text(
                       AppLocalizations.of(context)
