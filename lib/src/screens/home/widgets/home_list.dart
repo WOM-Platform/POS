@@ -63,18 +63,19 @@ class _HomeListState extends State<HomeList> {
                       Share.share('${widget.requests[index].deepLink}');
                     },
                   ),
-                  MySlideAction(
-                    icon: Icons.picture_as_pdf,
-                    color: Colors.pink,
-                    onTap: () async {
-                      final pdfCreator = PdfCreator();
-                      final file = await pdfCreator.buildPdf(
-                          widget.requests[index],
-                          context.bloc<HomeBloc>().selectedPos,
-                          AppLocalizations.of(context).locale?.languageCode);
-                      Share.shareFiles([file.path]);
-                    },
-                  ),
+                  if (widget.requests[index].persistent)
+                    MySlideAction(
+                      icon: Icons.picture_as_pdf,
+                      color: Colors.pink,
+                      onTap: () async {
+                        final pdfCreator = PdfCreator();
+                        final file = await pdfCreator.buildPdf(
+                            widget.requests[index],
+                            context.bloc<HomeBloc>().selectedPos,
+                            AppLocalizations.of(context).locale?.languageCode);
+                        Share.shareFiles([file.path]);
+                      },
+                    ),
                 ],
                 // if (widget.requests[index].status == RequestStatus.COMPLETE)
                 //   if (!widget.requests[index].persistent)
