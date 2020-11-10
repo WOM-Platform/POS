@@ -15,8 +15,8 @@ class PdfCreator {
 
     final qrcode = pw.BarcodeWidget(
       data: paymentRequest.deepLink,
-      width: 200,
-      height: 200,
+      width: 250,
+      height: 250,
       barcode: pw.Barcode.qrCode(),
     );
 
@@ -36,11 +36,10 @@ class PdfCreator {
               pw.Text(paymentRequest.name,
                   style: pw.TextStyle(fontSize: 50),
                   textAlign: pw.TextAlign.center),
-              if (paymentRequest.aim != null)
-                pw.Text(
-                    '${paymentRequest.aim.titles[locale ?? 'en']} - ${paymentRequest.amount} WOM',
-                    style: pw.TextStyle(fontSize: 30),
-                    textAlign: pw.TextAlign.center),
+              pw.Text(
+                  '${paymentRequest.aim != null ? '${paymentRequest.aim.titles[locale ?? 'en']} - ' : ''}${paymentRequest.amount} WOM',
+                  style: pw.TextStyle(fontSize: 30),
+                  textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 60),
               qrcode,
               pw.SizedBox(height: 60),
