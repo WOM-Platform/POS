@@ -1,6 +1,7 @@
 import 'package:clippy_flutter/arc.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +14,6 @@ import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
 import 'package:pos/src/screens/settings/settings.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../main_common.dart';
-import '../../my_logger.dart';
 import '../../utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -134,21 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     textAlign: TextAlign.center,
                   ),
                 );
-              } else if (state is NoPosState) {
-                return Column(
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context).translate('no_pos_alert'),
-                      textAlign: TextAlign.center,
-                    ),
-                    RaisedButton(
-                        child: Text(AppLocalizations.of(context)
-                            .translate('go_to_website')),
-                        onPressed: () {
-                          launchUrl('https://wom.social');
-                        }),
-                  ],
-                );
               } else if (state is NoDataConnectionState) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -172,8 +157,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         height: 20,
                       ),
-                      RaisedButton(
-                          child: Text(AppLocalizations.of(context)
+                      FloatingActionButton.extended(
+                          label: Text(AppLocalizations.of(context)
                               .translate('try_again')),
                           onPressed: () {
                             context.bloc<HomeBloc>().add(LoadRequest());
