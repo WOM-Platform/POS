@@ -7,6 +7,7 @@ import '../../my_logger.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'package:bloc/bloc.dart';
+import '../../model/user_extension.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
@@ -28,12 +29,12 @@ class AuthenticationBloc
     if (event is AppStarted) {
       try {
         final user = await userRepository.readUser();
-        final lastMerchantAndPosIdUsed = await userRepository.readLastPosId();
-        final merchantId = lastMerchantAndPosIdUsed[0];
-        final posId = lastMerchantAndPosIdUsed[1];
         if (user != null) {
           globalUser = user;
           homeBloc.user = user;
+          final lastMerchantAndPosIdUsed = await userRepository.readLastPosId();
+          final merchantId = lastMerchantAndPosIdUsed[0];
+          final posId = lastMerchantAndPosIdUsed[1];
           if (merchantId == null || merchantId.isEmpty) {
             homeBloc.add(LoadRequest());
           } else {

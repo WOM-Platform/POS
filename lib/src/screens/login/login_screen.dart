@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Positioned.fill(child: womPack.AnimatedBackground()),
           Positioned.fill(child: womPack.Particles(30)),
           Padding(
-            padding: const EdgeInsets.all(30.0),
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Align(
               alignment: Alignment.center,
               child: ControlledAnimation(

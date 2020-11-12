@@ -46,97 +46,98 @@ class _LoginBoxState extends State<LoginBox> {
             },
           );
         }
-        return Stack(
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Spacer(),
-                            Image.asset(
-                              'assets/logo_wom.png',
-                              height: 50.0,
+        return Center(
+          child: ListView(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 6,
+              ),
+              AspectRatio(
+                aspectRatio: 1,
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const Spacer(),
+                          Image.asset(
+                            'assets/logo_wom.png',
+                            height: 50.0,
+                          ),
+                          const Spacer(),
+                          TextField(
+                            controller: _loginBloc.usernameController,
+                            decoration: InputDecoration(
+                              hintText: "Username",
+                              prefixIcon: Icon(Icons.account_circle),
                             ),
-                            Spacer(),
-                            Spacer(),
-                            TextField(
-                              controller: _loginBloc.usernameController,
-                              decoration: InputDecoration(
-                                hintText: "Username",
-                                prefixIcon: Icon(Icons.account_circle),
-                              ),
+                          ),
+                          const Spacer(),
+                          TextField(
+                            obscureText: true,
+                            controller: _loginBloc.passwordController,
+                            decoration: InputDecoration(
+                              hintText: "Password",
+                              prefixIcon: Icon(Icons.lock),
                             ),
-                            Spacer(),
-                            TextField(
-                              obscureText: true,
-                              controller: _loginBloc.passwordController,
-                              decoration: InputDecoration(
-                                hintText: "Password",
-                                prefixIcon: Icon(Icons.lock),
-                              ),
-                            ),
-                            Spacer(),
-                            LoadStuffButton(
-                              loginBloc: _loginBloc,
-                              onTap: _onLoginButtonPressed,
-                            ),
-                            Spacer(),
-                          ],
-                        ),
+                          ),
+                          const Spacer(),
+                          LoadStuffButton(
+                            loginBloc: _loginBloc,
+                            onTap: _onLoginButtonPressed,
+                          ),
+                          const Spacer(),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Container(
-                  height: 50,
-                  margin: const EdgeInsets.all(4),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: InkWell(
-                        splashColor: Colors.green,
-                        borderRadius: BorderRadius.circular(15),
-                        onTap: () {
-                          _loginBloc.add(AnonymousLogin());
-                        },
-                        child: Container(
-                          child: Center(
-                            child: Text(
-                              'Accesso Anonimo',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+              ),
+              Container(
+                height: 50,
+                margin: const EdgeInsets.all(4),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: InkWell(
+                      splashColor: Colors.green,
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        _loginBloc.add(AnonymousLogin());
+                      },
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            'Accesso Anonimo',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: GestureDetector(
+              ),
+              const SizedBox(
+                height: 8.0,
+              ),
+              GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
                     launchUrl('https://$domain/user/register-merchant'),
                 child: RichText(
+                  textAlign: TextAlign.center,
                   text: TextSpan(
                     text: 'Non sei registrato? ',
                     children: [
@@ -149,8 +150,11 @@ class _LoginBoxState extends State<LoginBox> {
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 8.0,
+              ),
+            ],
+          ),
         );
       },
     );
