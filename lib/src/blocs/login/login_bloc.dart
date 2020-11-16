@@ -40,19 +40,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           password: event.password,
         );
         logger.i(user?.name);
-        yield InsufficientPos();
-        // if (user.merchants.isEmpty ||
-        //     user.merchants.fold<int>(
-        //             0,
-        //             (previousValue, element) =>
-        //                 previousValue + element.posList?.length ?? 0) ==
-        //         0) {
-        //   yield InsufficientPos();
-        // } else {
-        //   authenticationBloc.add(LoggedIn(
-        //       user: user, email: event.username, password: event.password));
-        //   yield LoginSuccessfull();
-        // }
+        if (user.merchants.isEmpty ||
+            user.merchants.fold<int>(
+                    0,
+                    (previousValue, element) =>
+                        previousValue + element.posList?.length ?? 0) ==
+                0) {
+          yield InsufficientPos();
+        } else {
+          authenticationBloc.add(LoggedIn(
+              user: user, email: event.username, password: event.password));
+          yield LoginSuccessfull();
+        }
       } catch (ex) {
         logger.e(ex);
         yield LoginFailure(error: "Username e/o password non validi!");
