@@ -8,6 +8,7 @@ import 'package:pos/src/constants.dart';
 import 'package:pos/src/screens/root/root.dart';
 import 'package:pos/src/services/auth_local_data_sources.dart';
 import 'localization/app_localizations.dart';
+import 'src/blocs/login/login_bloc.dart';
 import 'src/screens/intro/intro.dart';
 import 'package:provider/provider.dart';
 
@@ -33,13 +34,13 @@ class App extends StatelessWidget {
         ),
         BlocProvider<HomeBloc>(
           create: (context) => HomeBloc(
-            userRepository: RepositoryProvider.of<UserRepository>(context),
+            userRepository: context.repository<UserRepository>(),
           ),
         ),
         BlocProvider<AuthenticationBloc>(
           create: (context) => AuthenticationBloc(
             homeBloc: context.bloc<HomeBloc>(),
-            userRepository: RepositoryProvider.of<UserRepository>(context),
+            userRepository: context.repository<UserRepository>(),
           )..add(AppStarted()),
         ),
       ],

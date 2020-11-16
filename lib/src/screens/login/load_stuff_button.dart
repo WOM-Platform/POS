@@ -8,10 +8,8 @@ import 'package:simple_animations/simple_animations.dart';
 class LoadStuffButton extends StatefulWidget {
   final Function onAnimationFinished;
   final Function onTap;
-  final LoginBloc loginBloc;
 
-  const LoadStuffButton(
-      {Key key, this.onAnimationFinished, this.onTap, this.loginBloc})
+  const LoadStuffButton({Key key, this.onAnimationFinished, this.onTap})
       : super(key: key);
 
   @override
@@ -46,15 +44,14 @@ class _LoadStuffButtonState extends State<LoadStuffButton> {
       Track("childIndex").add(durationPart2, ConstantTween(2))
     ]);
 
-    return BlocBuilder(
-      bloc: widget.loginBloc,
+    return BlocBuilder<LoginBloc, LoginState>(
       builder: (BuildContext context, state) {
         return GestureDetector(
           onTap: widget.onTap,
           child: ControlledAnimation(
             playback: state is LoginLoading
                 ? Playback.PLAY_FORWARD
-                : state is LoginFailure
+                : state is LoginFailure || state is InsufficientPos
                     ? Playback.START_OVER_REVERSE
                     : Playback.PAUSE,
             tween: tween1,

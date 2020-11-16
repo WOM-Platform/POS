@@ -1,4 +1,3 @@
-import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:meta/meta.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/services/user_repository.dart';
@@ -7,7 +6,6 @@ import '../../my_logger.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'package:bloc/bloc.dart';
-import '../../model/user_extension.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
@@ -31,16 +29,8 @@ class AuthenticationBloc
         final user = await userRepository.readUser();
         if (user != null) {
           globalUser = user;
-          homeBloc.user = user;
-          final lastMerchantAndPosIdUsed = await userRepository.readLastPosId();
-          final merchantId = lastMerchantAndPosIdUsed[0];
-          final posId = lastMerchantAndPosIdUsed[1];
-          if (merchantId == null || merchantId.isEmpty) {
-            homeBloc.add(LoadRequest());
-          } else {
-            homeBloc.setMerchantAndPosId(merchantId, posId);
-          }
-
+          homeBloc.checkAndSetPreviousSelectedMerchantAndPos();
+          homeBloc.add(LoadRequest());
           yield AuthenticationAuthenticated(user);
         } else {
           yield AuthenticationUnauthenticated();
@@ -50,16 +40,16 @@ class AuthenticationBloc
         yield AuthenticationUnauthenticated();
       }
     } else if (event is LoggedIn) {
-//      yield AuthenticationLoading();
       await userRepository.persistToken(
           event.user, event.email, event.password);
-      globalUser = event.user;
-      homeBloc.user = event.user;
+
+      final user = event.user;
+
+      globalUser = user;
       homeBloc.add(LoadRequest());
 
-      yield AuthenticationAuthenticated(event.user);
+      yield AuthenticationAuthenticated(user);
     } else if (event is LoggedOut) {
-//      yield AuthenticationLoading();
       homeBloc.clear();
       await userRepository.deleteToken();
       yield AuthenticationUnauthenticated();

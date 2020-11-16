@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
 import 'package:pos/src/services/user_repository.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:wom_package/wom_package.dart' as womPack;
@@ -19,21 +20,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginBloc _loginBloc;
-  AuthenticationBloc _authenticationBloc;
-
-  UserRepository get _userRepository => widget.userRepository;
-
-  @override
-  void initState() {
-    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    _loginBloc = LoginBloc(
-      userRepository: _userRepository,
-      authenticationBloc: _authenticationBloc,
-    );
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,10 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 builder: (context, opacity) {
                   return Opacity(
                     opacity: opacity,
-                    child: LoginBox(
-                      authenticationBloc: _authenticationBloc,
-                      loginBloc: _loginBloc,
-                    ),
+                    child: LoginBox(),
                   );
                 },
               ),
@@ -63,11 +46,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _loginBloc.close();
-    super.dispose();
   }
 }

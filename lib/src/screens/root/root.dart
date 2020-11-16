@@ -2,6 +2,7 @@ import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
+import 'package:pos/src/blocs/login/bloc.dart';
 import 'package:pos/src/screens/login/login_screen.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:pos/src/splash/splash.dart';
@@ -53,8 +54,14 @@ class RootScreen extends StatelessWidget {
           );*/
         } else if (state is AuthenticationUnauthenticated) {
           globalUser = null;
-          return LoginScreen(
-            userRepository: RepositoryProvider.of<UserRepository>(context),
+          return BlocProvider<LoginBloc>(
+            create: (context) => LoginBloc(
+              userRepository: context.repository<UserRepository>(),
+              authenticationBloc: context.bloc<AuthenticationBloc>(),
+            ),
+            child: LoginScreen(
+              userRepository: RepositoryProvider.of<UserRepository>(context),
+            ),
           );
         }
         return Container(

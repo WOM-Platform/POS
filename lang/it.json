@@ -57,5 +57,8 @@
   "wom": "Voucher per impegno sociale",
   "wom_desc": "Molte delle azioni individuali generano valore sociale. Tale valore è quantificato in termini di WOM, speciali voucher inclusi tra gli strumenti di innovazione sociale digitale della Commissione Europea.",
   "wom_suggestion": "Dà valore ai WOM",
-  "wom_suggestion_desc": "Sapendo che ogni WOM corrisponde a un minuto di impegno, decidi liberamente quanti WOM servono per meritare le tue offerte."
+  "wom_suggestion_desc": "Sapendo che ogni WOM corrisponde a un minuto di impegno, decidi liberamente quanti WOM servono per meritare le tue offerte.",
+  "no_merchants": "Non hai nessun Merchant abbinato al tuo account. Fai l'accesso tramite Web e aggiungi un Merchant",
+  "no_pos": "Non hai nessun POS abbinato a questo Merchant. Fai l'accesso tramite Web e aggiungi un POS al Merchant",
+  "login_insufficient_pos": "Il login è andato a buon fine ma non ci sono Merchant o POS registrati per questo account!"
 }

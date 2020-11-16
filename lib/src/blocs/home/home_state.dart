@@ -55,3 +55,11 @@ class NoPosState extends HomeState {
   @override
   List<Object> get props => [];
 }
+
+class NoMerchantState extends HomeState {
+  @override
+  String toString() => 'NoMerchantState';
+
+  @override
+  List<Object> get props => [];
+}

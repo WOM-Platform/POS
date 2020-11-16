@@ -57,5 +57,8 @@
   "wom": "Voucher for social commitment",
   "wom_desc": "Most individual actions generate social value. This value is quantified in terms of WOM, special vouchers included in the list of social and digital innovation instruments of the European Commission.",
   "wom_suggestion": "Gives value to WOMs",
-  "wom_suggestion_desc": "Since every WOM is equivalent to one minute of commitment, you can freely decide how many WOM are needed to earn your offers."
+  "wom_suggestion_desc": "Since every WOM is equivalent to one minute of commitment, you can freely decide how many WOM are needed to earn your offers.",
+  "no_merchants": "You don't have any Merchant paired with your account. Log in via the web and add a Merchant",
+  "no_pos": "You don't have any POS paired with this Merchant. Log in via the web and add a POS to the Merchant",
+  "login_insufficient_pos": "The login was successful but there are no Merchants or POSs registered for this account!"
 }

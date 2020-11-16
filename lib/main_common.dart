@@ -1,5 +1,3 @@
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/src/model/flavor_enum.dart';
 import 'package:pos/src/my_logger.dart';
@@ -18,7 +16,7 @@ Future<void> mainCommon(Flavor f, String d) async {
   registryKey = await getPublicKey(f);
   isFirstOpen = await readIsFirstOpen();
   if (isFirstOpen) {
-    await setIsFirstOpen(false);
+    await setIsFirstOpen(true);
   }
   runApp(App(isFirstOpen: isFirstOpen));
 }

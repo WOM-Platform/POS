@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
           textColor: Theme.of(context).primaryColor,
           child: GestureDetector(
             onTap: () async {
-              if (!context.bloc<HomeBloc>().isOnlyOneMerchantAndPos) {
+              if (context.bloc<HomeBloc>().posSelectionEnabled) {
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => PosSelectionPage(),
@@ -70,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text(context.bloc<HomeBloc>().selectedPos.name),
-                if (!context.bloc<HomeBloc>().isOnlyOneMerchantAndPos)
+                Text(context.bloc<HomeBloc>().selectedPos?.name ?? 'POS'),
+                if (context.bloc<HomeBloc>().posSelectionEnabled)
                   Icon(
                     Icons.arrow_drop_down,
                     color: Colors.white,
@@ -113,7 +113,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BlocBuilder<HomeBloc, HomeState>(
             builder: (BuildContext context, HomeState state) {
-              if (state is RequestLoading) {
+              if (state is NoPosState) {
+                return Center(
+                  child: WarningWidget(
+                    text: AppLocalizations.of(context).translate('no_pos'),
+                  ),
+                );
+              } else if (state is NoMerchantState) {
+                return Center(
+                  child: WarningWidget(
+                    text:
+                        AppLocalizations.of(context).translate('no_merchants'),
+                  ),
+                );
+              } else if (state is RequestLoading) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -254,6 +267,40 @@ class _HomeScreenState extends State<HomeScreen> {
         'show_pos_selection_info',
         'show_logout_info',
       },
+    );
+  }
+}
+
+class WarningWidget extends StatelessWidget {
+  final String text;
+
+  const WarningWidget({Key key, this.text}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Card(
+        elevation: 4.0,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.warning,
+                color: Colors.yellow,
+                size: 40,
+              ),
+              Text(
+                text,
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

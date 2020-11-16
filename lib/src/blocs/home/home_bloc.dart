@@ -11,11 +11,13 @@ import 'package:pos/src/services/aim_repository.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:pos/src/utils.dart';
 
+import '../../../app.dart';
 import '../../my_logger.dart';
+
+import '../../extensions.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   TextEditingController amountController = TextEditingController();
-  User user;
   AimRepository _aimRepository;
   PaymentDatabase _requestDb;
   UserRepository userRepository;
@@ -34,43 +36,69 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   String _selectedPosId;
-  // String get selectedPosId => _selectedPosId;
   String _selectedMerchantId;
 
-  void setMerchantAndPosId(String merchantId, String posId) {
-    if (posId != _selectedPosId) {
-      userRepository.saveLastPosId(posId, merchantId);
-      _selectedMerchantId = merchantId;
-      _selectedPosId = posId;
-      add(LoadRequest());
-    }
-  }
-
-  List<Merchant> get merchants => user?.merchants ?? [];
+  List<Merchant> get merchants => globalUser?.merchants ?? <Merchant>[];
+  List<PointOfSale> get posList => selectedMerchant?.posList ?? <PointOfSale>[];
 
   bool get isOnlyOneMerchantAndPos =>
-      merchants.length == 1 && selectedMerchant.posList.length == 1;
+      merchants.length == 1 && posList.length <= 1;
 
-  Merchant get selectedMerchant =>
-      _selectedMerchantId != null && _selectedMerchantId.isNotEmpty
-          ? merchants.firstWhere((m) => m.id == _selectedMerchantId,
-              orElse: () => null)
-          : merchants.first;
+  bool get posSelectionEnabled =>
+      merchants.isNotEmpty && !isOnlyOneMerchantAndPos;
 
-  PointOfSale get selectedPos =>
-      _selectedPosId != null && _selectedPosId.isNotEmpty
-          ? selectedMerchant.posList.firstWhere((p) => p.id == _selectedPosId)
-          : selectedMerchant.posList.first;
+  Merchant get selectedMerchant => _selectedMerchantId.isNotNullAndNotEmpty
+      ? merchants.firstWhere((m) => m.id == _selectedMerchantId,
+          orElse: () => null)
+      : merchants.isNotEmpty ? merchants.first : null;
+
+  PointOfSale get selectedPos => _selectedPosId.isNotNullAndNotEmpty
+      ? posList?.firstWhere((p) => p.id == _selectedPosId, orElse: () => null)
+      : posList.isNotEmpty ? posList.first : null;
 
 //String get selectedPosId => selectedPos.id;
 
   @override
   HomeState get initialState => RequestLoading();
 
+  checkAndSetPreviousSelectedMerchantAndPos() async {
+    //Check previous merchant and pos selected
+    final lastMerchantAndPosIdUsed =
+        await userRepository.readLastMerchantIdAndPosIdUsed();
+    if (lastMerchantAndPosIdUsed != null &&
+        lastMerchantAndPosIdUsed.length == 2) {
+      final merchantId = lastMerchantAndPosIdUsed[0];
+      final posId = lastMerchantAndPosIdUsed[1];
+      if (merchantId.isNotNullAndNotEmpty) {
+        _selectedMerchantId = merchantId;
+        if (posId.isNotNullAndNotEmpty) {
+          _selectedPosId = posId;
+        }
+      }
+    }
+  }
+
+  void setMerchantAndPosId(String merchantId, String posId) {
+    if (posId != _selectedPosId) {
+      userRepository.saveMerchantAndPosIdUsed(posId, merchantId);
+      _selectedMerchantId = merchantId;
+      _selectedPosId = posId;
+      add(LoadRequest());
+    }
+  }
+
   @override
   Stream<HomeState> mapEventToState(event) async* {
     if (event is LoadRequest) {
-      List<Aim> aims = await _aimRepository.getFlatAimList(
+      if (merchants.isEmpty) {
+        yield NoMerchantState();
+        return;
+      } else if (posList.isEmpty) {
+        yield NoPosState();
+        return;
+      }
+
+      var aims = await _aimRepository.getFlatAimList(
           database: AppDatabase.get().getDb());
 
       try {
@@ -93,17 +121,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         logger.i('aim letti : ${aims.length}');
 
-        final List<PaymentRequest> requests =
-            await _requestDb.getRequestsByPosId(selectedPos.id);
-        for (PaymentRequest r in requests) {
-          final Aim aim = aims.firstWhere((a) {
-            return a.code == r.aimCode;
-          }, orElse: () {
-            return null;
-          });
-          r.aim = aim;
+        if (selectedPos != null) {
+          final List<PaymentRequest> requests =
+              await _requestDb.getRequestsByPosId(selectedPos.id);
+          for (PaymentRequest r in requests) {
+            final Aim aim = aims.firstWhere((a) {
+              return a.code == r.aimCode;
+            }, orElse: () {
+              return null;
+            });
+            r.aim = aim;
+          }
+          yield RequestLoaded(requests: requests);
+        } else {
+          yield NoPosState();
         }
-        yield RequestLoaded(requests: requests);
       } catch (ex) {
         logger.i(ex.toString());
         yield RequestsLoadingErrorState('somethings_wrong');

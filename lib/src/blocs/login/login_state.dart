@@ -39,3 +39,11 @@ class LoginFailure extends LoginState {
   @override
   String toString() => 'LoginFailure { error: $error }';
 }
+
+class InsufficientPos extends LoginState {
+  @override
+  List<Object> get props => [];
+
+  @override
+  String toString() => 'Insufficient Merchants or Pos';
+}
