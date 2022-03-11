@@ -56,19 +56,17 @@ class RootScreen extends StatelessWidget {
           globalUser = null;
           return BlocProvider<LoginBloc>(
             create: (context) => LoginBloc(
-              userRepository: context.repository<UserRepository>(),
-              authenticationBloc: context.bloc<AuthenticationBloc>(),
+              userRepository: context.read<UserRepository>(),
+              authenticationBloc: context.read<AuthenticationBloc>(),
             ),
             child: LoginScreen(
               userRepository: RepositoryProvider.of<UserRepository>(context),
             ),
           );
         }
-        return Container(
-          child: Center(
-            child: Text(
-                AppLocalizations.of(context).translate('error_screen_state')),
-          ),
+        return Center(
+          child: Text(
+              AppLocalizations.of(context)?.translate('error_screen_state') ?? ''),
         );
       },
     );

@@ -1,8 +1,8 @@
 import 'package:pos/src/model/flavor_enum.dart';
 
-String domain;
-String registryKey;
-Flavor flavor;
+late String domain;
+late String registryKey;
+Flavor? flavor;
 
 //SHARED PREFERENCES
 const LAST_LATITUDE = "lastLatitude";

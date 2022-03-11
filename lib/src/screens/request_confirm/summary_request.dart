@@ -1,15 +1,20 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdf/widgets.dart' as pdfWidgets;
 import 'package:pos/localization/app_localizations.dart';
+import 'package:pos/src/blocs/home/home_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
+import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:clippy_flutter/arc.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SummaryRequest extends StatelessWidget {
   final PaymentRequest paymentRequest;
 
-  const SummaryRequest({Key key, this.paymentRequest}) : super(key: key);
+  const SummaryRequest({Key? key, required this.paymentRequest})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +58,27 @@ class SummaryRequest extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  height: height / 3,
-                  width: height / 3,
-                  child: Center(
-                    child: Card(
-                      child: QrImage(
-                        padding: const EdgeInsets.all(20.0),
-                        data: paymentRequest.deepLink,
-                      ),
+                if (paymentRequest.deepLink != null)
+                  Container(
+                    height: height / 3,
+                    width: height / 3,
+                    child: Center(
+                      child: MyBarcode(link: paymentRequest.deepLink!,)
+                      // child: Card(
+                      //   child: paymentRequest.deepLink != null
+                      //       ? pdf.BarcodeWidget(
+                      //           barcode: pdf.Barcode.qrCode(
+                      //             errorCorrectLevel:
+                      //                 pdf.BarcodeQRCorrectionLevel.high,
+                      //           ),
+                      //           data: paymentRequest.deepLink,
+                      //           width: 200,
+                      //           height: 200,
+                      //         )
+                      //       : Text('Errore QRCode'),
+                      // ),
                     ),
                   ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -99,18 +113,50 @@ class SummaryRequest extends StatelessWidget {
             ? null
             : FloatingActionButton.extended(
                 onPressed: () {
+                  final pos = context.read<HomeBloc>().selectedPos;
+                  if (pos == null) return;
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (ctx) => RequestConfirmScreen(
-                        paymentRequest: paymentRequest.copyFrom(),
+                      builder: (ctx) => BlocProvider(
+                        create: (BuildContext context) => RequestConfirmBloc(
+                          pos: context.read<PosClient>(),
+                          pointOfSale: pos,
+                          paymentRequest: paymentRequest.copyFrom(),
+                        ),
+                        child: const RequestConfirmScreen(),
                       ),
                     ),
                   );
                 },
-                label:
-                    Text(AppLocalizations.of(context).translate('duplicate')),
+                label: Text(
+                    AppLocalizations.of(context)?.translate('duplicate') ?? ''),
               ),
       ),
     );
   }
 }
+
+class MyBarcode extends StatelessWidget {
+  final String link;
+  const MyBarcode({Key? key, required this.link}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: BarcodeWidget(
+          barcode: pdfWidgets.Barcode.qrCode(
+            errorCorrectLevel:
+            pdfWidgets.BarcodeQRCorrectionLevel.high,
+          ),
+          data: link,
+          width: 200,
+          height: 200,
+        ),
+      ),
+    );
+  }
+}
+

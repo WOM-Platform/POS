@@ -7,10 +7,11 @@ import 'package:pos/src/blocs/login/bloc.dart';
 import '../../constants.dart';
 import '../../utils.dart';
 import 'load_stuff_button.dart';
+import 'no_merchant_screen.dart';
 
 class LoginBox extends StatefulWidget {
   const LoginBox({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -31,19 +32,15 @@ class _LoginBoxState extends State<LoginBox> {
     return BlocListener<LoginBloc, LoginState>(
       listener: (BuildContext context, state) {
         if (state is LoginFailure) {
-          Scaffold.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${state.error}'),
+              content: Text(state.error),
               backgroundColor: Colors.red,
             ),
           );
         } else if (state is InsufficientPos) {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context).translate('in')),
-              backgroundColor: Colors.red,
-            ),
-          );
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => NoMerchantScreen()));
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -67,7 +64,7 @@ class _LoginBoxState extends State<LoginBox> {
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -75,30 +72,31 @@ class _LoginBoxState extends State<LoginBox> {
                             const Spacer(),
                             Image.asset(
                               'assets/logo_wom.png',
-                              height: 50.0,
+                              height: 60.0,
                             ),
                             const Spacer(),
                             TextField(
                               controller:
-                                  context.bloc<LoginBloc>().usernameController,
+                                  context.read<LoginBloc>().usernameController,
                               decoration: InputDecoration(
-                                hintText: "Username",
-                                prefixIcon: Icon(Icons.account_circle),
+                                hintText: "Email",
+                                prefixIcon: Icon(Icons.email),
                               ),
                             ),
                             const Spacer(),
                             TextField(
                               obscureText: true,
                               controller:
-                                  context.bloc<LoginBloc>().passwordController,
+                                  context.read<LoginBloc>().passwordController,
                               decoration: InputDecoration(
                                 hintText: "Password",
                                 prefixIcon: Icon(Icons.lock),
                               ),
                             ),
                             const Spacer(),
-                            LoadStuffButton(
-                              onTap: _onLoginButtonPressed,
+                            ElevatedButton(
+                              onPressed: _onLoginButtonPressed,
+                              child: Text('Login'),
                             ),
                             const Spacer(),
                           ],
@@ -121,14 +119,12 @@ class _LoginBoxState extends State<LoginBox> {
                         splashColor: Colors.green,
                         borderRadius: BorderRadius.circular(15),
                         onTap: () {
-                          context.bloc<LoginBloc>().add(AnonymousLogin());
+                          context.read<LoginBloc>().anonymousLogin();
                         },
-                        child: Container(
-                          child: Center(
-                            child: Text(
-                              'Accesso Anonimo',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                        child: const Center(
+                          child: Text(
+                            'Accesso Anonimo',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -136,12 +132,12 @@ class _LoginBoxState extends State<LoginBox> {
                   ),
                 ),
                 const SizedBox(
-                  height: 8.0,
+                  height: 16.0,
                 ),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () =>
-                      launchUrl('https://$domain/user/register-merchant'),
+                      launchUrl('https://wom.social/authentication/signup'),
                   child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
@@ -168,12 +164,13 @@ class _LoginBoxState extends State<LoginBox> {
   }
 
   _onLoginButtonPressed() {
-    final password = context.bloc<LoginBloc>().passwordController.text;
+    print('_onLoginButtonPressed');
+    final password = context.read<LoginBloc>().passwordController.text;
     if (password.length > 5) {
-      FocusScope.of(context).requestFocus(new FocusNode());
-      context.bloc<LoginBloc>().add(LoginButtonPressed(
-            username: context.bloc<LoginBloc>().usernameController.text.trim(),
-            password: context.bloc<LoginBloc>().passwordController.text,
+      FocusScope.of(context).requestFocus(FocusNode());
+      context.read<LoginBloc>().login(LoginButtonPressed(
+            username: context.read<LoginBloc>().usernameController.text.trim(),
+            password: password,
           ));
     } else {
       FocusScope.of(context).requestFocus(_focusNode);

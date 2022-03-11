@@ -10,6 +10,7 @@ import 'package:pos/src/model/request_status_enum.dart';
 
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/card_request.dart';
+import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:pos/src/screens/request_datails/request_datails.dart';
 import 'package:pos/src/services/pdf_creator.dart';
@@ -21,91 +22,131 @@ import '../../../my_logger.dart';
 class HomeList extends StatefulWidget {
   final List<PaymentRequest> requests;
 
-  HomeList({Key key, this.requests}) : super(key: key);
+  HomeList({Key? key, required this.requests}) : super(key: key);
 
   @override
   _HomeListState createState() => _HomeListState();
 }
 
 class _HomeListState extends State<HomeList> {
-  HomeBloc bloc;
+  late HomeBloc bloc;
 
   @override
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<HomeBloc>(context);
     return ListView.builder(
-        itemCount: widget.requests.length + 1,
-        itemBuilder: (context, index) {
-          if (index == widget.requests.length)
-            return SizedBox(
-              height: 80,
-            );
-          return GestureDetector(
-            onTap: widget.requests[index].status == RequestStatus.COMPLETE
-                ? () => goToDetails(index)
-                : null,
-            child: Slidable(
-              actionPane: SlidableDrawerActionPane(),
-              actionExtentRatio: 0.25,
-              child: CardRequest(
-                request: widget.requests[index],
-                onDelete: () => onDelete(index),
-                onEdit: () => onEdit(index),
-                onDuplicate: () => onDuplicate(index),
-              ),
-              actions: <Widget>[
+      itemCount: widget.requests.length + 1,
+      itemBuilder: (context, index) {
+        if (index == widget.requests.length) {
+          return const SizedBox(
+            height: 80,
+          );
+        }
+        return GestureDetector(
+          onTap: widget.requests[index].status == RequestStatus.COMPLETE
+              ? () => goToDetails(index)
+              : null,
+          child: Slidable(
+            startActionPane: ActionPane(
+              extentRatio: 0.5,
+              motion: const BehindMotion(),
+              children: [
                 if (widget.requests[index].status ==
                     RequestStatus.COMPLETE) ...[
-                  MySlideAction(
-                    icon: Icons.share,
-                    color: Colors.green,
-                    onTap: () {
-                      Share.share('${widget.requests[index].deepLink}');
-                    },
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 4),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: SlidableAction(
+                          backgroundColor: Colors.green,
+                          icon: Icons.share,
+                          onPressed: (context) {
+                            Share.share('${widget.requests[index].deepLink}');
+                          },
+                        ),
+                      ),
+                    ),
                   ),
                   if (widget.requests[index].persistent)
-                    MySlideAction(
-                      icon: Icons.picture_as_pdf,
-                      color: Colors.pink,
-                      onTap: () async {
-                        final pdfCreator = PdfCreator();
-                        final file = await pdfCreator.buildPdf(
-                            widget.requests[index],
-                            context.bloc<HomeBloc>().selectedPos,
-                            AppLocalizations.of(context).locale?.languageCode);
-                        Share.shareFiles([file.path]);
-                      },
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 4),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: SlidableAction(
+                            // label: 'Archive',
+                            backgroundColor: Colors.pink,
+                            icon: Icons.picture_as_pdf,
+                            onPressed: (context) async {
+                              final pos = context.read<HomeBloc>().selectedPos;
+                              if (pos == null) return;
+                              final pdfCreator = PdfCreator();
+                              final file = await pdfCreator.buildPdf(
+                                  widget.requests[index],
+                                  pos,
+                                  AppLocalizations.of(context)
+                                          ?.locale
+                                          .languageCode ??
+                                      'en');
+                              Share.shareFiles([file.path]);
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                 ],
-                // if (widget.requests[index].status == RequestStatus.COMPLETE)
-                //   if (!widget.requests[index].persistent)
-                //     MySlideAction(
-                //       icon: Icons.refresh,
-                //       color: Colors.yellow,
-                //       onTap: () => onDuplicate(index),
-                //     ),
                 if (widget.requests[index].status != RequestStatus.COMPLETE)
-                  MySlideAction(
-                    icon: Icons.edit,
-                    color: Colors.orange,
-                    onTap: () => onEdit(index),
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 4),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: SlidableAction(
+                          // label: 'Archive',
+                          backgroundColor: Colors.orange,
+                          icon: Icons.edit,
+                          onPressed: (c) => onEdit(index),
+                        ),
+                      ),
+                    ),
                   ),
               ],
-              secondaryActions: <Widget>[
-                /*MySlideAction(
-                  icon: Icons.archive,
-                  color: Colors.yellow,
-                  onTap: () => _showSnackBar(context, 'Archive'),
-                ),*/
-                MySlideAction(
-                  icon: Icons.delete,
-                  color: Colors.red,
-                  onTap: () => onDelete(index),
+            ),
+            endActionPane: ActionPane(
+              motion: const DrawerMotion(),
+              extentRatio: 0.25,
+              children: [
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 4),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: SlidableAction(
+                        // label: 'Archive',
+                        backgroundColor: Colors.red,
+                        icon: Icons.delete,
+                        onPressed: (c) => onDelete(index),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
-          );
-        });
+            child: CardRequest(
+              request: widget.requests[index],
+              onDelete: () => onDelete(index),
+              onEdit: () => onEdit(index),
+              onDuplicate: () => onDuplicate(index),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _showSnackBar(BuildContext context, String text) {
@@ -123,71 +164,44 @@ class _HomeListState extends State<HomeList> {
   }
 
   onDuplicate(int index) {
+    final pos = context.read<HomeBloc>().selectedPos;
+    if (pos == null) return;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => RequestConfirmScreen(
-          paymentRequest: widget.requests[index].copyFrom(),
+        builder: (ctx) => BlocProvider(
+          create: (c) => RequestConfirmBloc(
+            pos: context.read<PosClient>(),
+            pointOfSale: pos,
+            paymentRequest: widget.requests[index].copyFrom(),
+          ),
+          child: RequestConfirmScreen(),
         ),
       ),
     );
   }
 
   onEdit(int index) {
+    final id = context.read<HomeBloc>().selectedPos?.id;
+    if (id == null) return;
     final provider = BlocProvider(
       child: GenerateWomScreen(),
       create: (ctx) => CreatePaymentRequestBloc(
-          posId: ctx.bloc<HomeBloc>().selectedPos.id,
+          posId: id,
           draftRequest: widget.requests[index],
-          languageCode: AppLocalizations.of(context).locale.languageCode),
+          languageCode: AppLocalizations.of(context)?.locale.languageCode),
     );
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => provider));
   }
 
   onDelete(int index) async {
     logger.i("onDelete");
-    final result = await bloc.deleteRequest(widget.requests[index].id);
+    if (widget.requests[index].id == null) return;
+    final result = await bloc.deleteRequest(widget.requests[index].id!);
     logger.i("onDelete from DB complete: $result");
     if (result > 0) {
       setState(() {
         widget.requests.removeAt(index);
       });
     }
-  }
-}
-
-class MySlideAction extends StatelessWidget {
-  final Function onTap;
-  final IconData icon;
-  final Color color;
-  final String caption;
-
-  const MySlideAction(
-      {Key key, this.onTap, this.icon, this.color, this.caption})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-//      height: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      color: Colors.transparent,
-      child: Center(
-        child: Card(
-          color: color,
-          elevation: 8.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: IconSlideAction(
-            caption: caption,
-            color: Colors.transparent,
-            foregroundColor: Colors.white,
-            icon: icon,
-            onTap: onTap,
-          ),
-        ),
-      ),
-    );
   }
 }

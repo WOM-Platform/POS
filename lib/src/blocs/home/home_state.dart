@@ -14,11 +14,9 @@ class RequestLoading extends HomeState {
 class RequestLoaded extends HomeState {
   final List<PaymentRequest> requests;
 
-  RequestLoaded({@required this.requests}) : super([requests]);
+  RequestLoaded({required this.requests}) : super([requests]);
 
-  RequestLoaded copyWith({
-    List<PaymentRequest> requests,
-  }) {
+  RequestLoaded copyWith({List<PaymentRequest>? requests}) {
     return RequestLoaded(
       requests: requests ?? this.requests,
     );

@@ -13,7 +13,7 @@ class AimSelectionPage extends StatefulWidget {
 }
 
 class _AimSelectionPageState extends State<AimSelectionPage> {
-  CreatePaymentRequestBloc bloc;
+  late CreatePaymentRequestBloc bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context).translate('what_aim'),
+                    AppLocalizations.of(context)?.translate('what_aim') ??'',
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -52,7 +52,7 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                   children: <Widget>[
                     Text(
                       AppLocalizations.of(context)
-                          .translate('enable_disable_filter'),
+                          ?.translate('enable_disable_filter') ?? '',
                       style: TextStyle(color: Colors.white),
                     ),
                     Switch(
@@ -74,12 +74,12 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                   },
                 ),
                 SizedBox(
-                  height: 10.0,
+                  height: 10.0
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    AppLocalizations.of(context).translate('aim_suggestion'),
+                    AppLocalizations.of(context)?.translate('aim_suggestion') ?? '',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -89,14 +89,14 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    AppLocalizations.of(context).translate('aim_warning'),
+                    AppLocalizations.of(context)?.translate('aim_warning') ?? '',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 BackButtonText(
                   onTap: () => bloc.goToPreviousPage(),
                 )

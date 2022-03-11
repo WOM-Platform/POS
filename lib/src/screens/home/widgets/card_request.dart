@@ -13,7 +13,8 @@ class MyRichText extends StatelessWidget {
   final String t1;
   final String t2;
 
-  const MyRichText({Key key, this.t1, this.t2}) : super(key: key);
+  const MyRichText({Key? key, required this.t1, required this.t2})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +40,18 @@ class CardRequest extends StatelessWidget {
   final Function onEdit;
   final Function onDuplicate;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-  CardRequest(
-      {Key key, this.request, this.onDelete, this.onEdit, this.onDuplicate})
-      : super(key: key);
+
+  CardRequest({
+    Key? key,
+    required this.request,
+    required this.onDelete,
+    required this.onEdit,
+    required this.onDuplicate,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final languageCode = AppLocalizations.of(context).locale.languageCode;
+    final languageCode = AppLocalizations.of(context)?.locale.languageCode;
     return Container(
 //      height: 275,
       padding: const EdgeInsets.all(4.0),
@@ -126,13 +132,15 @@ class CardRequest extends StatelessWidget {
                             tooltip: 'Persistent',
                             icon: MdiIcons.infinity,
                             text: request.persistent
-                                ? AppLocalizations.of(context).translate('yes')
+                                ? AppLocalizations.of(context)
+                                        ?.translate('yes') ??
+                                    ''
                                 : 'No',
                           ),
                           ItemRow2(
                             tooltip: 'Aim',
                             icon: MdiIcons.shapeOutline,
-                            text: (request?.aim?.titles ??
+                            text: (request.aim?.titles ??
                                     const {})[languageCode ?? 'en'] ??
                                 '-',
                           ),
@@ -145,32 +153,32 @@ class CardRequest extends StatelessWidget {
                         children: <Widget>[
                           ItemRow2(
                             tooltip: 'Pin',
-                            icon: request?.password != null
+                            icon: request.password != null
                                 ? MdiIcons.lockOutline
                                 : MdiIcons.lockOpenOutline,
-                            text: request?.password ?? '-',
+                            text: request.password ?? '-',
                           ),
                           ItemRow2(
                             tooltip: 'Max age',
-                            icon: request?.simpleFilter?.maxAge != null
+                            icon: request.simpleFilter?.maxAge != null
                                 ? MdiIcons.timerSand
                                 : MdiIcons.timerSandEmpty,
-                            text: request?.simpleFilter?.maxAge?.toString() ??
-                                '-',
+                            text:
+                                request.simpleFilter?.maxAge?.toString() ?? '-',
                           ),
                           ItemRow2(
                             tooltip: 'Bounding Box',
                             onPressed: () {
                               if ((request.location != null &&
                                   request.simpleFilter?.bounds != null)) {
-                                cardKey.currentState.toggleCard();
+                                cardKey.currentState?.toggleCard();
                               }
                             },
-                            icon: request?.simpleFilter?.bounds != null
+                            icon: request.simpleFilter?.bounds != null
                                 ? MdiIcons.mapCheckOutline
                                 : MdiIcons.mapOutline,
-                            text: request?.simpleFilter?.bounds?.toString() ??
-                                '-',
+                            text:
+                                request.simpleFilter?.bounds?.toString() ?? '-',
                           ),
                         ],
                       ),
@@ -232,23 +240,23 @@ class CardRequest extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: GoogleMap(
-                    onTap: (lat) => cardKey.currentState.toggleCard(),
+                    onTap: (lat) => cardKey.currentState?.toggleCard(),
                     onMapCreated: (controller) {},
                     cameraTargetBounds: CameraTargetBounds(
                       LatLngBounds(
                         southwest: LatLng(
-                          request.simpleFilter.bounds.rightBottom[0],
-                          request.simpleFilter.bounds.leftTop[1],
+                          request.simpleFilter!.bounds!.rightBottom![0],
+                          request.simpleFilter!.bounds!.leftTop![1],
                         ),
                         northeast: LatLng(
-                          request.simpleFilter.bounds.leftTop[0],
-                          request.simpleFilter.bounds.rightBottom[1],
+                          request.simpleFilter!.bounds!.leftTop![0],
+                          request.simpleFilter!.bounds!.rightBottom![1],
                         ),
                       ),
                     ),
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(request.location.latitude,
-                          request.location.longitude),
+                      target: LatLng(request.location!.latitude,
+                          request.location!.longitude),
                       zoom: 12,
                     ),
                     rotateGesturesEnabled: false,
@@ -272,9 +280,11 @@ class CardRequest extends StatelessWidget {
 //                      )
 //                    },
                     markers: {
-                      Marker(
+                      if (request.location != null)
+                        Marker(
                           markerId: MarkerId(request.id.toString()),
-                          position: request.location),
+                          position: request.location!,
+                        ),
                     },
                     polygons: {
                       Polygon(
@@ -298,7 +308,8 @@ class ItemRow extends StatelessWidget {
   final String t1;
   final String t2;
 
-  const ItemRow({Key key, this.t1, this.t2}) : super(key: key);
+  const ItemRow({Key? key, required this.t1, required this.t2})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -333,9 +344,16 @@ class ItemRow2 extends StatelessWidget {
   final String text;
   final String tooltip;
   final IconData icon;
-  final Function onPressed;
-  const ItemRow2({Key key, this.text, this.icon, this.tooltip, this.onPressed})
+  final Function()? onPressed;
+
+  const ItemRow2(
+      {Key? key,
+      required this.text,
+      required this.icon,
+      required this.tooltip,
+      this.onPressed})
       : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -343,7 +361,7 @@ class ItemRow2 extends StatelessWidget {
         IconButton(
           tooltip: tooltip,
           icon: Icon(icon),
-          onPressed: onPressed ?? () {},
+          onPressed: onPressed,
         ),
         Expanded(
           child: AutoSizeText(

@@ -10,11 +10,17 @@ import 'package:pos/src/model/payment_request.dart';
 class PdfCreator {
   Future<File> buildPdf(
       PaymentRequest paymentRequest, PointOfSale pos, String locale) async {
+    if(paymentRequest.password == null){
+      throw Exception('paymentRequest.password is null');
+    }
+    if(paymentRequest.deepLink == null){
+      throw Exception('paymentRequest.deepLink is null');
+    }
     final tmpDir = await getTemporaryDirectory();
     final doc = pw.Document();
 
     final qrcode = pw.BarcodeWidget(
-      data: paymentRequest.deepLink,
+      data: paymentRequest.deepLink!,
       width: 250,
       height: 250,
       barcode: pw.Barcode.qrCode(),
@@ -30,21 +36,21 @@ class PdfCreator {
             children: [
               if (pos.name != 'Anonymous')
                 pw.Text(pos.name,
-                    style: pw.TextStyle(fontSize: 30),
+                    style: const pw.TextStyle(fontSize: 30),
                     textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 120),
               pw.Text(paymentRequest.name,
-                  style: pw.TextStyle(fontSize: 50),
+                  style: const pw.TextStyle(fontSize: 50),
                   textAlign: pw.TextAlign.center),
               pw.Text(
-                  '${paymentRequest.aim != null ? '${paymentRequest.aim.titles[locale ?? 'en']} - ' : ''}${paymentRequest.amount} WOM',
+                  '${paymentRequest.aim != null ? '${paymentRequest.aim?.titles?[locale]} - ' : ''}${paymentRequest.amount} WOM',
                   style: pw.TextStyle(fontSize: 30),
                   textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 60),
               qrcode,
               pw.SizedBox(height: 60),
               pw.Text(
-                paymentRequest.password,
+                paymentRequest.password!,
                 style:
                     pw.TextStyle(fontSize: 40, fontWeight: pw.FontWeight.bold),
                 textAlign: pw.TextAlign.center,
@@ -58,7 +64,8 @@ class PdfCreator {
 
     final file =
         File('${tmpDir.path}/${paymentRequest.name.replaceAll(' ', '_')}.pdf');
-    file.writeAsBytesSync(doc.save());
+    final bytes = await doc.save();
+    file.writeAsBytesSync(bytes);
     return file;
   }
 }

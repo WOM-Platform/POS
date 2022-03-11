@@ -22,11 +22,11 @@ class WomCreationRequestComplete extends WomCreationState {
 }
 
 class WomCreationRequestError extends WomCreationState {
-  final String error;
+  final String? error;
   WomCreationRequestError({this.error});
 
   @override
-  List<Object> get props => [error];
+  List<Object?> get props => [error];
 }
 
 class WomVerifyCreationRequestLoading extends WomCreationState {
@@ -37,7 +37,7 @@ class WomVerifyCreationRequestLoading extends WomCreationState {
 class WomVerifyCreationRequestComplete extends WomCreationState {
   final PaymentRequestResponse response;
 
-  WomVerifyCreationRequestComplete({@required this.response})
+  WomVerifyCreationRequestComplete({required this.response})
       : assert(response != null),
         super([response]);
   @override
@@ -49,7 +49,7 @@ class WomVerifyCreationRequestComplete extends WomCreationState {
 
 class WomVerifyCreationRequestError extends WomCreationState {
   final String error;
-  WomVerifyCreationRequestError({this.error});
+  WomVerifyCreationRequestError({required this.error});
   @override
   String toString() => 'WomVerifyCreationRequestError';
 

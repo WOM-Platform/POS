@@ -18,7 +18,7 @@ class AppDatabase extends AppDatabaseBase {
   //private internal constructor to make it singletona
   AppDatabase._internal();
 
-  Database _database;
+  Database? _database;
 
   static AppDatabase get() {
     return _appDatabase;
@@ -35,7 +35,7 @@ class AppDatabase extends AppDatabaseBase {
         }
       });
     }
-    return _database;
+    return _database!;
   }
 
   Future _init() async {
@@ -81,8 +81,8 @@ class AppDatabase extends AppDatabaseBase {
   }
 
   Future<void> closeDatabase() async {
-    if (_database != null && _database.isOpen) {
-      await _database.close();
+    if (_database != null && _database!.isOpen) {
+      await _database!.close();
       _database = null;
       logger.i("database closed");
     }

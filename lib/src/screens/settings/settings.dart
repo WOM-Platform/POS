@@ -19,7 +19,7 @@ class SettingsScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          AppLocalizations.of(context).translate('settings_title'),
+          AppLocalizations.of(context)?.translate('settings_title') ?? '',
           style: TextStyle(
             color: Colors.white,
           ),
@@ -32,24 +32,26 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
+          if (globalUser != null)
+            ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text('${globalUser!.name} ${globalUser!.surname}'),
+              subtitle: Text(globalUser!.email),
+              contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+            ),
           ListTile(
-            leading: Icon(Icons.account_circle),
-            title: Text('${globalUser.name} ${globalUser.surname}'),
-            subtitle: Text(globalUser.email),
-            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
-          ),
-          ListTile(
-            title: Text(AppLocalizations.of(context).translate('wom_platform')),
-            subtitle:
-                Text(AppLocalizations.of(context).translate('go_to_site')),
+            title: Text(
+                AppLocalizations.of(context)?.translate('wom_platform') ?? ''),
+            subtitle: Text(
+                AppLocalizations.of(context)?.translate('go_to_site') ?? ''),
             leading: Icon(Icons.public),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () => launchUrl('https://wom.social'),
           ),
           ListTile(
             title: Text('Tutorial'),
-            subtitle:
-                Text(AppLocalizations.of(context).translate('tutorial_desc')),
+            subtitle: Text(
+                AppLocalizations.of(context)?.translate('tutorial_desc') ?? ''),
             leading: Icon(Icons.info),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () => Navigator.push(
@@ -61,18 +63,19 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text(AppLocalizations.of(context).translate('sign_out')),
-            subtitle:
-                Text(AppLocalizations.of(context).translate('sign_out_desc')),
-            leading: Icon(Icons.info),
-            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+            title:
+                Text(AppLocalizations.of(context)?.translate('sign_out') ?? ''),
+            subtitle: Text(
+                AppLocalizations.of(context)?.translate('sign_out_desc') ?? ''),
+            leading: const Icon(Icons.info),
+            contentPadding: const EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () {
               _showLogoutDialog(context, () {
-                context.bloc<AuthenticationBloc>().add(LoggedOut());
+                context.read<AuthenticationBloc>().logOut();
               });
             },
           ),
-          VersionInfo(),
+          const VersionInfo(),
           /*if (Config.appFlavor == Flavor.DEVELOPMENT) ...[
             ListTile(
               title: Text('Visita WOM DB'),
@@ -94,7 +97,7 @@ class SettingsScreen extends StatelessWidget {
   void _showLogoutDialog(BuildContext context, Function logout) {
     Alert(
       context: context,
-      title: AppLocalizations.of(context).translate('logout_message'),
+      title: AppLocalizations.of(context)?.translate('logout_message') ?? '',
       buttons: [
         DialogButton(
           child: Text('No'),
@@ -103,7 +106,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         DialogButton(
-          child: Text(AppLocalizations.of(context).translate('yes')),
+          child: Text(AppLocalizations.of(context)?.translate('yes') ?? ''),
           onPressed: () {
             Navigator.of(context, rootNavigator: true).pop();
             Navigator.of(context).pop();
@@ -118,13 +121,13 @@ class SettingsScreen extends StatelessWidget {
 class SettingsItem extends StatelessWidget {
   final String title;
   final String subtitle;
-  final IconData icon;
-  final VoidCallback onTap;
+  final IconData? icon;
+  final VoidCallback? onTap;
 
   const SettingsItem(
-      {Key key,
-      @required this.title,
-      @required this.subtitle,
+      {Key? key,
+      required this.title,
+      required this.subtitle,
       this.icon,
       this.onTap})
       : super(key: key);
@@ -153,7 +156,7 @@ class SettingsItem extends StatelessWidget {
 
 class VersionInfo extends StatelessWidget {
   const VersionInfo({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -164,9 +167,10 @@ class VersionInfo extends StatelessWidget {
         if (snapshot.hasData) {
           final pkg = snapshot.data;
           return ListTile(
-            title: Text(AppLocalizations.of(context).translate('version_app')),
+            title: Text(
+                AppLocalizations.of(context)?.translate('version_app') ?? ''),
             subtitle: Text(
-                '${flavor == Flavor.DEVELOPMENT ? 'DEV ' : ''}${pkg.version}'),
+                '${flavor == Flavor.DEVELOPMENT ? 'DEV ' : ''}${pkg?.version}'),
             leading: Icon(Icons.perm_device_information),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: null,

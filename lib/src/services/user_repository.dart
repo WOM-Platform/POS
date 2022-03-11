@@ -1,54 +1,57 @@
 import 'dart:convert';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mmkv_flutter/mmkv_flutter.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
 import 'package:pos/src/services/auth_local_data_sources.dart';
 
 class UserRepository {
-  final Pos pos;
+  final PosClient pos;
   final AuthLocalDataSources authLocalDataSources;
   final secureStorage = FlutterSecureStorage();
 
   UserRepository(this.pos, this.authLocalDataSources);
 
-  Future<User> authenticate({
-    String username,
-    String password,
+  Future<POSUser> authenticate({
+    required String username,
+    required String password,
   }) async {
     return pos.authenticate(username, password);
   }
 
   Future<void> deleteToken() async {
-    final mmkv = await MmkvFlutter.getInstance();
+    final mmkv = Hive.box('settings');
     await mmkv.clear();
-    await secureStorage.delete(key: 'actors');
+    await secureStorage.delete(key: 'email');
+    await secureStorage.delete(key: 'password');
   }
 
-  Future<void> persistToken(User user, String email, String password) async {
-    final mmkv = await MmkvFlutter.getInstance();
-    await mmkv.setString(User.dbName, user.name);
-    await mmkv.setString(User.dbSurname, user.surname);
-    await mmkv.setString(User.dbEmail, user.email);
+  Future<void> persistToken(POSUser user, String email, String password) async {
+    // final mmkv = Hive.box('settings');
+    // await mmkv.put(User.dbName, user.name);
+    // await mmkv.put(User.dbSurname, user.surname);
+    // await mmkv.put(User.dbEmail, user.email);
 
-    final array = user.merchants.map((merchant) => merchant.toMap()).toList();
-
-    final jsonArray = json.encode(array);
-    await secureStorage.write(key: 'actors', value: jsonArray);
+    // final array = user.merchants.map((merchant) => merchant.toJson()).toList();
+    //
+    // final jsonArray = json.encode(array);
+    // await secureStorage.write(key: 'actors', value: jsonArray);
+    await secureStorage.write(key: 'email', value: email);
     await secureStorage.write(key: 'password', value: password);
-    await mmkv.setLong('lastLogin', DateTime.now().millisecondsSinceEpoch);
+    // await mmkv.put('lastLogin', DateTime.now().millisecondsSinceEpoch);
   }
 
-  Future<User> readUser() async {
-    final mmkv = await MmkvFlutter.getInstance();
-    final name = await mmkv.getString(User.dbName);
-    final surname = await mmkv.getString(User.dbSurname);
-    final email = await mmkv.getString(User.dbEmail);
+  /* Future<POSUser?> readUser() async {
+    final mmkv = Hive.box('settings');
+    final name = await mmkv.get(User.dbName);
+    final surname = await mmkv.get(User.dbSurname);
+    final email = await mmkv.get(User.dbEmail);
     if (name == null || surname == null || email == null) {
       return null;
     }
 
     final lastLogin =
-        DateTime.fromMillisecondsSinceEpoch(await mmkv.getLong('lastLogin'));
+        DateTime.fromMillisecondsSinceEpoch(await mmkv.get('lastLogin'));
 
     if (DateTime.now().difference(lastLogin).inMinutes > 3600) {
       final password = await secureStorage.read(key: 'password');
@@ -56,40 +59,55 @@ class UserRepository {
       return authenticate(username: email, password: password);
     }
     return readPosUser(name, surname, email);
+  }*/
+
+  Future<POSUser?> autoLogin() async {
+    final email = await secureStorage.read(key: 'email');
+    final password = await secureStorage.read(key: 'password');
+    if (email == null || password == null) {
+      return null;
+    }
+    return authenticate(username: email, password: password);
   }
 
   Future<void> saveMerchantAndPosIdUsed(String posId, String merchantId) async {
-    final mmkv = await MmkvFlutter.getInstance();
-    await mmkv.setString('lastPosId', posId);
-    await mmkv.setString('lastMerchantId', merchantId);
+    final mmkv = Hive.box('settings');
+    await mmkv.put('lastPosId', posId);
+    await mmkv.put('lastMerchantId', merchantId);
   }
 
-  Future<List<String>> readLastMerchantIdAndPosIdUsed() async {
-    final mmkv = await MmkvFlutter.getInstance();
-    final merchantId = await mmkv.getString('lastMerchantId');
-    final posId = await mmkv.getString('lastPosId');
+  Future<List<String>?> readLastMerchantIdAndPosIdUsed() async {
+    print('readLastMerchantIdAndPosIdUsed');
+    final mmkv = Hive.box('settings');
+    final merchantId = await mmkv.get('lastMerchantId');
+    final posId = await mmkv.get('lastPosId');
+    if(merchantId == null || posId == null){
+      return null;
+    }
+    print(merchantId);
+    print(posId);
     return [merchantId, posId];
   }
 
-  Future<User> readPosUser(String name, String surname, String email) async {
+/*  Future<POSUser> readPosUser(String name, String surname, String email) async {
     final actorsJsonArray = await secureStorage.read(key: 'actors');
-    final actorsArray = json.decode(actorsJsonArray);
+    final actorsArray = json.decode(actorsJsonArray ?? '[]');
     final merchants = List<Merchant>.from(
-        actorsArray.map<Merchant>((m) => Merchant.fromMap(m)));
-    return User(
+        actorsArray.map<Merchant>((m) => Merchant.fromJson(m)));
+    return POSUser(
         name: name, surname: surname, email: email, merchants: merchants);
-  }
+  }*/
 
-  Future<String> readEmail() async {
-    final mmkv = await MmkvFlutter.getInstance();
-    final email = await mmkv.getString('email');
+  Future<String?> readEmail() async {
+    final mmkv = Hive.box('settings');
+    final email = await mmkv.get('email');
     return email;
   }
 
   Future<bool> hasToken() async {
-    final mmkv = await MmkvFlutter.getInstance();
-    final name = await mmkv.getString(User.dbName);
-    final surname = await mmkv.getString(User.dbSurname);
+    final mmkv = Hive.box('settings');
+    final name = await mmkv.get(User.dbName);
+    final surname = await mmkv.get(User.dbSurname);
     return name != null && surname != null;
   }
 }

@@ -4,18 +4,22 @@ import 'package:pos/localization/app_localizations.dart';
 
 class MyDropdown extends StatelessWidget {
   final List<Aim> list;
-  final String value;
+  final String? value;
   final String labelText;
 
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String?>? onChanged;
 
-  const MyDropdown(
-      {Key key, this.list, this.value, this.onChanged, this.labelText})
-      : super(key: key);
+  const MyDropdown({
+    Key? key,
+    required this.list,
+    this.value,
+    this.onChanged,
+    required this.labelText,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final languageCode = AppLocalizations.of(context).locale.languageCode;
+    final languageCode = AppLocalizations.of(context)?.locale.languageCode;
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: InputDecorator(
@@ -33,18 +37,22 @@ class MyDropdown extends StatelessWidget {
             borderSide: BorderSide(color: Colors.white),
           ),
           filled: true,
-          fillColor: Theme.of(context).primaryColor,
+          // fillColor: Colors.white,
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton(
             value: value,
-            hint: Text(AppLocalizations.of(context).translate('choose')),
+            hint: Text(
+              AppLocalizations.of(context)?.translate('choose') ?? '',
+              style: TextStyle(color: Colors.white),
+            ),
             onChanged: onChanged,
             items: list.map((Aim aim) {
               return DropdownMenuItem<String>(
                 value: aim.code,
                 child: Text(
-                  (aim?.titles ?? const {})[languageCode ?? "en"] ?? '-',
+                  (aim.titles ?? const {})[languageCode ?? "en"] ?? '-',
+                  style: TextStyle(),
                 ),
               );
             }).toList(),

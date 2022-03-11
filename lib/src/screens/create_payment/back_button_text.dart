@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pos/localization/app_localizations.dart';
 
 class BackButtonText extends StatelessWidget {
-  final Function onTap;
+  final Function()? onTap;
 
-  const BackButtonText({Key key, this.onTap}) : super(key: key);
+  const BackButtonText({Key? key, this.onTap}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,7 +14,7 @@ class BackButtonText extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Text(
-          AppLocalizations.of(context).translate('back'),
+          AppLocalizations.of(context)?.translate('back') ?? '',
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
         ),

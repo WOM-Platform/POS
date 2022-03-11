@@ -10,34 +10,38 @@ import 'package:pos/src/screens/request_confirm/wom_creation_event.dart';
 import 'package:pos/src/screens/request_confirm/wom_creation_state.dart';
 
 class RequestConfirmScreen extends StatefulWidget {
-  final PaymentRequest paymentRequest;
+  // final PaymentRequest paymentRequest;
 
-  const RequestConfirmScreen({Key key, this.paymentRequest}) : super(key: key);
+  const RequestConfirmScreen({
+    Key? key,
+    // required this.paymentRequest,
+  }) : super(key: key);
 
   @override
   _RequestConfirmScreenState createState() => _RequestConfirmScreenState();
 }
 
 class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
-  RequestConfirmBloc bloc;
-  HomeBloc homeBloc;
+  late RequestConfirmBloc bloc;
+  late HomeBloc homeBloc;
 
   bool isComplete = false;
   bool isWrong = false;
   bool noDataConnection = false;
 
-  @override
-  void initState() {
-    bloc = RequestConfirmBloc(
-        pos: context.repository<Pos>(),
-        pointOfSale: context.bloc<HomeBloc>().selectedPos,
-        paymentRequest: widget.paymentRequest);
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   bloc = RequestConfirmBloc(
+  //     pos: context.read<PosClient>(),
+  //     pointOfSale: context.read<HomeBloc>().selectedPos,
+  //     paymentRequest: widget.paymentRequest,
+  //   );
+  //   super.initState();
+  // }
 
   Future<bool> onWillPop() {
     if (isComplete || isWrong || noDataConnection) {
-      homeBloc.add(LoadRequest());
+      homeBloc.loadRequest();
       return Future.value(true);
     }
     return Future.value(false);
@@ -45,6 +49,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bloc = context.read<RequestConfirmBloc>();
     homeBloc = BlocProvider.of<HomeBloc>(context);
 
     return WillPopScope(
@@ -64,7 +69,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
             if (state is WomCreationRequestEmpty) {
               return Center(
                 child: Text(AppLocalizations.of(context)
-                    .translate('starting_creation_request')),
+                        ?.translate('starting_creation_request') ??
+                    ''),
               );
             } else if (state is WomCreationRequestLoading) {
               isWrong = false;
@@ -85,15 +91,17 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                     child: Text(
                       state.error ??
                           AppLocalizations.of(context)
-                              .translate('somethings_wrong'),
+                              ?.translate('somethings_wrong') ??
+                          '',
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Center(
                     child: FloatingActionButton.extended(
-                      onPressed: () => bloc.add(CreateWomRequest()),
+                      onPressed: () => bloc.createWomRequest(CreateWomRequest()),
                       label: Text(
-                        AppLocalizations.of(context).translate('try_again'),
+                        AppLocalizations.of(context)?.translate('try_again') ??
+                            '',
                       ),
                     ),
                   ),
@@ -110,24 +118,27 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         AppLocalizations.of(context)
-                            .translate('no_connection_title'),
+                                ?.translate('no_connection_title') ??
+                            '',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                     Text(
                       AppLocalizations.of(context)
-                          .translate('no_connection_transaction_desc'),
+                              ?.translate('no_connection_transaction_desc') ??
+                          '',
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     FloatingActionButton.extended(
                         label: Text(AppLocalizations.of(context)
-                            .translate('try_again')),
+                                ?.translate('try_again') ??
+                            ''),
                         onPressed: () {
-                          bloc.add(CreateWomRequest());
+                          bloc.createWomRequest(CreateWomRequest());
                         }),
                   ],
                 ),
@@ -141,7 +152,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
             return Center(
                 child: Text(AppLocalizations.of(context)
-                    .translate('error_screen_state')));
+                        ?.translate('error_screen_state') ??
+                    ''));
           },
         ),
       ),
@@ -150,7 +162,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   @override
   void dispose() {
-    homeBloc.add(LoadRequest());
+    homeBloc.loadRequest();
     bloc.close();
     super.dispose();
   }

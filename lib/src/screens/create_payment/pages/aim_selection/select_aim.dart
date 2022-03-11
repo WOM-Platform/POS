@@ -8,11 +8,12 @@ class SelectAim extends StatelessWidget {
 
   final Function updateState;
 
-  const SelectAim({Key key, this.bloc, this.updateState}) : super(key: key);
+  const SelectAim({Key? key, required this.bloc, required this.updateState})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<String>(
+    return StreamBuilder<String?>(
       stream: bloc.selectedAimCode,
       builder: (context, snapshot) {
         if (bloc.aimList == null || bloc.aimList.isEmpty) {
@@ -22,7 +23,9 @@ class SelectAim extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  AppLocalizations.of(context).translate('no_connection_title'),
+                  AppLocalizations.of(context)
+                          ?.translate('no_connection_title') ??
+                      '',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -31,7 +34,8 @@ class SelectAim extends StatelessWidget {
                 ),
                 Text(
                   AppLocalizations.of(context)
-                      .translate('no_connection_aim_desc'),
+                          ?.translate('no_connection_aim_desc') ??
+                      '',
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
@@ -39,7 +43,8 @@ class SelectAim extends StatelessWidget {
                 ),
                 RaisedButton(
                     child: Text(
-                        AppLocalizations.of(context).translate('try_again')),
+                        AppLocalizations.of(context)?.translate('try_again') ??
+                            ''),
                     onPressed: () {
                       bloc.updateAims();
                     }),
@@ -52,9 +57,10 @@ class SelectAim extends StatelessWidget {
             MyDropdown(
               list: bloc.aimList,
               value: bloc.aimEnabled ? snapshot.data : null,
-              labelText: AppLocalizations.of(context).translate('primary_aim'),
+              labelText:
+                  AppLocalizations.of(context)?.translate('primary_aim') ?? '',
               onChanged: bloc.aimEnabled
-                  ? (String aim) {
+                  ? (aim) {
                       bloc.changeSelectedAimRoot(aim);
                       bloc.subAimCode = null;
                       updateState();
@@ -65,9 +71,11 @@ class SelectAim extends StatelessWidget {
                 ? MyDropdown(
                     list: bloc.subAimList,
                     value: bloc.subAimCode,
-                    labelText:
-                        AppLocalizations.of(context).translate('secondary_aim'),
-                    onChanged: (String aimCode) {
+                    labelText: AppLocalizations.of(context)
+                            ?.translate('secondary_aim') ??
+                        '',
+                    onChanged: (String? aimCode) {
+                      if (aimCode == null) return;
                       bloc.changeSelectedAimRoot(aimCode.substring(0, 1));
                       bloc.subAimCode = aimCode;
                       bloc.subSubAimCode = null;
@@ -82,9 +90,11 @@ class SelectAim extends StatelessWidget {
                 ? MyDropdown(
                     list: bloc.subSubAimList,
                     value: bloc.subSubAimCode,
-                    labelText:
-                        AppLocalizations.of(context).translate('tiertiary_aim'),
+                    labelText: AppLocalizations.of(context)
+                            ?.translate('tiertiary_aim') ??
+                        '',
                     onChanged: (aim) {
+                      if (aim == null) return;
                       bloc.changeSelectedAimRoot(aim.substring(0, 1));
                       bloc.subSubAimCode = aim;
                       updateState();
@@ -99,7 +109,8 @@ class SelectAim extends StatelessWidget {
             ),
             Text(
               bloc.getStringOfAimSelected() ??
-                  AppLocalizations.of(context).translate('error'),
+                  AppLocalizations.of(context)?.translate('error') ??
+                  '',
               style: TextStyle(color: Colors.white),
             ),
           ],

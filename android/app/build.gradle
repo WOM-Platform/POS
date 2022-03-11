@@ -35,58 +35,60 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 29
+
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
+    compileSdkVersion 31
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-    }
-
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "social.wom.pos"
-        minSdkVersion 18
-        targetSdkVersion 29
+        minSdkVersion 21
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        manifestPlaceholders = [appAuthRedirectScheme: "social.wom.pos",
+//                                applicationName: "social.wom.pos"]
     }
 
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
     }
-
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
-            useProguard true
-
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//
-//            ndk {
-//                abiFilters 'armeabi-v7a'
-//            }
         }
-    }
 
-    flavorDimensions "flutter-flavours"
+        flavorDimensions "flutter-flavours"
 
-    productFlavors{
-        development{
-            dimension "flutter-flavours"
-            applicationIdSuffix ".dev"
-        }
-        production{
-            dimension "flutter-flavours"
+        productFlavors{
+            development{
+                dimension "flutter-flavours"
+                applicationIdSuffix ".dev"
+            }
+            production{
+                dimension "flutter-flavours"
+            }
         }
     }
 }
@@ -97,14 +99,4 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.google.firebase:firebase-core:17.0.1'
-}
-
-if (isProduction) {
-    println("production flavor")
-    apply plugin: 'io.fabric'
-    apply plugin: 'com.google.gms.google-services'
 }

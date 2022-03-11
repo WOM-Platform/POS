@@ -1,7 +1,7 @@
 import 'app_database_base.dart';
 
 class AppDatabase extends AppDatabaseBase {
-  static AppDatabase _instance;
+  static late AppDatabase _instance;
 
 //  static Future<AppDatabse> get instance async {
 //    if (_instance == null) {

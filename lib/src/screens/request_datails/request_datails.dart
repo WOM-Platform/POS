@@ -5,7 +5,7 @@ import 'package:pos/src/screens/request_confirm/summary_request.dart';
 class RequestDetails extends StatelessWidget {
   final PaymentRequest paymentRequest;
 
-  const RequestDetails({Key key, this.paymentRequest}) : super(key: key);
+  const RequestDetails({Key? key,required this.paymentRequest}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

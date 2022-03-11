@@ -4,7 +4,7 @@ class RequestErrorPage extends StatelessWidget {
 
   final String error;
 
-  const RequestErrorPage({Key key, this.error}) : super(key: key);
+  const RequestErrorPage({Key? key,required this.error}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

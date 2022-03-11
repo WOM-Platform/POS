@@ -4,7 +4,7 @@
 //class ChipSelection extends StatefulWidget {
 //  final CreatePaymentRequestBloc bloc;
 //
-//  const ChipSelection({Key key, @required this.bloc}) : super(key: key);
+//  const ChipSelection({Key? key, required this.bloc}) : super(key: key);
 //
 //  @override
 //  _ChipSelectionState createState() => _ChipSelectionState();

@@ -6,8 +6,8 @@ import '../constants.dart';
 import '../my_logger.dart';
 
 class AimRepository {
-  AimRemoteDataSources _apiProvider;
-  AimDatabase _aimDbHelper;
+  late AimRemoteDataSources _apiProvider;
+  late AimDatabase _aimDbHelper;
 
   AimRepository() {
     _apiProvider = AimRemoteDataSources(domain);
@@ -16,7 +16,7 @@ class AimRepository {
 
   // check if there is update of Aim
   //TODO delete la riga sotto quando verranno scaricati solo gli aim nuovi
-  Future<List<Aim>> updateAim({Future<Database> database}) async {
+  Future<List<Aim>> updateAim({required Future<Database> database}) async {
     logger.i("AimRepository: updateAim()");
     try {
       final List<Aim> newList = await _apiProvider.checkUpdate();
@@ -33,22 +33,25 @@ class AimRepository {
     }
   }
 
-  Future<List<Aim>> getFlatAimList({
-    Future<Database> database,
+  Future<List<Aim>?> getFlatAimList({
+    required Future<Database> database,
   }) async {
     logger.i("AimRepository: getFlatAimList()");
     final db = await database;
     return await _aimDbHelper.getFlatAimList(db: db);
   }
 
-  Future<Aim> getAim({Future<Database> database, String aimCode}) async {
+  Future<Aim?> getAim({
+    required Future<Database> database,
+    required String aimCode,
+  }) async {
     logger.i("AimRepository: getAim()");
     final db = await database;
     return await _aimDbHelper.getAim(db: db, aimCode: aimCode);
   }
 
   Future<List<Aim>> getAimList({
-    Future<Database> database,
+    required Future<Database> database,
   }) async {
     logger.i("AimRepository: getAimList()");
     try {
@@ -58,23 +61,44 @@ class AimRepository {
       if (rootList.isEmpty) {
         final list = await _apiProvider.getAims();
         await saveAimToDb(db, list);
-        rootList = await _aimDbHelper.getAimWithLevel(db: db, deepLevel: 1);
+        rootList = await _aimDbHelper.getAimWithLevel(
+          db: db,
+          deepLevel: 1,
+        );
       }
+
+      final tmp = <Aim>[];
 
       logger.i("START READING");
       for (final aim in rootList) {
-        aim.children = await _aimDbHelper.getAimWithLevel(
-            db: db, deepLevel: 2, code: aim.code);
-        for (final aim in aim.children) {
-          aim.children = await _aimDbHelper.getAimWithLevel(
-              db: db, deepLevel: 3, code: aim.code);
+        final children = await _aimDbHelper.getAimWithLevel(
+          db: db,
+          deepLevel: 2,
+          code: aim.code,
+        );
+        final newAim = aim.copyWith(children: children);
+
+        // aim.children = await _aimDbHelper.getAimWithLevel(
+        //     db: db, deepLevel: 2, code: aim.code);
+
+        final subAims = <Aim>[];
+        for (final Aim a in newAim.children ?? []) {
+          final subChildren = await _aimDbHelper.getAimWithLevel(
+              db: db, deepLevel: 3, code: a.code);
+          final subAim = a.copyWith(children: subChildren);
+          subAims.add(subAim);
+          // a.children = await _aimDbHelper.getAimWithLevel(
+          //     db: db, deepLevel: 3, code: a.code);
+
         }
+        final output = newAim.copyWith(children: subAims);
+        tmp.add(output);
       }
 
       logger.i("END READING");
-      return rootList;
+      return tmp;
     } catch (ex) {
-      throw ex;
+      rethrow;
     }
   }
 

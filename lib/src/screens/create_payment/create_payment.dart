@@ -20,8 +20,8 @@ class GenerateWomScreen extends StatefulWidget {
 
 class _GenerateWomScreenState extends State<GenerateWomScreen> {
   int page = 0;
-  CreatePaymentRequestBloc bloc;
-  HomeBloc homeBloc;
+  late CreatePaymentRequestBloc bloc;
+  late HomeBloc homeBloc;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
   }
 
   Future<bool> onWillPop() {
-    if (bloc.pageController.page.round() == bloc.pageController.initialPage) {
+    if (bloc.pageController.page?.round() == bloc.pageController.initialPage) {
       return Future.value(true);
     }
     bloc.goToPreviousPage();
@@ -64,12 +64,12 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
                 top: 0.0,
                 right: 0.0,
                 child: IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.clear,
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    if (bloc.pageController.page.round() != 0) {
+                    if (bloc.pageController.page?.round() != 0) {
                       showAlert(context);
                     } else {
                       Navigator.of(context).pop();
@@ -90,7 +90,7 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
       builder: (ctx) {
         return AlertDialog(
           title: new Text(AppLocalizations.of(context)
-              .translate('save_draft_request_title_popup')),
+              ?.translate('save_draft_request_title_popup') ?? ''),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -100,7 +100,7 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
               },
             ),
             new FlatButton(
-              child: new Text(AppLocalizations.of(context).translate('yes')),
+              child: new Text(AppLocalizations.of(context)?.translate('yes') ?? ''),
               onPressed: () {
                 Navigator.of(ctx).pop(true);
               },
@@ -110,9 +110,9 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
       },
     );
 
-    if (result ?? false) {
+    if (result) {
       await bloc.saveDraftRequest();
-      homeBloc.add(LoadRequest());
+      homeBloc.loadRequest();
     }
     Navigator.of(context).pop();
   }

@@ -18,5 +18,7 @@ Future<void> mainCommon(Flavor f, String d) async {
   if (isFirstOpen) {
     await setIsFirstOpen(true);
   }
-  runApp(App(isFirstOpen: isFirstOpen));
+  runApp(App(
+    isFirstOpen: isFirstOpen,
+  ));
 }

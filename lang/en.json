@@ -9,7 +9,7 @@
   "save_draft_request_title_popup": "Save draft request?",
   "yes": "Yes",
   "back": "Back",
-  "no_request": "No offers",
+  "no_request": "There aren't offers for selected POS!\nCreate an offer tapping on + button",
   "is_a_persistent_request": "Is it a persistent offer?",
   "duplicate": "Renew",
   "how_recent_wom": "WOM age filter",
@@ -59,6 +59,6 @@
   "wom_suggestion": "Gives value to WOMs",
   "wom_suggestion_desc": "Since every WOM is equivalent to one minute of commitment, you can freely decide how many WOM are needed to earn your offers.",
   "no_merchants": "You don't have any Merchant paired with your account. Log in via the web and add a Merchant",
-  "no_pos": "You don't have any POS paired with this Merchant. Log in via the web and add a POS to the Merchant",
+  "no_pos": "You haven't selected a POS",
   "login_insufficient_pos": "The login was successful but there are no Merchants or POSs registered for this account!"
 }

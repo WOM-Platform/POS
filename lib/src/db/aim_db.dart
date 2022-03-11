@@ -25,8 +25,11 @@ class AimDatabase {
         "${AimDbKeys.TITLES} TEXT);");
   }
 
-  Future<List<Aim>> getAimWithLevel(
-      {@required Database db, int deepLevel, String code}) async {
+  Future<List<Aim>> getAimWithLevel({
+    required Database db,
+    required int deepLevel,
+    String? code,
+  }) async {
     try {
       logger.i("AimDatabase: getAimWithLevel()");
       final String whereClause = code != null
@@ -42,16 +45,16 @@ class AimDatabase {
         return Aim(
           code: a[AimDbKeys.CODE],
           titles: json.decode(a[AimDbKeys.TITLES]),
-          iconUrl: a[AimDbKeys.ICON_URL],
+          // iconUrl: a[AimDbKeys.ICON_URL],
         );
       }).toList();
     } catch (e) {
       logger.i(e.toString());
-      return List<Aim>();
+      return <Aim>[];
     }
   }
 
-  Future<List<Aim>> getFlatAimList({@required Database db}) async {
+  Future<List<Aim>?> getFlatAimList({required Database db}) async {
     logger.i("AimDatabase: getFlatAimList()");
     try {
       List<Map> maps = await db.query(
@@ -61,7 +64,7 @@ class AimDatabase {
         return Aim(
           code: a[AimDbKeys.CODE],
           titles: json.decode(a[AimDbKeys.TITLES]),
-          iconUrl: a[AimDbKeys.ICON_URL],
+          // iconUrl: a[AimDbKeys.ICON_URL],
         );
       }).toList();
     } catch (e) {
@@ -70,7 +73,7 @@ class AimDatabase {
     }
   }
 
-  Future<Aim> getAim({@required Database db, String aimCode}) async {
+  Future<Aim?> getAim({required Database db, required String aimCode}) async {
     logger.i("AimDatabase: getAim()");
     try {
       List<Map> maps = await db.query(
@@ -83,7 +86,7 @@ class AimDatabase {
       return Aim(
         code: a[AimDbKeys.CODE],
         titles: json.decode(a[AimDbKeys.TITLES]),
-        iconUrl: a[AimDbKeys.ICON_URL],
+        // iconUrl: a[AimDbKeys.ICON_URL],
       );
     } catch (e) {
       logger.i(e.toString());
@@ -91,9 +94,9 @@ class AimDatabase {
     }
   }
 
-  Future<int> insert({@required Database db, Aim aim}) async {
+  Future<int> insert({required Database db,required Aim aim}) async {
     logger.i("AimDatabase: insert()");
-    int result;
+    late int result;
     await db.transaction((Transaction txn) async {
       result = await txn.insert(
         AimDbKeys.TABLE_NAME,
@@ -109,7 +112,7 @@ extension AimExtension on Aim {
   Map<String, dynamic> toDBMap() {
     final data = <String, dynamic>{};
     data[AimDbKeys.CODE] = code;
-    data[AimDbKeys.ICON_URL] = iconUrl;
+    // data[AimDbKeys.ICON_URL] = iconUrl;
     data[AimDbKeys.TITLES] = json.encode(titles);
     return data;
   }

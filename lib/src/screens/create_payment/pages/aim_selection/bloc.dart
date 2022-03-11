@@ -4,33 +4,32 @@ import 'package:pos/src/services/aim_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../../my_logger.dart';
+import 'package:collection/collection.dart';
 
 class AimSelectionBloc {
-  BehaviorSubject<String> _selectedAimCode = BehaviorSubject<String>();
+  BehaviorSubject<String?> _selectedAimCode = BehaviorSubject<String?>();
 
-  Stream<String> get selectedAimCode => _selectedAimCode.stream;
+  Stream<String?> get selectedAimCode => _selectedAimCode.stream;
 
   Function get changeSelectedAimRoot => _selectedAimCode.add;
 
   List<Aim> get subAimList =>
       aimList
-          .firstWhere((aim) => aim.code == _selectedAimCode.value,
-              orElse: () => null)
+          .firstWhereOrNull((aim) => aim.code == _selectedAimCode.value)
           ?.children ??
       [];
 
   List<Aim> get subSubAimList =>
-      subAimList
-          .firstWhere((aim) => aim.code == subAimCode, orElse: () => null)
-          ?.children ??
+      subAimList.firstWhereOrNull((aim) => aim.code == subAimCode)?.children ??
       [];
 
   bool aimEnabled = false;
   List<Aim> aimList = [];
-  String subAimCode;
-  String subSubAimCode;
-  AimRepository _aimRepository;
+  String? subAimCode;
+  String? subSubAimCode;
+  late AimRepository _aimRepository;
   final String languageCode;
+
   AimSelectionBloc(this.languageCode) {
     logger.i("AimSelectionBloc()");
     _aimRepository = AimRepository();
@@ -54,39 +53,39 @@ class AimSelectionBloc {
   }
 
   getStringOfAimSelected() {
-    final Aim firstLevelAim = aimList.firstWhere(
-        (aim) => aim.code == _selectedAimCode.value,
-        orElse: () => null);
+    final firstLevelAim = _selectedAimCode.hasValue
+        ? aimList.firstWhereOrNull((aim) => aim.code == _selectedAimCode.value)
+        : null;
 
     if (firstLevelAim == null) {
       return "";
     }
-    final String firstLevel = firstLevelAim.titles[languageCode];
+    final firstLevel = firstLevelAim.titles?[languageCode];
 
-    final Aim secondLevelAim = subAimList
-        .firstWhere((aim) => aim.code == subAimCode, orElse: () => null);
+    final secondLevelAim =
+        subAimList.firstWhereOrNull((aim) => aim.code == subAimCode);
 
     if (secondLevelAim == null) {
       return firstLevel;
     }
 
-    final String secondLevel = secondLevelAim.titles[languageCode];
+    final secondLevel = secondLevelAim.titles?[languageCode];
 
-    final Aim thirdLevelAim = subSubAimList
-        .firstWhere((aim) => aim.code == subSubAimCode, orElse: () => null);
+    final thirdLevelAim =
+        subSubAimList.firstWhereOrNull((aim) => aim.code == subSubAimCode);
 
     if (thirdLevelAim == null) {
       return firstLevel + " -> " + secondLevel;
     }
 
-    final String thirdLevel = thirdLevelAim.titles[languageCode];
+    final thirdLevel = thirdLevelAim.titles?[languageCode];
 
     return firstLevel + " -> " + secondLevel + " -> " + thirdLevel;
   }
 
   //Return aim code selected
   getAimCode() {
-    return aimEnabled
+    return aimEnabled && _selectedAimCode.hasValue
         ? (subSubAimCode ?? subAimCode ?? _selectedAimCode.value)
         : null;
   }
@@ -103,7 +102,7 @@ class AimSelectionBloc {
     subSubAimCode = aimCode;
   }
 
-  Future<Aim> getAim() async {
+  Future<Aim?> getAim() async {
     final aimCode = getAimCode();
     if (aimCode != null) {
       return await _aimRepository.getAim(

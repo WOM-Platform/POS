@@ -10,8 +10,8 @@ class LoginButtonPressed extends LoginEvent {
   final String password;
 
   LoginButtonPressed({
-    @required this.username,
-    @required this.password,
+    required this.username,
+    required this.password,
   }) : super([username, password]);
 
   @override

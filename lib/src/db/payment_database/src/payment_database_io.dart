@@ -26,7 +26,7 @@ class PaymentDatabase extends PaymentDatabaseBase {
 //        orderBy: "${PaymentRequest.DATE} DESC",
 //      );
 //    LEFT OUTER JOIN ${Aim.TABLE_NAME} ON ${PaymentRequest.AIM_CODE} = ${Aim.CODE}
-      List<Map> maps = await db.rawQuery(
+      List<Map<String, dynamic>> maps = await db.rawQuery(
           'SELECT * FROM ${PaymentRequest.TABLE} WHERE ${PaymentRequest.POS_ID} = "$id" ORDER BY ${PaymentRequest.DATE} DESC');
       logger.i("requests: ${maps.length}");
       return maps.map((a) {
@@ -34,14 +34,14 @@ class PaymentDatabase extends PaymentDatabaseBase {
       }).toList();
     } catch (e) {
       logger.i(e.toString());
-      return List<PaymentRequest>();
+      return <PaymentRequest>[];
     }
   }
 
   Future<PaymentRequest> getRequest(int id) async {
     var db = await _appDatabase.getDb();
     try {
-      List<Map> maps = await db.query(
+      List<Map<String, dynamic>> maps = await db.query(
         PaymentRequest.TABLE,
         columns: null,
         where: "${PaymentRequest.ID} = ?",
@@ -54,11 +54,11 @@ class PaymentDatabase extends PaymentDatabaseBase {
     }
   }
 
-  insertRequest(PaymentRequest paymentRequest) async {
+  Future<int> insertRequest(PaymentRequest paymentRequest) async {
     var db = await _appDatabase.getDb();
-    int result;
+    late int result;
     try {
-      await db.transaction((Transaction txn) async {
+      await db.transaction((txn) async {
         result = await txn.insert(
           PaymentRequest.TABLE,
           paymentRequest.toDBMap(),
@@ -71,9 +71,9 @@ class PaymentDatabase extends PaymentDatabaseBase {
     }
   }
 
-  updateRequest(PaymentRequest paymentRequest) async {
+  Future<int> updateRequest(PaymentRequest paymentRequest) async {
     var db = await _appDatabase.getDb();
-    int result;
+    late int result;
     try {
       await db.transaction((Transaction txn) async {
         result = await txn.update(

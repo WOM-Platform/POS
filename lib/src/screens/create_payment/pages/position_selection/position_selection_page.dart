@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pos/localization/app_localizations.dart';
+import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
-import 'package:location/location.dart';
+import 'package:location/location.dart' as locService;
+import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import '../../../../my_logger.dart';
 import '../../back_button_text.dart';
@@ -17,13 +20,14 @@ class PositionSelectionPage extends StatefulWidget {
 }
 
 class _PositionSelectionPageState extends State<PositionSelectionPage> {
-  CreatePaymentRequestBloc bloc;
+  late CreatePaymentRequestBloc bloc;
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
-  Set<Marker> markers = Set();
-  Location _locationService = new Location();
+  Set<Marker> markers = <Marker>{};
+  final _locationService = locService.Location();
   double sliderValue = 0.0;
-  Completer<GoogleMapController> _controller = Completer();
-  CameraPosition _currentCameraPosition;
+  final Completer<GoogleMapController> _controller = Completer();
+  CameraPosition _currentCameraPosition =
+      const CameraPosition(target: LatLng(0.0, 0.0), zoom: 17);
 
   final sliderSteps = [
     100,
@@ -41,28 +45,26 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     1000000
   ];
 
-  initPlatformState() async {
-    await _locationService.changeSettings(
-        accuracy: LocationAccuracy.high, interval: 1000);
-
-    LocationData location;
+  Future<bool> initPlatformState() async {
+    locService.LocationData? location;
     try {
       bool serviceStatus = await _locationService.serviceEnabled();
       logger.i("Service status: $serviceStatus");
-      if (serviceStatus) {
-        final permissionStatus = await _locationService.requestPermission();
-        logger.i("Permission: $permissionStatus");
-        if (permissionStatus == PermissionStatus.granted) {
-          _updateMyLocation();
-        }
-      } else {
+      if (!serviceStatus) {
         bool serviceStatusResult = await _locationService.requestService();
-        logger
-            .i("Service status activated after request: $serviceStatusResult");
-        if (serviceStatusResult) {
-          initPlatformState();
+        if (!serviceStatusResult) {
+          return false;
         }
       }
+      final permissionStatus = await _locationService.requestPermission();
+      logger.i("Permission: $permissionStatus");
+      if (permissionStatus == locService.PermissionStatus.granted) {
+        await _locationService.changeSettings(
+            accuracy: locService.LocationAccuracy.high, interval: 1000);
+        _updateMyLocation();
+        return true;
+      }
+      return false;
     } on PlatformException catch (e) {
       logger.i(e);
       if (e.code == 'PERMISSION_DENIED') {
@@ -71,7 +73,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         logger.i(e.message);
       }
       logger.i("location = null");
-      location = null;
+      return false;
     }
   }
 
@@ -83,13 +85,14 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
   _updateMyLocation() async {
     logger.i("_updateMyLocation");
-    LocationData location;
+    locService.LocationData? location;
     try {
       logger.i("getLocation()");
       location = await _locationService.getLocation();
       logger.i(location.latitude.toString());
       logger.i(location.longitude.toString());
-      final target = LatLng(location.latitude, location.longitude);
+      final target =
+          LatLng(location.latitude ?? 0.0, location.longitude ?? 0.0);
       _currentCameraPosition = CameraPosition(target: target, zoom: 17);
 
       final GoogleMapController controller = await _controller.future;
@@ -135,7 +138,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     final GoogleMap googleMap = GoogleMap(
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
-        target: bloc.currentPosition ?? bloc.lastPosition ?? LatLng(0, 0),
+        target: bloc.currentPosition, //?? bloc.lastPosition ?? LatLng(0, 0),
         zoom: 17.0,
       ),
       minMaxZoomPreference: _minMaxZoomPreference,
@@ -152,15 +155,16 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              height: 30.0,
+            const SizedBox(
+              height: 30.0
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0, top: 8.0),
               child: Text(
-                AppLocalizations.of(context).translate('what_are_interest'),
+                AppLocalizations.of(context)?.translate('what_are_interest') ??
+                    '',
                 textAlign: TextAlign.start,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.white,
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold),
@@ -171,8 +175,9 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
               children: <Widget>[
                 Text(
                   AppLocalizations.of(context)
-                      .translate('enable_disable_filter'),
-                  style: TextStyle(color: Colors.white),
+                          ?.translate('enable_disable_filter') ??
+                      '',
+                  style: const TextStyle(color: Colors.white),
                 ),
                 Switch(
                   value: bloc.boundingBoxEnabled,
@@ -245,9 +250,10 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                       child: !bloc.boundingBoxEnabled
                           ? Center(
                               child: Text(
-                                AppLocalizations.of(context)
-                                    .translate('touch_to_enable_filter_map'),
-                                style: TextStyle(
+                                AppLocalizations.of(context)?.translate(
+                                        'touch_to_enable_filter_map') ??
+                                    '',
+                                style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 30.0,
                                     fontWeight: FontWeight.bold),
@@ -266,7 +272,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                         width: 37.0,
                         alignment: Alignment.center,
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.update,
                             size: 21.0,
                           ),
@@ -288,8 +294,8 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         ),
         floatingActionButton: isValid
             ? FloatingActionButton(
-                heroTag: Key("positionHero"),
-                child: Icon(Icons.arrow_forward_ios),
+                heroTag: const Key("positionHero"),
+                child: const Icon(Icons.arrow_forward_ios),
                 onPressed: () {
                   bloc.saveCurrentPosition();
                   goToRequestScreen();
@@ -302,10 +308,17 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
   goToRequestScreen() async {
     final womRequest = await bloc.createModelForCreationRequest();
+    final pos = context.read<HomeBloc>().selectedPos;
+    if (pos == null) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (ctx) => RequestConfirmScreen(
-          paymentRequest: womRequest,
+        builder: (ctx) => BlocProvider(
+          create: (c) => RequestConfirmBloc(
+            pos: context.read<PosClient>(),
+            pointOfSale: pos,
+            paymentRequest: womRequest,
+          ),
+          child: const RequestConfirmScreen(),
         ),
       ),
     );

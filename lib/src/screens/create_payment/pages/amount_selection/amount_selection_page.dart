@@ -13,7 +13,7 @@ class AmountSelectionPage extends StatefulWidget {
 }
 
 class _AmountSelectionPageState extends State<AmountSelectionPage> {
-  CreatePaymentRequestBloc bloc;
+  late CreatePaymentRequestBloc bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,9 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme
+              .of(context)
+              .primaryColor,
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -39,7 +41,7 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context).translate('how_wom'),
+                    AppLocalizations.of(context)?.translate('how_wom') ?? '',
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -68,26 +70,26 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                       }
                     },
                     inputFormatters: [
-                      WhitelistingTextInputFormatter(RegExp("[0-9]")),
+                      FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                     ],
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
-                      focusedBorder: OutlineInputBorder(
+                      focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.yellow)),
-                      errorBorder: OutlineInputBorder(
+                      errorBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.red)),
                       errorStyle: TextStyle(color: Colors.yellow),
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
                       hintText:
-                          AppLocalizations.of(context).translate('how_wom'),
+                      AppLocalizations.of(context)?.translate('how_wom') ?? '',
                       errorText: isValid
                           ? null
                           : AppLocalizations.of(context)
-                              .translate('error_text_amount'),
+                          ?.translate('error_text_amount') ?? '',
                     ),
                   ),
                 ),
@@ -98,7 +100,7 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     AppLocalizations.of(context)
-                        .translate('insert_service_price'),
+                        ?.translate('insert_service_price') ?? '',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -114,8 +116,8 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
           ),
           floatingActionButton: isValid
               ? FloatingActionButton(
-                  child: Icon(Icons.arrow_forward_ios),
-                  onPressed: () => bloc.goToNextPage())
+              child: Icon(Icons.arrow_forward_ios),
+              onPressed: () => bloc.goToNextPage())
               : null,
         ),
       ),

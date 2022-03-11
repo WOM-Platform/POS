@@ -11,7 +11,7 @@ class NameSelectionPage extends StatefulWidget {
 }
 
 class _NameSelectionPageState extends State<NameSelectionPage> {
-  CreatePaymentRequestBloc bloc;
+  late CreatePaymentRequestBloc bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  AppLocalizations.of(context).translate('request_name'),
+                  AppLocalizations.of(context)?.translate('request_name') ?? '',
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white,
@@ -77,11 +77,13 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
                       hintText: AppLocalizations.of(context)
-                          .translate('What is the request name?'),
+                              ?.translate('What is the request name?') ??
+                          '',
                       errorText: isValid
                           ? null
                           : AppLocalizations.of(context)
-                              .translate('name_short'),
+                                  ?.translate('name_short') ??
+                              '',
                     ),
                   )),
               SizedBox(
@@ -91,22 +93,21 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: AutoSizeText(
                   AppLocalizations.of(context)
-                      .translate('example_name_request'),
+                          ?.translate('example_name_request') ??
+                      '',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,
                       fontWeight: FontWeight.w500),
                 ),
               ),
-              SizedBox(
-                height: 50.0,
-              ),
+              const SizedBox(height: 50.0),
             ],
           ),
         ),
         floatingActionButton: isValid
             ? FloatingActionButton(
-                child: Icon(Icons.arrow_forward_ios),
+                child: const Icon(Icons.arrow_forward_ios),
                 onPressed: () => bloc.goToNextPage())
             : null,
       ),

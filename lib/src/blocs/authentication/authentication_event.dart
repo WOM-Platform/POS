@@ -17,14 +17,14 @@ class AppStarted extends AuthenticationEvent {
 class LoggedIn extends AuthenticationEvent {
 //  final String publicKey;
 //  final String privateKey;
-  final User user;
+  final POSUser user;
   final String email;
   final String password;
 
   LoggedIn({
-    @required this.user,
-    @required this.email,
-    @required this.password,
+    required this.user,
+    required this.email,
+    required this.password,
   }) : super([user]);
 
   @override

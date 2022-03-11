@@ -1,36 +1,5 @@
 PODS:
-  - Crashlytics (3.13.4):
-    - Fabric (~> 1.10.2)
-  - Fabric (1.10.2)
-  - Firebase/Core (6.4.0):
-    - Firebase/CoreOnly
-    - FirebaseAnalytics (= 6.0.3)
-  - Firebase/CoreOnly (6.4.0):
-    - FirebaseCore (= 6.0.4)
-  - firebase_crashlytics (0.0.1):
-    - Crashlytics
-    - Fabric
-    - Firebase/Core
-    - Flutter
-  - FirebaseAnalytics (6.0.3):
-    - FirebaseCore (~> 6.0)
-    - FirebaseInstanceID (~> 4.2)
-    - GoogleAppMeasurement (= 6.0.3)
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
-    - GoogleUtilities/MethodSwizzler (~> 6.0)
-    - GoogleUtilities/Network (~> 6.0)
-    - "GoogleUtilities/NSData+zlib (~> 6.0)"
-    - nanopb (~> 0.3)
-  - FirebaseCore (6.0.4):
-    - GoogleUtilities/Environment (~> 6.0)
-    - GoogleUtilities/Logger (~> 6.0)
-  - FirebaseInstanceID (4.2.1):
-    - FirebaseCore (~> 6.0)
-    - GoogleUtilities/Environment (~> 6.0)
-    - GoogleUtilities/UserDefaults (~> 6.0)
   - Flutter (1.0.0)
-  - flutter_plugin_android_lifecycle (0.0.1):
-    - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
   - FMDB (2.7.5):
@@ -39,187 +8,80 @@ PODS:
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
-  - GoogleAppMeasurement (6.0.3):
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
-    - GoogleUtilities/MethodSwizzler (~> 6.0)
-    - GoogleUtilities/Network (~> 6.0)
-    - "GoogleUtilities/NSData+zlib (~> 6.0)"
-    - nanopb (~> 0.3)
-  - GoogleMaps (3.0.3):
-    - GoogleMaps/Maps (= 3.0.3)
-  - GoogleMaps/Base (3.0.3)
-  - GoogleMaps/Maps (3.0.3):
+  - GoogleMaps (4.2.0):
+    - GoogleMaps/Maps (= 4.2.0)
+  - GoogleMaps/Base (4.2.0)
+  - GoogleMaps/Maps (4.2.0):
     - GoogleMaps/Base
-  - GoogleUtilities/AppDelegateSwizzler (6.2.3):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Network
-  - GoogleUtilities/Environment (6.2.3)
-  - GoogleUtilities/Logger (6.2.3):
-    - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (6.2.3):
-    - GoogleUtilities/Logger
-  - GoogleUtilities/Network (6.2.3):
-    - GoogleUtilities/Logger
-    - "GoogleUtilities/NSData+zlib"
-    - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (6.2.3)"
-  - GoogleUtilities/Reachability (6.2.3):
-    - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (6.2.3):
-    - GoogleUtilities/Logger
   - location (0.0.1):
     - Flutter
-  - location_web (0.0.1):
-    - Flutter
-  - MMKV (1.0.18)
-  - mmkv_flutter (0.0.1):
-    - Flutter
-    - MMKV
-  - nanopb (0.3.901):
-    - nanopb/decode (= 0.3.901)
-    - nanopb/encode (= 0.3.901)
-  - nanopb/decode (0.3.901)
-  - nanopb/encode (0.3.901)
   - package_info (0.0.1):
     - Flutter
-  - path_provider (0.0.1):
+  - path_provider_ios (0.0.1):
     - Flutter
   - share (0.0.1):
     - Flutter
-  - shared_preferences (0.0.1):
+  - shared_preferences_ios (0.0.1):
     - Flutter
-  - shared_preferences_macos (0.0.1):
+  - sqflite (0.0.2):
     - Flutter
-  - shared_preferences_web (0.0.1):
-    - Flutter
-  - simple_rsa (0.0.3):
-    - Flutter
-    - SwiftyRSA (~> 1.5.0)
-  - sqflite (0.0.1):
-    - Flutter
-    - FMDB (~> 2.7.2)
-  - SwiftyRSA (1.5.0):
-    - SwiftyRSA/ObjC (= 1.5.0)
-  - SwiftyRSA/ObjC (1.5.0)
-  - url_launcher (0.0.1):
-    - Flutter
-  - url_launcher_macos (0.0.1):
-    - Flutter
-  - url_launcher_web (0.0.1):
+    - FMDB (>= 2.7.5)
+  - url_launcher_ios (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - Flutter (from `Flutter`)
-  - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - location (from `.symlinks/plugins/location/ios`)
-  - location_web (from `.symlinks/plugins/location_web/ios`)
-  - mmkv_flutter (from `.symlinks/plugins/mmkv_flutter/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - share (from `.symlinks/plugins/share/ios`)
-  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
-  - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
-  - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
-  - simple_rsa (from `.symlinks/plugins/simple_rsa/ios`)
+  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - url_launcher_macos (from `.symlinks/plugins/url_launcher_macos/ios`)
-  - url_launcher_web (from `.symlinks/plugins/url_launcher_web/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - Crashlytics
-    - Fabric
-    - Firebase
-    - FirebaseAnalytics
-    - FirebaseCore
-    - FirebaseInstanceID
+  trunk:
     - FMDB
-    - GoogleAppMeasurement
     - GoogleMaps
-    - GoogleUtilities
-    - MMKV
-    - nanopb
-    - SwiftyRSA
 
 EXTERNAL SOURCES:
-  firebase_crashlytics:
-    :path: ".symlinks/plugins/firebase_crashlytics/ios"
   Flutter:
     :path: Flutter
-  flutter_plugin_android_lifecycle:
-    :path: ".symlinks/plugins/flutter_plugin_android_lifecycle/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
-  location_web:
-    :path: ".symlinks/plugins/location_web/ios"
-  mmkv_flutter:
-    :path: ".symlinks/plugins/mmkv_flutter/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
-  shared_preferences:
-    :path: ".symlinks/plugins/shared_preferences/ios"
-  shared_preferences_macos:
-    :path: ".symlinks/plugins/shared_preferences_macos/ios"
-  shared_preferences_web:
-    :path: ".symlinks/plugins/shared_preferences_web/ios"
-  simple_rsa:
-    :path: ".symlinks/plugins/simple_rsa/ios"
+  shared_preferences_ios:
+    :path: ".symlinks/plugins/shared_preferences_ios/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
-  url_launcher_macos:
-    :path: ".symlinks/plugins/url_launcher_macos/ios"
-  url_launcher_web:
-    :path: ".symlinks/plugins/url_launcher_web/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
-  Crashlytics: 2dfd686bcb918dc10ee0e76f7f853fe42c7bd552
-  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
-  Firebase: 9445469655a98e9010737f4bc4720e5bda465873
-  firebase_crashlytics: 36c88d34d725558fc09f7bb2610cc13bfa15be37
-  FirebaseAnalytics: 69fe25866d2ec87c6f02d72c3c9a82bce9c065a0
-  FirebaseCore: 7ea99e200f0024262650be56623fbe6a7bef1707
-  FirebaseInstanceID: 9782fcfb89e4d7da76cc28eac4b8543dc7be4a4b
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
-  GoogleAppMeasurement: 1e45fa601e6280c180880d57010390f6679cd971
-  GoogleMaps: fd5c9fa58871781b9fb94d4936f19c69fe60ce32
-  GoogleUtilities: d2b0e277a95962e09bb27f5cd42f5f0b6a506c7d
+  google_maps_flutter: fe98b02bbb6717c7297c7747b84c4ead2bc5fc3b
+  GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
-  location_web: b94e7433cfe28c0f7c8923c2ee482824b32e55a7
-  MMKV: 2dc8974641213da7ab069f9e94caa0fba7241f14
-  mmkv_flutter: 511886651aef2c8e65402030d6517602776e8681
-  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
-  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
-  shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
-  simple_rsa: a6332ae70f94e717a690d06a1a524453b5bf7004
-  sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
-  SwiftyRSA: 6e528fb1b1a87d5111c48081083b141d6d65f1cf
-  url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
-  url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
-  url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
+  shared_preferences_ios: aef470a42dc4675a1cdd50e3158b42e3d1232b32
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
 
-PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.11.2

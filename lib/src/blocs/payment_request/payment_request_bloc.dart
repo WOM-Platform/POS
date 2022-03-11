@@ -4,9 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
-import 'package:mmkv_flutter/mmkv_flutter.dart';
+
 import 'package:pos/src/model/request_status_enum.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'dart:math' as math;
@@ -19,49 +20,50 @@ enum RequestType {
 }
 
 class CreatePaymentRequestBloc extends Bloc {
-  AimSelectionBloc aimSelectionBloc;
+  late AimSelectionBloc aimSelectionBloc;
 
-  TextEditingController nameController;
-  TextEditingController amountController;
-  TextEditingController maxAgeController;
-  TextEditingController passwordController;
+  late TextEditingController nameController;
+  late TextEditingController amountController;
+  late TextEditingController maxAgeController;
+  // late TextEditingController passwordController;
 
 //  RequestType requestType = RequestType.SINGLE;
   bool persistentRequest = false;
   final PageController pageController = PageController();
   final String posId;
   LatLng currentPosition = LatLng(0.0, 0.0);
-  LatLng lastPosition;
+  LatLng? lastPosition;
   List<LatLng> locationPoints = [];
 
   double radius = 100.0;
   bool maxAgeEnabled = false;
   bool boundingBoxEnabled = false;
 
-  int get _amount => int.tryParse(amountController.text);
+  int? get _amount => int.tryParse(amountController.text.trim());
 
-  int get _maxAge => int.tryParse(maxAgeController.text);
+  int? get _maxAge => int.tryParse(maxAgeController.text.trim());
 
-  final PaymentRequest draftRequest;
+  final PaymentRequest? draftRequest;
 
-  final String languageCode;
+  final String? languageCode;
 
   CreatePaymentRequestBloc({
-    @required this.draftRequest,
-    @required this.languageCode,
-    @required this.posId,
-  }) : assert(posId != null) {
+    required this.draftRequest,
+    required this.languageCode,
+    required this.posId,
+  })  : assert(posId != null),
+        super(null) {
     logger.i("CreatePaymentRequestBloc()");
     nameController = TextEditingController(text: draftRequest?.name ?? "");
     amountController =
-        TextEditingController(text: draftRequest?.amount?.toString() ?? "");
+        TextEditingController(text: draftRequest?.amount.toString() ?? "");
     maxAgeController = TextEditingController(
         text: draftRequest?.simpleFilter?.maxAge?.toString() ?? "");
-    passwordController =
-        TextEditingController(text: draftRequest?.password ?? "");
+    // passwordController =
+    //     TextEditingController(text: draftRequest?.password ?? "");
     aimSelectionBloc = AimSelectionBloc(languageCode ?? 'en');
     if (draftRequest?.aimCode != null) {
-      aimSelectionBloc.setAimCode(draftRequest.aimCode);
+      aimSelectionBloc.setAimCode(draftRequest!.aimCode!);
     }
     updatePolylines();
     getLastPosition();
@@ -69,7 +71,11 @@ class CreatePaymentRequestBloc extends Bloc {
 
   createModelForCreationRequest() async {
     final aim = await aimSelectionBloc.getAim();
-//    final String password = passwordController.text;
+
+    if (_amount == null) {
+      throw Exception('PaymentRequestloc amount or aim are null');
+    }
+
     final String name = nameController.text;
 
     final SimpleFilter simpleFilter = SimpleFilter(
@@ -86,22 +92,23 @@ class CreatePaymentRequestBloc extends Bloc {
           : null,
     );
 
-    final PaymentRequest paymentRequest = PaymentRequest(
-        posId: this.posId,
-        dateTime: DateTime.now(),
-        amount: _amount,
-        aim: aim,
-        aimCode: aim?.code,
-        aimName: (aim?.titles ?? const {})[languageCode ?? 'en'],
-        location: currentPosition,
-        persistent: persistentRequest ?? false,
-        name: name,
-        status: RequestStatus.DRAFT,
-        simpleFilter: simpleFilter,
-        pocketAckUrl: 'www.$domain');
+    final paymentRequest = PaymentRequest(
+      posId: this.posId,
+      // dateTime: DateTime.now(),
+      amount: _amount!,
+      aim: aim,
+      aimCode: aim?.code,
+      aimName: aim != null ? (aim.titles ?? const {})[languageCode ?? 'en'] : '',
+      location: currentPosition,
+      persistent: persistentRequest,
+      name: name,
+      status: RequestStatus.DRAFT,
+      simpleFilter: simpleFilter,
+      pocketAckUrl: null,
+    );
 
     if (draftRequest != null) {
-      paymentRequest.id = draftRequest.id;
+      paymentRequest.id = draftRequest!.id;
     }
 
     return paymentRequest;
@@ -129,40 +136,41 @@ class CreatePaymentRequestBloc extends Bloc {
 
   bool get isValidPosition => _validatePosition();
 
-  bool get isValidPassword => _validatePassword();
+  // bool get isValidPassword => _validatePassword();
 
   bool get isValidMaxAge => _validateMaxAge();
 
   saveCurrentPosition() async {
     if (boundingBoxEnabled) {
       logger.i("saveCurrentPosition");
-      MmkvFlutter mmkv = await MmkvFlutter.getInstance();
-      mmkv.setDouble(LAST_LATITUDE, currentPosition.latitude);
-      mmkv.setDouble(LAST_LONGITUDE, currentPosition.longitude);
+      final mmkv = Hive.box('settings');
+      mmkv.put(LAST_LATITUDE, currentPosition.latitude);
+      mmkv.put(LAST_LONGITUDE, currentPosition.longitude);
       logger.i("currentPositionSaved");
     }
   }
 
   getLastPosition() async {
     logger.i("getLastPosition");
-    MmkvFlutter mmkv = await MmkvFlutter.getInstance();
-    final latitude = await mmkv.getDouble(LAST_LATITUDE);
-    final longitude = await mmkv.getDouble(LAST_LONGITUDE);
+    final mmkv = Hive.box('settings');
+    final latitude = await mmkv.get(LAST_LATITUDE);
+    final longitude = await mmkv.get(LAST_LONGITUDE);
 
     if (latitude == null || longitude == null) {
       lastPosition = null;
+      return;
     }
     logger.i("lastPosition = $latitude, $longitude");
     lastPosition = LatLng(latitude, longitude);
   }
 
-  _validatePassword() {
+/*  _validatePassword() {
     final password = passwordController.text;
     if (password != null && password.length == 4) {
       return true;
     }
     return false;
-  }
+  }*/
 
   _validatePosition() {
     logger.i("_validatePosition");
@@ -221,14 +229,6 @@ class CreatePaymentRequestBloc extends Bloc {
     }
   }
 
-  @override
-  get initialState => null;
-
-  @override
-  Stream mapEventToState(event) {
-    return null;
-  }
-
   LatLng getBoundingBoxFromCircle(LatLng location, double nOff, double eOff) {
     //Earth’s radius, sphere
     int earthRadius = 6378137;
@@ -250,14 +250,14 @@ class CreatePaymentRequestBloc extends Bloc {
     LatLng se = getBoundingBoxFromCircle(currentPosition, -radius, radius);
     LatLng so = getBoundingBoxFromCircle(currentPosition, -radius, -radius);
     locationPoints = [no, ne, se, so, no];
-    locationPoints.forEach(print);
+    // locationPoints.forEach(print);
   }
 
   @override
   Future<void> close() {
-    pageController.dispose();
+    // pageController.dispose();
     nameController.dispose();
-    passwordController.dispose();
+    // passwordController.dispose();
     amountController.dispose();
     aimSelectionBloc.dispose();
     maxAgeController.dispose();

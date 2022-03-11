@@ -18,6 +18,7 @@ import '../../utils.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -25,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+    SchedulerBinding.instance?.addPostFrameCallback((Duration duration) {
       if (isFirstOpen) {
         _showTutorial(context);
       }
@@ -51,13 +52,14 @@ class _HomeScreenState extends State<HomeScreen> {
           featureId: 'show_pos_selection_info',
           tapTarget: Text('POS'),
           title: Text(AppLocalizations.of(context)
-              .translate('selection_pos_suggestion')),
+                  ?.translate('selection_pos_suggestion') ??
+              ''),
           backgroundColor: Theme.of(context).accentColor,
           targetColor: Colors.white,
           textColor: Theme.of(context).primaryColor,
           child: GestureDetector(
             onTap: () async {
-              if (context.bloc<HomeBloc>().posSelectionEnabled) {
+              if (context.read<HomeBloc>().posSelectionEnabled) {
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => PosSelectionPage(),
@@ -70,8 +72,8 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text(context.bloc<HomeBloc>().selectedPos?.name ?? 'POS'),
-                if (context.bloc<HomeBloc>().posSelectionEnabled)
+                Text(context.read<HomeBloc>().selectedPos?.name ?? 'Seleziona POS'),
+                if (context.read<HomeBloc>().posSelectionEnabled)
                   Icon(
                     Icons.arrow_drop_down,
                     color: Colors.white,
@@ -116,25 +118,37 @@ class _HomeScreenState extends State<HomeScreen> {
               if (state is NoPosState) {
                 return Center(
                   child: WarningWidget(
-                    text: AppLocalizations.of(context).translate('no_pos'),
+                    text:
+                        AppLocalizations.of(context)?.translate('no_pos') ?? '',
                   ),
                 );
               } else if (state is NoMerchantState) {
                 return Center(
                   child: WarningWidget(
-                    text:
-                        AppLocalizations.of(context).translate('no_merchants'),
+                    text: AppLocalizations.of(context)
+                            ?.translate('no_merchants') ??
+                        '',
                   ),
                 );
               } else if (state is RequestLoading) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               } else if (state is RequestLoaded) {
                 if (state.requests.isEmpty) {
                   return Center(
-                    child: Text(
-                        AppLocalizations.of(context).translate('no_request')),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          AppLocalizations.of(context)
+                                  ?.translate('no_request') ??
+                              '',
+                          style: const TextStyle(fontSize: 20),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
                   );
                 }
                 return HomeList(
@@ -143,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (state is RequestsLoadingErrorState) {
                 return Center(
                   child: Text(
-                    AppLocalizations.of(context).translate(state.error),
+                    AppLocalizations.of(context)?.translate(state.error) ?? '',
                     textAlign: TextAlign.center,
                   ),
                 );
@@ -155,7 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context)
-                            .translate('no_connection_title'),
+                                ?.translate('no_connection_title') ??
+                            '',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -164,7 +179,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Text(
                         AppLocalizations.of(context)
-                            .translate('no_connection_aim_desc'),
+                                ?.translate('no_connection_aim_desc') ??
+                            '',
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
@@ -172,20 +188,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       FloatingActionButton.extended(
                           label: Text(AppLocalizations.of(context)
-                              .translate('try_again')),
+                                  ?.translate('try_again') ??
+                              ''),
                           onPressed: () {
-                            context.bloc<HomeBloc>().add(LoadRequest());
+                            context.read<HomeBloc>().loadRequest();
                           }),
                     ],
                   ),
                 );
               }
 
-              return Container(
-                child: Center(
-                    child: Text(AppLocalizations.of(context)
-                        .translate('error_screen_state'))),
-              );
+              return Center(
+                  child: Text(AppLocalizations.of(context)
+                          ?.translate('error_screen_state') ??
+                      ''));
             },
           ),
         ],
@@ -193,7 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: DescribedFeatureOverlay(
         featureId: 'show_fab_info',
         tapTarget: const Icon(Icons.add),
-        title: Text(AppLocalizations.of(context).translate('create_offer')),
+        title:
+            Text(AppLocalizations.of(context)?.translate('create_offer') ?? ''),
         description: Text(''),
         backgroundColor: Theme.of(context).accentColor,
         targetColor: Colors.white,
@@ -209,13 +226,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future _goToCreatePaymentScreen(context) async {
+  Future _goToCreatePaymentScreen(BuildContext context) async {
+    final posId = context.read<HomeBloc>().selectedPos?.id;
+    if (posId == null) return;
+
     final provider = BlocProvider(
       child: GenerateWomScreen(),
       create: (ctx) => CreatePaymentRequestBloc(
-          posId: ctx.bloc<HomeBloc>().selectedPos.id,
+          posId: posId,
           draftRequest: null,
-          languageCode: AppLocalizations.of(context).locale.languageCode),
+          languageCode: AppLocalizations.of(context)?.locale.languageCode),
     );
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => provider));
@@ -229,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showLogoutDialog(Function logout) {
     Alert(
       context: context,
-      title: AppLocalizations.of(context).translate('logout_message'),
+      title: AppLocalizations.of(context)?.translate('logout_message'),
       buttons: [
         DialogButton(
           child: Text('No'),
@@ -238,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         DialogButton(
-          child: Text(AppLocalizations.of(context).translate('yes')),
+          child: Text(AppLocalizations.of(context)?.translate('yes') ?? ''),
           onPressed: () {
             Navigator.of(context, rootNavigator: true).pop();
             logout();
@@ -274,11 +294,12 @@ class _HomeScreenState extends State<HomeScreen> {
 class WarningWidget extends StatelessWidget {
   final String text;
 
-  const WarningWidget({Key key, this.text}) : super(key: key);
+  const WarningWidget({Key? key, required this.text}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Card(
         elevation: 4.0,
         child: Padding(

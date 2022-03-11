@@ -5,7 +5,7 @@ import '../../../my_logger.dart';
 import 'payment_database_base.dart';
 
 class PaymentDatabase extends PaymentDatabaseBase {
-  static PaymentDatabase _instance;
+  static late PaymentDatabase _instance;
 
 //  static Future<PaymentDatabase> get get async {
 //    if (_instance == null) {

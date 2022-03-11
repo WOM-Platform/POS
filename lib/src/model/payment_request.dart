@@ -30,18 +30,20 @@ class PaymentRequest extends RequestPaymentPayload {
   static String PERSISTENT = "Persistent";
   static String ON_CLOUD = "onCloud";
 
-  DateTime dateTime;
+  final DateTime? dateTime;
+
+  final String? password;
   // String registryUrl;
   String name;
-  String deepLink;
+  String? deepLink;
 
   RequestStatus status;
-  int id;
-  String aimCode;
+  int? id;
+  String? aimCode;
 
 //  List<Wom> vouchers;
-  LatLng location;
-  Aim aim;
+  LatLng? location;
+  Aim? aim;
   String aimName;
   bool onCloud;
 
@@ -65,41 +67,38 @@ class PaymentRequest extends RequestPaymentPayload {
     */
 
   PaymentRequest({
+    this.password,
     this.id,
-    String posId,
-    int amount,
-    password,
-    SimpleFilter simpleFilter,
-    String pocketAckUrl,
-    String posAckUrl,
-    String nonce,
+    required String posId,
+    required int amount,
+    SimpleFilter? simpleFilter,
+    String? pocketAckUrl,
+    String? posAckUrl,
     this.dateTime,
+    String? nonce,
     // this.registryUrl,
-    this.name,
+    required  this.name,
     this.aim,
-    this.status,
+    required  this.status,
     this.aimCode,
-    this.aimName,
+    required this.aimName,
     this.location,
     this.deepLink,
     bool persistent = false,
     this.onCloud = false,
   }) : super(
-            posId: posId,
-            amount: amount,
-            password: password,
-            simpleFilter: simpleFilter,
-            pocketAckUrl: pocketAckUrl,
-            posAckUrl: posAckUrl,
-            persistent: persistent) {
-    this.nonce = generateGUID();
-  }
+          posId: posId,
+          amount: amount,
+          simpleFilter: simpleFilter,
+          pocketAckUrl: pocketAckUrl,
+          posAckUrl: posAckUrl,
+          persistent: persistent,
+        );
 
   Map<String, dynamic> toPayloadMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['posId'] = this.posId;
     data['nonce'] = this.nonce;
-    data['password'] = this.password;
     data['amount'] = this.amount;
     data['simpleFilter'] = this.simpleFilter?.toMap();
     data['posAckUrl'] = this.posAckUrl;
@@ -109,20 +108,20 @@ class PaymentRequest extends RequestPaymentPayload {
     return data;
   }
 
-  String get dateString => DateFormat.yMMMd().format(dateTime);
+  String? get dateString => dateTime != null ? DateFormat.yMMMd().format(dateTime!) : null;
 
   List<LatLng> get bbPoints => simpleFilter?.bounds != null
       ? [
-          LatLng(
-              simpleFilter.bounds.leftTop[0], simpleFilter.bounds.leftTop[1]),
-          LatLng(simpleFilter.bounds.rightBottom[0],
-              simpleFilter.bounds.leftTop[1]),
-          LatLng(simpleFilter.bounds.rightBottom[0],
-              simpleFilter.bounds.rightBottom[1]),
-          LatLng(simpleFilter.bounds.leftTop[0],
-              simpleFilter.bounds.rightBottom[1]),
-          LatLng(
-              simpleFilter.bounds.leftTop[0], simpleFilter.bounds.leftTop[1]),
+          LatLng(simpleFilter!.bounds!.leftTop![0],
+              simpleFilter!.bounds!.leftTop![1]),
+          LatLng(simpleFilter!.bounds!.rightBottom![0],
+              simpleFilter!.bounds!.leftTop![1]),
+          LatLng(simpleFilter!.bounds!.rightBottom![0],
+              simpleFilter!.bounds!.rightBottom![1]),
+          LatLng(simpleFilter!.bounds!.leftTop![0],
+              simpleFilter!.bounds!.rightBottom![1]),
+          LatLng(simpleFilter!.bounds!.leftTop![0],
+              simpleFilter!.bounds!.leftTop![1]),
         ]
       : [];
 
@@ -134,8 +133,8 @@ class PaymentRequest extends RequestPaymentPayload {
     final rightBottomLat = map[Bounds.RIGHT_BOT_LAT];
     final rightBottomLong = map[Bounds.RIGHT_BOT_LONG];
 
-    SimpleFilter simpleFilter;
-    Bounds bounds;
+    SimpleFilter? simpleFilter;
+    Bounds? bounds;
     if (leftTopLat != null &&
         leftTopLong != null &&
         rightBottomLat != null &&
@@ -167,7 +166,7 @@ class PaymentRequest extends RequestPaymentPayload {
       name: map[NAME],
       nonce: map[NONCE],
       password: map[PASSWORD],
-      posId: map[POS_ID]?.toString(),
+      posId: map[POS_ID],
       status: RequestStatus.values[map[STATUS]],
       // registryUrl: map[URL],
       pocketAckUrl: map[POCKET_ACK_URL],
@@ -198,19 +197,20 @@ class PaymentRequest extends RequestPaymentPayload {
     map[ON_CLOUD] = this.onCloud ? 1 : 0;
     map[SimpleFilter.MAX_AGE] = this.simpleFilter?.maxAge;
     if (simpleFilter?.bounds != null) {
-      map[Bounds.LEFT_TOP_LAT] = this.simpleFilter?.bounds?.leftTop[0] ?? null;
-      map[Bounds.LEFT_TOP_LONG] = this.simpleFilter?.bounds?.leftTop[1] ?? null;
+      map[Bounds.LEFT_TOP_LAT] = this.simpleFilter?.bounds?.leftTop?[0] ?? null;
+      map[Bounds.LEFT_TOP_LONG] =
+          this.simpleFilter?.bounds?.leftTop?[1] ?? null;
       map[Bounds.RIGHT_BOT_LAT] =
-          this.simpleFilter?.bounds?.rightBottom[0] ?? null;
+          this.simpleFilter?.bounds?.rightBottom?[0] ?? null;
       map[Bounds.RIGHT_BOT_LONG] =
-          this.simpleFilter?.bounds?.rightBottom[1] ?? null;
+          this.simpleFilter?.bounds?.rightBottom?[1] ?? null;
     }
     map[POCKET_ACK_URL] = this.pocketAckUrl;
     map[POS_ACK_URL] = this.posAckUrl;
     return map;
   }
 
-  PaymentRequest copyFrom({String password}) {
+  PaymentRequest copyFrom({String? password}) {
     return PaymentRequest(
       id: this.id,
       amount: this.amount,

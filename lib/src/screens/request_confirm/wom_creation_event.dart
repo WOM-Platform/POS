@@ -12,7 +12,7 @@ class CreateWomRequest extends WomCreationEvent {
 // class VerifyWomCreationRequest extends WomCreationEvent {
 //   final RequestVerificationResponse response;
 //
-//   VerifyWomCreationRequest({@required this.response})
+//   VerifyWomCreationRequest({required this.response})
 //       : assert(response != null),
 //         super([response]);
 //

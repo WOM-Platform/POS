@@ -1,78 +1,81 @@
-import 'package:dart_wom_connector/dart_wom_connector.dart' show Pos, User;
+import 'package:dart_wom_connector/dart_wom_connector.dart'
+    show POSUser, PosClient;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos/src/screens/root/root.dart';
 import 'package:pos/src/services/auth_local_data_sources.dart';
 import 'localization/app_localizations.dart';
-import 'src/blocs/login/login_bloc.dart';
 import 'src/screens/intro/intro.dart';
-import 'package:provider/provider.dart';
 
 import 'src/services/user_repository.dart';
 
-User globalUser;
+POSUser? globalUser;
 
 class App extends StatelessWidget {
   final bool isFirstOpen;
-  final UserRepository userRepository;
-  const App({Key key, this.isFirstOpen, this.userRepository}) : super(key: key);
+
+  const App({Key? key, this.isFirstOpen = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(
-          create: (BuildContext context) => Pos(domain, registryKey),
+        RepositoryProvider<PosClient>(
+          create: (BuildContext context) => PosClient(domain, registryKey),
         ),
-        RepositoryProvider(
+        RepositoryProvider<UserRepository>(
           create: (BuildContext context) => UserRepository(
-              context.repository<Pos>(), AuthLocalDataSourcesImpl()),
-        ),
-        BlocProvider<HomeBloc>(
-          create: (context) => HomeBloc(
-            userRepository: context.repository<UserRepository>(),
-          ),
-        ),
-        BlocProvider<AuthenticationBloc>(
-          create: (context) => AuthenticationBloc(
-            homeBloc: context.bloc<HomeBloc>(),
-            userRepository: context.repository<UserRepository>(),
-          )..add(AppStarted()),
+              context.read<PosClient>(), AuthLocalDataSourcesImpl()),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<HomeBloc>(
+            create: (context) => HomeBloc(
+              userRepository: context.read<UserRepository>(),
+            ),
+          ),
+          BlocProvider<AuthenticationBloc>(
+            create: (context) => AuthenticationBloc(
+              homeBloc: context.read<HomeBloc>(),
+              userRepository: context.read<UserRepository>(),
+            )..startApp(),
+          ),
         ],
-        localeResolutionCallback: (locale, supportedLocales) {
-          if (locale == null) {
-            return supportedLocales.first;
-          }
-
-          for (var supportedLocale in supportedLocales) {
-            if (supportedLocale.languageCode == locale.languageCode &&
-                supportedLocale.countryCode == locale.countryCode) {
-              return supportedLocale;
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            if (locale == null) {
+              return supportedLocales.first;
             }
-          }
-          return supportedLocales.first;
-        },
-        supportedLocales: [
-          const Locale('en', 'US'),
-          const Locale('it', 'IT'),
-        ],
-        theme: ThemeData(
-          primaryColor: Colors.blue,
-          accentColor: Colors.yellow,
+
+            for (var supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == locale.languageCode &&
+                  supportedLocale.countryCode == locale.countryCode) {
+                return supportedLocale;
+              }
+            }
+            return supportedLocales.first;
+          },
+          supportedLocales: const [
+            Locale('en', 'US'),
+            Locale('it', 'IT'),
+          ],
+          theme: ThemeData(
+            primaryColor: Colors.blue,
+            accentColor: Colors.yellow,
+          ),
+          home: isFirstOpen ? IntroScreen() : RootScreen(),
         ),
-        home: isFirstOpen ? IntroScreen() : RootScreen(),
       ),
     );
   }

@@ -6,7 +6,7 @@ import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import '../../back_button_text.dart';
 
 class TypeSelectionPage extends StatelessWidget {
-  CreatePaymentRequestBloc bloc;
+  late CreatePaymentRequestBloc bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,8 @@ class TypeSelectionPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   AppLocalizations.of(context)
-                      .translate('is_a_persistent_request'),
+                          ?.translate('is_a_persistent_request') ??
+                      '',
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white,

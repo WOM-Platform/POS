@@ -1,40 +1,32 @@
-import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pos/src/model/flavor_enum.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:uuid/uuid.dart';
-import 'package:mmkv_flutter/mmkv_flutter.dart';
 import 'dart:math' as math;
 
 const String IS_FIRST_OPEN_KEY = 'isFirstOpen';
 
-String generateGUID() {
-  var uuid = new Uuid();
-  final guid = uuid.v1buffer(List(16));
-  return Base64Encoder().convert(guid);
-}
-
 Future<bool> readIsFirstOpen() async {
-  final mmkv = await MmkvFlutter.getInstance();
-  return !(await mmkv.getBool(IS_FIRST_OPEN_KEY));
+  final mmkv = Hive.box('settings');
+  return !(await mmkv.get(IS_FIRST_OPEN_KEY,defaultValue: true));
 }
 
 Future setIsFirstOpen(bool value) async {
-  final mmkv = await MmkvFlutter.getInstance();
-  await mmkv.setBool(IS_FIRST_OPEN_KEY, !value);
+  final mmkv = Hive.box('settings');
+  await mmkv.put(IS_FIRST_OPEN_KEY, !value);
 }
 
 Future<DateTime> getLastAimCheckDateTime() async {
-  final mmkv = await MmkvFlutter.getInstance();
-  final timestamp = await mmkv.getLong('lastCheckAimDateTime');
+  final mmkv = Hive.box('settings');
+  final timestamp = await mmkv.get('lastCheckAimDateTime');
   if (timestamp == null) return DateTime.fromMillisecondsSinceEpoch(0);
   return DateTime.fromMillisecondsSinceEpoch(timestamp);
 }
 
 Future setAimCheckDateTime(DateTime dateTime) async {
-  final mmkv = await MmkvFlutter.getInstance();
-  await mmkv.setLong('lastCheckAimDateTime', dateTime.millisecondsSinceEpoch);
+  final mmkv = Hive.box('settings');
+  await mmkv.put('lastCheckAimDateTime', dateTime.millisecondsSinceEpoch);
 }
 
 Future launchUrl(String url) async {
@@ -67,7 +59,7 @@ double getRadiusFromBoundingBox(
 }
 
 onWidgetDidBuild(Function callback) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
+  WidgetsBinding.instance?.addPostFrameCallback((_) {
     callback();
   });
 }

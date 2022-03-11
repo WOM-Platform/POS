@@ -12,7 +12,7 @@ class MaxAgeSelectionPage extends StatefulWidget {
 }
 
 class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
-  CreatePaymentRequestBloc bloc;
+  late CreatePaymentRequestBloc bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,8 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context).translate('how_recent_wom'),
+                    AppLocalizations.of(context)?.translate('how_recent_wom') ??
+                        '',
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -51,7 +52,8 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                   children: <Widget>[
                     Text(
                       AppLocalizations.of(context)
-                          .translate('enable_disable_filter'),
+                              ?.translate('enable_disable_filter') ??
+                          '',
                       style: TextStyle(color: Colors.white),
                     ),
                     Switch(
@@ -85,7 +87,7 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                       }
                     },
                     inputFormatters: [
-                      WhitelistingTextInputFormatter(RegExp("[0-9]")),
+                      FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                     ],
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -100,11 +102,13 @@ class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
                       hintText: AppLocalizations.of(context)
-                          .translate('how_many_days'),
+                              ?.translate('how_many_days') ??
+                          '',
                       errorText: isValid
                           ? null
                           : AppLocalizations.of(context)
-                              .translate('insert_value_grather'),
+                                  ?.translate('insert_value_grather') ??
+                              '',
                     ),
                   ),
                 ),
