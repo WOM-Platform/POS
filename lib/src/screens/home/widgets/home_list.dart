@@ -53,66 +53,35 @@ class _HomeListState extends State<HomeList> {
               children: [
                 if (widget.requests[index].status ==
                     RequestStatus.COMPLETE) ...[
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 4),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: SlidableAction(
-                          backgroundColor: Colors.green,
-                          icon: Icons.share,
-                          onPressed: (context) {
-                            Share.share('${widget.requests[index].deepLink}');
-                          },
-                        ),
-                      ),
-                    ),
+                  MySlidableAction(
+                    icon: Icons.share,
+                    onTap: () {
+                      Share.share('${widget.requests[index].deepLink}');
+                    },
+                    color: Colors.green,
                   ),
                   if (widget.requests[index].persistent)
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 4),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: SlidableAction(
-                            // label: 'Archive',
-                            backgroundColor: Colors.pink,
-                            icon: Icons.picture_as_pdf,
-                            onPressed: (context) async {
-                              final pos = context.read<HomeBloc>().selectedPos;
-                              if (pos == null) return;
-                              final pdfCreator = PdfCreator();
-                              final file = await pdfCreator.buildPdf(
-                                  widget.requests[index],
-                                  pos,
-                                  AppLocalizations.of(context)
-                                          ?.locale
-                                          .languageCode ??
-                                      'en');
-                              Share.shareFiles([file.path]);
-                            },
-                          ),
-                        ),
-                      ),
+                    MySlidableAction(
+                      icon: Icons.picture_as_pdf,
+                      onTap: () async {
+                        final pos = context.read<HomeBloc>().selectedPos;
+                        if (pos == null) return;
+                        final pdfCreator = PdfCreator();
+                        final file = await pdfCreator.buildPdf(
+                            widget.requests[index],
+                            pos,
+                            AppLocalizations.of(context)?.locale.languageCode ??
+                                'en');
+                        Share.shareFiles([file.path]);
+                      },
+                      color: Colors.pink,
                     ),
                 ],
                 if (widget.requests[index].status != RequestStatus.COMPLETE)
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 4),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: SlidableAction(
-                          // label: 'Archive',
-                          backgroundColor: Colors.orange,
-                          icon: Icons.edit,
-                          onPressed: (c) => onEdit(index),
-                        ),
-                      ),
-                    ),
+                  MySlidableAction(
+                    icon: Icons.edit,
+                    onTap: () => onEdit(index),
+                    color: Colors.orange,
                   ),
               ],
             ),
@@ -120,20 +89,10 @@ class _HomeListState extends State<HomeList> {
               motion: const DrawerMotion(),
               extentRatio: 0.25,
               children: [
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 4),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: SlidableAction(
-                        // label: 'Archive',
-                        backgroundColor: Colors.red,
-                        icon: Icons.delete,
-                        onPressed: (c) => onDelete(index),
-                      ),
-                    ),
-                  ),
+                MySlidableAction(
+                  icon: Icons.delete,
+                  onTap: () => onDelete(index),
+                  color: Colors.red,
                 ),
               ],
             ),
@@ -203,5 +162,35 @@ class _HomeListState extends State<HomeList> {
         widget.requests.removeAt(index);
       });
     }
+  }
+}
+
+class MySlidableAction extends StatelessWidget {
+  final Color? color;
+  final Function()? onTap;
+  final IconData icon;
+
+  const MySlidableAction({Key? key, this.color, this.onTap, required this.icon})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      fit: FlexFit.tight,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
+          decoration: BoxDecoration(
+              color: color, borderRadius: BorderRadius.circular(16)),
+          child: Center(
+            child: Icon(
+              icon,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
