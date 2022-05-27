@@ -25,11 +25,11 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           // Positioned.fill(child: AnimatedBackground()),
           // Positioned.fill(child: Particles(30)),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Align(
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            child: const Align(
               alignment: Alignment.center,
-              child: LoginBox(),
+              child: const LoginBox(),
               // child: ControlledAnimation(
               //   duration: Duration(milliseconds: 1500),
               //   tween: Tween(begin: 0.0, end: 1.0),

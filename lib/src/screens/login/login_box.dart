@@ -21,6 +21,8 @@ class LoginBox extends StatefulWidget {
 class _LoginBoxState extends State<LoginBox> {
   FocusNode _focusNode = FocusNode();
 
+  bool obscureText = true;
+
   @override
   void dispose() {
     _focusNode.dispose();
@@ -39,8 +41,8 @@ class _LoginBoxState extends State<LoginBox> {
             ),
           );
         } else if (state is InsufficientPos) {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => NoMerchantScreen()));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const NoMerchantScreen()));
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -78,25 +80,33 @@ class _LoginBoxState extends State<LoginBox> {
                             TextField(
                               controller:
                                   context.read<LoginBloc>().usernameController,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: "Email",
                                 prefixIcon: Icon(Icons.email),
                               ),
                             ),
                             const Spacer(),
                             TextField(
-                              obscureText: true,
+                              obscureText: obscureText,
                               controller:
                                   context.read<LoginBloc>().passwordController,
                               decoration: InputDecoration(
                                 hintText: "Password",
-                                prefixIcon: Icon(Icons.lock),
+                                prefixIcon: const Icon(Icons.lock),
+                                suffixIcon: IconButton(
+                                    icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+                                    color: Colors.blue,
+                                    onPressed: () {
+                                      setState(() {
+                                        obscureText = !obscureText;
+                                      });
+                                    }),
                               ),
                             ),
                             const Spacer(),
                             ElevatedButton(
                               onPressed: _onLoginButtonPressed,
-                              child: Text('Login'),
+                              child: const Text('Login'),
                             ),
                             const Spacer(),
                           ],
@@ -140,7 +150,7 @@ class _LoginBoxState extends State<LoginBox> {
                       launchUrl('https://wom.social/authentication/signup'),
                   child: RichText(
                     textAlign: TextAlign.center,
-                    text: TextSpan(
+                    text: const TextSpan(
                       text: 'Non sei registrato? ',
                       children: [
                         TextSpan(
@@ -165,7 +175,7 @@ class _LoginBoxState extends State<LoginBox> {
 
   _onLoginButtonPressed() {
     print('_onLoginButtonPressed');
-    final password = context.read<LoginBloc>().passwordController.text;
+    final password = context.read<LoginBloc>().passwordController.text.trim();
     if (password.length > 5) {
       FocusScope.of(context).requestFocus(FocusNode());
       context.read<LoginBloc>().login(LoginButtonPressed(

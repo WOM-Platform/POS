@@ -51,6 +51,9 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
               Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    maxLength: 65,
+                    maxLines: 2,
+                    minLines: 1,
                     controller: bloc.nameController,
                     textInputAction: TextInputAction.go,
                     onChanged: (value) {
@@ -68,6 +71,7 @@ class _NameSelectionPageState extends State<NameSelectionPage> {
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
+                      counterStyle: TextStyle(color: Colors.white),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.yellow)),
                       errorBorder: OutlineInputBorder(
