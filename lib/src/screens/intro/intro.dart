@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
-import 'package:intro_slider/slide_object.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/custom_icons.dart';
 import 'package:pos/localization/app_localizations.dart';

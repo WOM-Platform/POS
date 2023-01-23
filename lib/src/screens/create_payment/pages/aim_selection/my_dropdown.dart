@@ -23,17 +23,17 @@ class MyDropdown extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: InputDecorator(
-        baseStyle: TextStyle(color: Colors.yellow),
+        baseStyle: const TextStyle(color: Colors.yellow),
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(7),
+          contentPadding: const EdgeInsets.all(7),
           labelText: labelText,
-          labelStyle: TextStyle(
+          labelStyle: const TextStyle(
             color: Colors.white,
           ),
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             color: Colors.white,
           ),
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
           ),
           filled: true,
@@ -44,15 +44,14 @@ class MyDropdown extends StatelessWidget {
             value: value,
             hint: Text(
               AppLocalizations.of(context)?.translate('choose') ?? '',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             onChanged: onChanged,
             items: list.map((Aim aim) {
               return DropdownMenuItem<String>(
                 value: aim.code,
                 child: Text(
-                  (aim.titles ?? const {})[languageCode ?? "en"] ?? '-',
-                  style: TextStyle(),
+                  aim.title(languageCode: languageCode) ?? '-',
                 ),
               );
             }).toList(),

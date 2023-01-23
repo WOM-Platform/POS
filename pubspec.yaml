@@ -11,7 +11,7 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.2.4+24
+version: 0.2.5+25
 publish_to: none
 
 environment:
@@ -23,10 +23,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  http: ^0.13.4
-  google_maps_flutter: ^2.1.2
-  location: ^4.3.0
-  path_provider: ^2.0.9
+  http: ^0.13.5
+  google_maps_flutter: ^2.2.3
+  location: ^4.4.0
+  path_provider: ^2.0.11
   intl:
   auto_size_text: ^3.0.0
   clippy_flutter: ^2.0.0-nullsafety.1
@@ -34,7 +34,7 @@ dependencies:
   share: ^2.0.4
   flutter_bloc: ^8.0.1
   simple_animations: ^4.0.1
-  url_launcher: ^6.0.20
+  url_launcher: ^6.1.8
   rflutter_alert: ^2.0.4
   sqflite:
 #  device_preview: ^1.0.0
@@ -45,9 +45,9 @@ dependencies:
   package_info: ^2.0.2
   rxdart: ^0.27.3
   intro_slider: ^3.0.3
-  material_design_icons_flutter: ^5.0.6595
+  material_design_icons_flutter: ^6.0.7096
   flip_card: ^0.6.0
-  flutter_secure_storage: ^5.0.2
+  flutter_secure_storage: ^7.0.1
   dart_wom_connector:
     path: /Users/gianmarcodifrancesco/Work/Digit/Dart/dart_wom_connector
   logger:

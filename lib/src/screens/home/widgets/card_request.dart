@@ -245,12 +245,12 @@ class CardRequest extends StatelessWidget {
                     cameraTargetBounds: CameraTargetBounds(
                       LatLngBounds(
                         southwest: LatLng(
-                          request.simpleFilter!.bounds!.rightBottom![0],
-                          request.simpleFilter!.bounds!.leftTop![1],
+                          request.simpleFilter!.bounds!.rightBottom[0],
+                          request.simpleFilter!.bounds!.leftTop[1],
                         ),
                         northeast: LatLng(
-                          request.simpleFilter!.bounds!.leftTop![0],
-                          request.simpleFilter!.bounds!.rightBottom![1],
+                          request.simpleFilter!.bounds!.leftTop[0],
+                          request.simpleFilter!.bounds!.rightBottom[1],
                         ),
                       ),
                     ),

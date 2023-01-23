@@ -41,7 +41,7 @@ class SelectAim extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                RaisedButton(
+                ElevatedButton(
                     child: Text(
                         AppLocalizations.of(context)?.translate('try_again') ??
                             ''),

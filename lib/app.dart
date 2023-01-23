@@ -2,6 +2,7 @@ import 'package:dart_wom_connector/dart_wom_connector.dart'
     show POSUser, PosClient;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/constants.dart';
@@ -55,15 +56,18 @@ class App extends StatelessWidget {
           ],
           localeResolutionCallback: (locale, supportedLocales) {
             if (locale == null) {
+              Intl.defaultLocale = supportedLocales.first.toString();
               return supportedLocales.first;
             }
 
             for (var supportedLocale in supportedLocales) {
               if (supportedLocale.languageCode == locale.languageCode &&
                   supportedLocale.countryCode == locale.countryCode) {
+                Intl.defaultLocale = supportedLocale.toString();
                 return supportedLocale;
               }
             }
+            Intl.defaultLocale = supportedLocales.first.toString();
             return supportedLocales.first;
           },
           supportedLocales: const [

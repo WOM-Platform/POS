@@ -108,10 +108,6 @@ class _HomeListState extends State<HomeList> {
     );
   }
 
-  void _showSnackBar(BuildContext context, String text) {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
-  }
-
   goToDetails(int index) {
     Navigator.of(context).push(
       MaterialPageRoute(

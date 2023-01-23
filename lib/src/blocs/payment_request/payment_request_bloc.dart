@@ -79,7 +79,7 @@ class CreatePaymentRequestBloc extends Bloc {
     final String name = nameController.text;
 
     final SimpleFilter simpleFilter = SimpleFilter(
-      aimCode: aim?.code,
+      aim: aim?.code,
       maxAge: maxAgeEnabled ? _maxAge : null,
       bounds: boundingBoxEnabled
           ? Bounds(leftTop: [
@@ -93,18 +93,18 @@ class CreatePaymentRequestBloc extends Bloc {
     );
 
     final paymentRequest = PaymentRequest(
-      posId: this.posId,
-      // dateTime: DateTime.now(),
+      posId: posId,
       amount: _amount!,
       aim: aim,
       aimCode: aim?.code,
-      aimName: aim != null ? (aim.titles ?? const {})[languageCode ?? 'en'] : '',
+      aimName: aim != null ? aim.title(languageCode:languageCode) ?? '' : '',
       location: currentPosition,
       persistent: persistentRequest,
       name: name,
       status: RequestStatus.DRAFT,
       simpleFilter: simpleFilter,
       pocketAckUrl: null,
+      nonce: CoreUtils.generateGUID(),
     );
 
     if (draftRequest != null) {

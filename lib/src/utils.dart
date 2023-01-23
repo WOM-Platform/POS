@@ -59,7 +59,7 @@ double getRadiusFromBoundingBox(
 }
 
 onWidgetDidBuild(Function callback) {
-  WidgetsBinding.instance?.addPostFrameCallback((_) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
     callback();
   });
 }

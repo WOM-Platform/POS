@@ -51,7 +51,7 @@ class RequestConfirmBloc extends Cubit<WomCreationState> {
       //     .generateNewPaymentRequest(paymentRequest, pointOfSale);
       try {
         final response =
-            await pos.requestPayment(paymentRequest, pointOfSale.privateKey);
+            await pos.requestPayment(paymentRequest.toPayload(), pointOfSale.privateKey);
 
         paymentRequest.deepLink =
             DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build();

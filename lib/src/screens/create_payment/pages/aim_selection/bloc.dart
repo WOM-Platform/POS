@@ -60,7 +60,7 @@ class AimSelectionBloc {
     if (firstLevelAim == null) {
       return "";
     }
-    final firstLevel = firstLevelAim.titles?[languageCode];
+    final firstLevel = firstLevelAim.titles[languageCode];
 
     final secondLevelAim =
         subAimList.firstWhereOrNull((aim) => aim.code == subAimCode);
@@ -69,7 +69,7 @@ class AimSelectionBloc {
       return firstLevel;
     }
 
-    final secondLevel = secondLevelAim.titles?[languageCode];
+    final secondLevel = secondLevelAim.titles[languageCode];
 
     final thirdLevelAim =
         subSubAimList.firstWhereOrNull((aim) => aim.code == subSubAimCode);
@@ -78,7 +78,7 @@ class AimSelectionBloc {
       return firstLevel + " -> " + secondLevel;
     }
 
-    final thirdLevel = thirdLevelAim.titles?[languageCode];
+    final thirdLevel = thirdLevelAim.titles[languageCode];
 
     return firstLevel + " -> " + secondLevel + " -> " + thirdLevel;
   }

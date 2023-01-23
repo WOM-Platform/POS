@@ -1,11 +1,12 @@
+// import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
 import 'package:intl/intl.dart';
 import 'package:pos/src/model/request_status_enum.dart';
-
 import '../utils.dart';
+import 'package:pos/src/db/keys.dart';
 
-class PaymentRequest extends RequestPaymentPayload {
+class PaymentRequest {
   static String TABLE = "paymentRequest";
   static String ID = "id";
   static String DEEP_LINK = "deepLink";
@@ -30,21 +31,31 @@ class PaymentRequest extends RequestPaymentPayload {
   static String PERSISTENT = "Persistent";
   static String ON_CLOUD = "onCloud";
 
+  final String posId;
+  final int amount;
+
   final DateTime? dateTime;
 
   final String? password;
+  final String nonce;
+
   // String registryUrl;
   String name;
   String? deepLink;
 
   RequestStatus status;
   int? id;
+
+  SimpleFilter? simpleFilter;
   String? aimCode;
+  final bool persistent;
 
 //  List<Wom> vouchers;
   LatLng? location;
   Aim? aim;
   String aimName;
+  String? pocketAckUrl;
+  String? posAckUrl;
   bool onCloud;
 
   /*      {
@@ -69,69 +80,62 @@ class PaymentRequest extends RequestPaymentPayload {
   PaymentRequest({
     this.password,
     this.id,
-    required String posId,
-    required int amount,
-    SimpleFilter? simpleFilter,
-    String? pocketAckUrl,
-    String? posAckUrl,
     this.dateTime,
-    String? nonce,
-    // this.registryUrl,
-    required  this.name,
+    required this.name,
     this.aim,
-    required  this.status,
+    required this.status,
     this.aimCode,
     required this.aimName,
     this.location,
     this.deepLink,
-    bool persistent = false,
     this.onCloud = false,
-  }) : super(
-          posId: posId,
-          amount: amount,
-          simpleFilter: simpleFilter,
-          pocketAckUrl: pocketAckUrl,
-          posAckUrl: posAckUrl,
-          persistent: persistent,
-        );
+    required this.posId,
+    required this.amount,
+    this.simpleFilter,
+    this.pocketAckUrl,
+    this.posAckUrl,
+    this.persistent = false,
+    required this.nonce,
+  });
 
   Map<String, dynamic> toPayloadMap() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['posId'] = this.posId;
-    data['nonce'] = this.nonce;
-    data['amount'] = this.amount;
-    data['simpleFilter'] = this.simpleFilter?.toMap();
-    data['posAckUrl'] = this.posAckUrl;
-    data['pocketAckUrl'] = this.pocketAckUrl;
-    data['persistent'] = this.persistent;
-    data['onCloud'] = this.onCloud;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['posId'] = posId;
+    data['nonce'] = nonce;
+    data['amount'] = amount;
+    data['simpleFilter'] = simpleFilter?.toJson();
+    data['posAckUrl'] = posAckUrl;
+    data['pocketAckUrl'] = pocketAckUrl;
+    data['persistent'] = persistent;
+    data['onCloud'] = onCloud;
     return data;
   }
 
-  String? get dateString => dateTime != null ? DateFormat.yMMMd().format(dateTime!) : null;
+  String? get dateString =>
+      dateTime != null ? DateFormat.yMMMd().format(dateTime!) : null;
 
   List<LatLng> get bbPoints => simpleFilter?.bounds != null
       ? [
-          LatLng(simpleFilter!.bounds!.leftTop![0],
-              simpleFilter!.bounds!.leftTop![1]),
-          LatLng(simpleFilter!.bounds!.rightBottom![0],
-              simpleFilter!.bounds!.leftTop![1]),
-          LatLng(simpleFilter!.bounds!.rightBottom![0],
-              simpleFilter!.bounds!.rightBottom![1]),
-          LatLng(simpleFilter!.bounds!.leftTop![0],
-              simpleFilter!.bounds!.rightBottom![1]),
-          LatLng(simpleFilter!.bounds!.leftTop![0],
-              simpleFilter!.bounds!.leftTop![1]),
+          LatLng(simpleFilter!.bounds!.leftTop[0],
+              simpleFilter!.bounds!.leftTop[1]),
+          LatLng(simpleFilter!.bounds!.rightBottom[0],
+              simpleFilter!.bounds!.leftTop[1]),
+          LatLng(simpleFilter!.bounds!.rightBottom[0],
+              simpleFilter!.bounds!.rightBottom[1]),
+          LatLng(simpleFilter!.bounds!.leftTop[0],
+              simpleFilter!.bounds!.rightBottom[1]),
+          LatLng(simpleFilter!.bounds!.leftTop[0],
+              simpleFilter!.bounds!.leftTop[1]),
         ]
       : [];
 
   factory PaymentRequest.fromDBMap(Map<String, dynamic> map) {
-    final maxAge = map[SimpleFilter.MAX_AGE];
+    final maxAge = map[SimpleFiltersKeys.MAX_AGE];
     final aimCode = map[AIM_CODE];
-    final leftTopLat = map[Bounds.LEFT_TOP_LAT];
-    final leftTopLong = map[Bounds.LEFT_TOP_LONG];
-    final rightBottomLat = map[Bounds.RIGHT_BOT_LAT];
-    final rightBottomLong = map[Bounds.RIGHT_BOT_LONG];
+    final leftTopLat = map[BoundsKeys.LEFT_TOP_LAT];
+    final leftTopLong = map[BoundsKeys.LEFT_TOP_LONG];
+    final rightBottomLat = map[BoundsKeys.RIGHT_BOT_LAT];
+    final rightBottomLong = map[BoundsKeys.RIGHT_BOT_LONG];
 
     SimpleFilter? simpleFilter;
     Bounds? bounds;
@@ -147,7 +151,7 @@ class PaymentRequest extends RequestPaymentPayload {
     if (aimCode != null || maxAge != null || bounds != null) {
       simpleFilter = SimpleFilter(
         maxAge: maxAge,
-        aimCode: aimCode,
+        aim: aimCode,
         bounds: bounds,
       );
     }
@@ -179,58 +183,67 @@ class PaymentRequest extends RequestPaymentPayload {
   }
 
   Map<String, dynamic> toDBMap() {
-    final Map<String, dynamic> map = Map();
-    map[AMOUNT] = this.amount;
+    final Map<String, dynamic> map = {};
+    map[AMOUNT] = amount;
     // map[URL] = this.registryUrl;
-    map[PASSWORD] = this.password;
-    map[NAME] = this.name;
-    map[DATE] = this.dateTime?.millisecondsSinceEpoch;
-    map[LATITUDE] = this.location?.latitude;
-    map[LONGITUDE] = this.location?.longitude;
-    map[AIM_CODE] = this.aimCode;
-    map[AIM_NAME] = this.aimName;
-    map[DEEP_LINK] = this.deepLink;
-    map[NONCE] = this.nonce;
-    map[POS_ID] = this.posId;
-    map[STATUS] = this.status.index;
-    map[PERSISTENT] = this.persistent ? 1 : 0;
-    map[ON_CLOUD] = this.onCloud ? 1 : 0;
-    map[SimpleFilter.MAX_AGE] = this.simpleFilter?.maxAge;
+    map[PASSWORD] = password;
+    map[NAME] = name;
+    map[DATE] = dateTime?.millisecondsSinceEpoch;
+    map[LATITUDE] = location?.latitude;
+    map[LONGITUDE] = location?.longitude;
+    map[AIM_CODE] = aimCode;
+    map[AIM_NAME] = aimName;
+    map[DEEP_LINK] = deepLink;
+    map[NONCE] = nonce;
+    map[POS_ID] = posId;
+    map[STATUS] = status.index;
+    map[PERSISTENT] = persistent ? 1 : 0;
+    map[ON_CLOUD] = onCloud ? 1 : 0;
+    map[SimpleFiltersKeys.MAX_AGE] = simpleFilter?.maxAge;
     if (simpleFilter?.bounds != null) {
-      map[Bounds.LEFT_TOP_LAT] = this.simpleFilter?.bounds?.leftTop?[0] ?? null;
-      map[Bounds.LEFT_TOP_LONG] =
-          this.simpleFilter?.bounds?.leftTop?[1] ?? null;
-      map[Bounds.RIGHT_BOT_LAT] =
-          this.simpleFilter?.bounds?.rightBottom?[0] ?? null;
-      map[Bounds.RIGHT_BOT_LONG] =
-          this.simpleFilter?.bounds?.rightBottom?[1] ?? null;
+      map[BoundsKeys.LEFT_TOP_LAT] = simpleFilter?.bounds?.leftTop[0];
+      map[BoundsKeys.LEFT_TOP_LONG] = simpleFilter?.bounds?.leftTop[1];
+      map[BoundsKeys.RIGHT_BOT_LAT] = simpleFilter?.bounds?.rightBottom[0];
+      map[BoundsKeys.RIGHT_BOT_LONG] = simpleFilter?.bounds?.rightBottom[1];
     }
-    map[POCKET_ACK_URL] = this.pocketAckUrl;
-    map[POS_ACK_URL] = this.posAckUrl;
+    map[POCKET_ACK_URL] = pocketAckUrl;
+    map[POS_ACK_URL] = posAckUrl;
     return map;
+  }
+
+  toPayload() {
+    return RequestPaymentPayload(
+      amount: amount,
+      nonce: nonce,
+      posId: posId,
+      persistent: persistent,
+      pocketAckUrl: pocketAckUrl,
+      simpleFilter: simpleFilter,
+      posAckUrl: posAckUrl,
+    );
   }
 
   PaymentRequest copyFrom({String? password}) {
     return PaymentRequest(
-      id: this.id,
-      amount: this.amount,
+      id: id,
+      amount: amount,
       dateTime: DateTime.now(),
       password: password ?? this.password,
       // registryUrl: this.registryUrl,
-      nonce: this.nonce,
-      name: this.name,
-      aim: this.aim,
-      aimCode: this.aimCode,
-      aimName: this.aimName,
-      status: this.status,
-      posId: this.posId,
-      location: this.location,
-      simpleFilter: this.simpleFilter,
-      pocketAckUrl: this.pocketAckUrl,
-      posAckUrl: this.posAckUrl,
-      persistent: this.persistent,
-      onCloud: this.onCloud,
-      deepLink: this.deepLink,
+      nonce: nonce,
+      name: name,
+      aim: aim,
+      aimCode: aimCode,
+      aimName: aimName,
+      status: status,
+      posId: posId,
+      location: location,
+      simpleFilter: simpleFilter,
+      pocketAckUrl: pocketAckUrl,
+      posAckUrl: posAckUrl,
+      persistent: persistent,
+      onCloud: onCloud,
+      deepLink: deepLink,
     );
   }
 }

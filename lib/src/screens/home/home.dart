@@ -26,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    SchedulerBinding.instance?.addPostFrameCallback((Duration duration) {
+    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
       if (isFirstOpen) {
         _showTutorial(context);
       }

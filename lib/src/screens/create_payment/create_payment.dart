@@ -89,18 +89,18 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: new Text(AppLocalizations.of(context)
+          title: Text(AppLocalizations.of(context)
               ?.translate('save_draft_request_title_popup') ?? ''),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("No"),
+            ElevatedButton(
+              child: Text("No"),
               onPressed: () {
                 Navigator.of(ctx).pop(false);
               },
             ),
-            new FlatButton(
-              child: new Text(AppLocalizations.of(context)?.translate('yes') ?? ''),
+            ElevatedButton(
+              child: Text(AppLocalizations.of(context)?.translate('yes') ?? ''),
               onPressed: () {
                 Navigator.of(ctx).pop(true);
               },

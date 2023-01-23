@@ -45,7 +45,7 @@ class PdfCreator {
                   textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 20),
               pw.Text(
-                  '${paymentRequest.aim != null ? '${paymentRequest.aim?.titles?[locale]} - ' : ''}${paymentRequest.amount} WOM',
+                  '${paymentRequest.aim != null ? '${paymentRequest.aim?.titles[locale]} - ' : ''}${paymentRequest.amount} WOM',
                   style: pw.TextStyle(fontSize: 30),
                   textAlign: pw.TextAlign.center),
               // pw.SizedBox(height: 60),

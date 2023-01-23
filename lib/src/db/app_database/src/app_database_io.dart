@@ -15,6 +15,14 @@ import '../../../my_logger.dart';
 class AppDatabase extends AppDatabaseBase {
   static final AppDatabase _appDatabase = new AppDatabase._internal();
 
+  static String LEFT_TOP = 'leftTop';
+  static String LEFT_TOP_LAT = 'leftTopLat';
+  static String LEFT_TOP_LONG = 'leftTopLong';
+  static String RIGHT_BOT = 'rightBottom';
+  static String RIGHT_BOT_LAT = 'rightBottomLat';
+  static String RIGHT_BOT_LONG = 'rightBottomLong';
+  static String MAX_AGE = 'maxAge';
+
   //private internal constructor to make it singletona
   AppDatabase._internal();
 
@@ -71,11 +79,11 @@ class AppDatabase extends AppDatabaseBase {
         "${PaymentRequest.POS_ACK_URL} TEXT,"
         "${PaymentRequest.LATITUDE} LONG,"
         "${PaymentRequest.LONGITUDE} LONG,"
-        "${SimpleFilter.MAX_AGE} INTEGER,"
-        "${Bounds.LEFT_TOP_LAT} LONG,"
-        "${Bounds.LEFT_TOP_LONG} LONG,"
-        "${Bounds.RIGHT_BOT_LAT} LONG,"
-        "${Bounds.RIGHT_BOT_LONG} LONG,"
+        "$MAX_AGE INTEGER,"
+        "$LEFT_TOP_LAT LONG,"
+        "$LEFT_TOP_LONG LONG,"
+        "$RIGHT_BOT_LAT LONG,"
+        "$RIGHT_BOT_LONG LONG,"
         "${PaymentRequest.URL} TEXT,"
         "${PaymentRequest.DATE} INTEGER);");
   }
