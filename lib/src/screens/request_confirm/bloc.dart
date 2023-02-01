@@ -1,6 +1,7 @@
-import 'package:bloc/bloc.dart';
+
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
@@ -12,17 +13,25 @@ import 'package:meta/meta.dart';
 import '../../constants.dart';
 import '../../my_logger.dart';
 
-class RequestConfirmBloc extends Cubit<WomCreationState> {
-  PaymentRequest paymentRequest;
+final requestConfirmNotifierProvider =
+    StateNotifierProvider<RequestConfirmBloc, WomCreationState>((ref) {
+  throw UnimplementedError();
+});
 
+final paymentRequestProvider = Provider<PaymentRequest>((ref) {
+  throw UnimplementedError();
+});
+
+class RequestConfirmBloc extends StateNotifier<WomCreationState> {
   final PosClient pos;
   late PaymentDatabase _requestDb;
 
+  final Ref ref;
   final PointOfSale pointOfSale;
 
   RequestConfirmBloc({
     required this.pointOfSale,
-    required this.paymentRequest,
+    required this.ref,
     required this.pos,
   }) : super(WomCreationRequestEmpty()) {
     // _repository = PaymentRegistrationRepository();
@@ -30,8 +39,9 @@ class RequestConfirmBloc extends Cubit<WomCreationState> {
     createWomRequest(CreateWomRequest());
   }
 
-  insertRequestOnDb() async {
+  insertRequestOnDb(PaymentRequest paymentRequest) async {
     try {
+      final paymentRequest = ref.read(paymentRequestProvider);
       if (paymentRequest.id == null) {
         int id = await _requestDb.insertRequest(paymentRequest);
         paymentRequest.id = id;
@@ -45,37 +55,35 @@ class RequestConfirmBloc extends Cubit<WomCreationState> {
   }
 
   createWomRequest(CreateWomRequest createWomRequest) async {
-    emit(WomCreationRequestLoading());
+    state = WomCreationRequestLoading();
+    final paymentRequest = ref.read(paymentRequestProvider);
     if (await InternetConnectionChecker().hasConnection) {
       // final RequestVerificationResponse response = await _repository
       //     .generateNewPaymentRequest(paymentRequest, pointOfSale);
       try {
-        final response =
-            await pos.requestPayment(paymentRequest.toPayload(), pointOfSale.privateKey);
+        final response = await pos.requestPayment(
+            paymentRequest.toPayload(), pointOfSale.privateKey);
 
         paymentRequest.deepLink =
             DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build();
         paymentRequest.status = RequestStatus.COMPLETE;
         // paymentRequest.registryUrl = response.registryUrl;
-        paymentRequest = paymentRequest.copyFrom(password: response.password);
-        await insertRequestOnDb();
-        emit(WomVerifyCreationRequestComplete(
-          response: response,
-        ));
+        await insertRequestOnDb(paymentRequest.copyFrom(password: response.password));
+        state = WomVerifyCreationRequestComplete(response: response);
       } on ServerException catch (ex, stack) {
         logger.e('${ex.url}: ${ex.statusCode} => ${ex.error}');
         logger.e(stack);
         paymentRequest.status = RequestStatus.DRAFT;
-        insertRequestOnDb();
-        emit(WomCreationRequestError(error: ex.error));
+        insertRequestOnDb(paymentRequest);
+        state = WomCreationRequestError(error: ex.error);
       } catch (ex) {
         logger.e(ex);
         paymentRequest.status = RequestStatus.DRAFT;
-        insertRequestOnDb();
-        emit(WomCreationRequestError());
+        insertRequestOnDb(paymentRequest);
+        state = WomCreationRequestError();
       }
     } else {
-      emit(WomCreationRequestNoDataConnectionState());
+      state = WomCreationRequestNoDataConnectionState();
     }
   }
 }

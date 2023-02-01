@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
@@ -6,37 +7,38 @@ import 'package:pos/src/constants.dart';
 import 'package:pos/src/model/flavor_enum.dart';
 import 'package:pos/src/screens/intro/intro.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../app.dart';
 import '../../utils.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final posUser = ref.watch(posUserProvider);
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          AppLocalizations.of(context)?.translate('settings_title') ?? '',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        brightness: Brightness.dark,
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   centerTitle: true,
+      //   title: Text(
+      //     AppLocalizations.of(context)?.translate('settings_title') ?? '',
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //     ),
+      //   ),
+      //   backgroundColor: Theme.of(context).primaryColor,
+      //   brightness: Brightness.dark,
+      //   iconTheme: IconThemeData(
+      //     color: Colors.white,
+      //   ),
+      // ),
       body: ListView(
         children: <Widget>[
-          if (globalUser != null)
+          if (posUser != null)
             ListTile(
               leading: Icon(Icons.account_circle),
-              title: Text('${globalUser!.name} ${globalUser!.surname}'),
-              subtitle: Text(globalUser!.email),
+              title: Text('${posUser.name} ${posUser.surname}'),
+              subtitle: Text(posUser.email),
               contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             ),
           ListTile(
@@ -71,7 +73,7 @@ class SettingsScreen extends StatelessWidget {
             contentPadding: const EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () {
               _showLogoutDialog(context, () {
-                context.read<AuthenticationBloc>().logOut();
+                ref.read(authNotifierProvider.notifier).logOut();
               });
             },
           ),

@@ -1,14 +1,17 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/model/request_status_enum.dart';
+import 'package:pos/src/offers/application/offers.dart';
 
 import 'package:pos/src/screens/create_payment/create_payment.dart';
+import 'package:pos/src/screens/home/home.dart';
 import 'package:pos/src/screens/home/widgets/card_request.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
@@ -19,144 +22,263 @@ import 'package:share/share.dart';
 
 import '../../../my_logger.dart';
 
-class HomeList extends StatefulWidget {
-  final List<PaymentRequest> requests;
-
-  HomeList({Key? key, required this.requests}) : super(key: key);
+class HomeList extends ConsumerStatefulWidget {
+  // final List<PaymentRequest> requests;
+  //
+  // HomeList({Key? key, required this.requests}) : super(key: key);
 
   @override
   _HomeListState createState() => _HomeListState();
 }
 
-class _HomeListState extends State<HomeList> {
-  late HomeBloc bloc;
-
+class _HomeListState extends ConsumerState<HomeList> {
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<HomeBloc>(context);
-    return ListView.builder(
-      itemCount: widget.requests.length + 1,
-      itemBuilder: (context, index) {
-        if (index == widget.requests.length) {
-          return const SizedBox(
-            height: 80,
-          );
-        }
-        return GestureDetector(
-          onTap: widget.requests[index].status == RequestStatus.COMPLETE
-              ? () => goToDetails(index)
-              : null,
-          child: Slidable(
-            startActionPane: ActionPane(
-              extentRatio: 0.5,
-              motion: const BehindMotion(),
-              children: [
-                if (widget.requests[index].status ==
-                    RequestStatus.COMPLETE) ...[
-                  MySlidableAction(
-                    icon: Icons.share,
-                    onTap: () {
-                      Share.share('${widget.requests[index].deepLink}');
-                    },
-                    color: Colors.green,
+    // final bloc = ref.watch(homeNotifierProvider);
+    final state = ref.watch(requestNotifierProvider);
+    return state.when(
+      data: (data) {
+        return data.when(
+          requestLoading: () {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+          noDataConnectionState: () {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    AppLocalizations.of(context)
+                            ?.translate('no_connection_title') ??
+                        '',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  if (widget.requests[index].persistent)
-                    MySlidableAction(
-                      icon: Icons.picture_as_pdf,
-                      onTap: () async {
-                        final pos = context.read<HomeBloc>().selectedPos;
-                        if (pos == null) return;
-                        final pdfCreator = PdfCreator();
-                        final file = await pdfCreator.buildPdf(
-                            widget.requests[index],
-                            pos,
-                            AppLocalizations.of(context)?.locale.languageCode ??
-                                'en');
-                        Share.shareFiles([file.path]);
-                      },
-                      color: Colors.pink,
-                    ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)
+                            ?.translate('no_connection_aim_desc') ??
+                        '',
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  FloatingActionButton.extended(
+                      label: Text(AppLocalizations.of(context)
+                              ?.translate('try_again') ??
+                          ''),
+                      onPressed: () {
+                        ref.invalidate(requestNotifierProvider);
+                      }),
                 ],
-                if (widget.requests[index].status != RequestStatus.COMPLETE)
-                  MySlidableAction(
-                    icon: Icons.edit,
-                    onTap: () => onEdit(index),
-                    color: Colors.orange,
+              ),
+            );
+          },
+          noPosState: () {
+            return Center(
+              child: WarningWidget(
+                text: AppLocalizations.of(context)?.translate('no_pos') ?? '',
+              ),
+            );
+          },
+          noMerchantState: () {
+            return Center(
+              child: WarningWidget(
+                text: AppLocalizations.of(context)?.translate('no_merchants') ??
+                    '',
+              ),
+            );
+          },
+          requestLoaded: (requests) {
+            if (requests.isEmpty) {
+              return Center(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      AppLocalizations.of(context)?.translate('no_request') ??
+                          '',
+                      style: const TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-              ],
-            ),
-            endActionPane: ActionPane(
-              motion: const DrawerMotion(),
-              extentRatio: 0.25,
-              children: [
-                MySlidableAction(
-                  icon: Icons.delete,
-                  onTap: () => onDelete(index),
-                  color: Colors.red,
                 ),
-              ],
-            ),
-            child: CardRequest(
-              request: widget.requests[index],
-              onDelete: () => onDelete(index),
-              onEdit: () => onEdit(index),
-              onDuplicate: () => onDuplicate(index),
-            ),
-          ),
+              );
+            }
+
+            return ListView.builder(
+              itemCount: requests.length + 1,
+              itemBuilder: (context, index) {
+                if (index == requests.length) {
+                  return const SizedBox(
+                    height: 80,
+                  );
+                }
+                return GestureDetector(
+                  onTap: requests[index].status == RequestStatus.COMPLETE
+                      ? () => goToDetails(requests[index])
+                      : null,
+                  child: Slidable(
+                    startActionPane: ActionPane(
+                      extentRatio: 0.5,
+                      motion: const BehindMotion(),
+                      children: [
+                        if (requests[index].status ==
+                            RequestStatus.COMPLETE) ...[
+                          MySlidableAction(
+                            icon: Icons.share,
+                            onTap: () {
+                              Share.share('${requests[index].deepLink}');
+                            },
+                            color: Colors.green,
+                          ),
+                          if (requests[index].persistent)
+                            MySlidableAction(
+                              icon: Icons.picture_as_pdf,
+                              onTap: () async {
+                                final pos =
+                                    ref.read(selectedPosProvider)?.pos;
+                                if (pos == null) return;
+                                final pdfCreator = PdfCreator();
+                                final file = await pdfCreator.buildPdf(
+                                    requests[index],
+                                    pos,
+                                    AppLocalizations.of(context)
+                                            ?.locale
+                                            .languageCode ??
+                                        'en');
+                                Share.shareFiles([file.path]);
+                              },
+                              color: Colors.pink,
+                            ),
+                        ],
+                        if (requests[index].status != RequestStatus.COMPLETE)
+                          MySlidableAction(
+                            icon: Icons.edit,
+                            onTap: () => onEdit(requests[index]),
+                            color: Colors.orange,
+                          ),
+                      ],
+                    ),
+                    endActionPane: ActionPane(
+                      motion: const DrawerMotion(),
+                      extentRatio: 0.25,
+                      children: [
+                        MySlidableAction(
+                          icon: Icons.delete,
+                          onTap: () => onDelete(requests[index]),
+                          color: Colors.red,
+                        ),
+                      ],
+                    ),
+                    child: CardRequest(
+                      request: requests[index],
+                      onDelete: () => onDelete(requests[index]),
+                      onEdit: () => onEdit(requests[index]),
+                      onDuplicate: () => onDuplicate(requests[index]),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+          requestsLoadingErrorState: (error) {
+            return Center(
+              child: Text(
+                AppLocalizations.of(context)?.translate(error) ?? '',
+                textAlign: TextAlign.center,
+              ),
+            );
+          },
+          error: (ex, st) {
+            return Center(
+              child: Text(AppLocalizations.of(context)
+                      ?.translate('error_screen_state') ??
+                  ''),
+            );
+          },
+        );
+      },
+      error: (ex, st) {
+        return Center(
+          child: Text(
+              AppLocalizations.of(context)?.translate('error_screen_state') ??
+                  ''),
+        );
+      },
+      loading: () {
+        return const Center(
+          child: CircularProgressIndicator(),
         );
       },
     );
   }
 
-  goToDetails(int index) {
+  goToDetails(PaymentRequest request) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => RequestDetails(
-          paymentRequest: widget.requests[index],
+          paymentRequest: request,
         ),
       ),
     );
   }
 
-  onDuplicate(int index) {
-    final pos = context.read<HomeBloc>().selectedPos;
+  onDuplicate(PaymentRequest request) {
+    final pos = ref.read(selectedPosProvider)?.pos;
     if (pos == null) return;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => BlocProvider(
-          create: (c) => RequestConfirmBloc(
-            pos: context.read<PosClient>(),
-            pointOfSale: pos,
-            paymentRequest: widget.requests[index].copyFrom(),
-          ),
+        builder: (ctx) => ProviderScope(
+          overrides: [
+            paymentRequestProvider.overrideWith((ref) => request.copyFrom()),
+            requestConfirmNotifierProvider.overrideWith(
+              (ref) => RequestConfirmBloc(
+                ref: ref,
+                pos: ref.read(getPosProvider),
+                pointOfSale: pos,
+              ),
+            ),
+          ],
           child: RequestConfirmScreen(),
         ),
       ),
     );
   }
 
-  onEdit(int index) {
-    final id = context.read<HomeBloc>().selectedPos?.id;
+  onEdit(PaymentRequest request) {
+    final id = ref.read(selectedPosProvider)?.pos?.id;
     if (id == null) return;
-    final provider = BlocProvider(
+    final provider = ProviderScope(
       child: GenerateWomScreen(),
-      create: (ctx) => CreatePaymentRequestBloc(
-          posId: id,
-          draftRequest: widget.requests[index],
-          languageCode: AppLocalizations.of(context)?.locale.languageCode),
+      overrides: [
+        createPaymentNotifierProvider.overrideWith((ref) =>
+            CreatePaymentRequestBloc(
+              ref:ref,
+                posId: id,
+                draftRequest: request,
+                languageCode:
+                    AppLocalizations.of(context)?.locale.languageCode))
+      ],
     );
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => provider));
   }
 
-  onDelete(int index) async {
+  onDelete(PaymentRequest request) async {
     logger.i("onDelete");
-    if (widget.requests[index].id == null) return;
-    final result = await bloc.deleteRequest(widget.requests[index].id!);
+    if (request.id == null) return;
+    final result = await ref
+        .read(homeNotifierProvider.notifier)
+        .deleteRequest(request.id!);
     logger.i("onDelete from DB complete: $result");
     if (result > 0) {
-      setState(() {
-        widget.requests.removeAt(index);
-      });
+      ref.invalidate(requestNotifierProvider);
     }
   }
 }

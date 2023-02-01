@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
@@ -9,7 +11,7 @@ import '../../utils.dart';
 import 'load_stuff_button.dart';
 import 'no_merchant_screen.dart';
 
-class LoginBox extends StatefulWidget {
+class LoginBox extends StatefulHookConsumerWidget {
   const LoginBox({
     Key? key,
   }) : super(key: key);
@@ -18,7 +20,7 @@ class LoginBox extends StatefulWidget {
   _LoginBoxState createState() => _LoginBoxState();
 }
 
-class _LoginBoxState extends State<LoginBox> {
+class _LoginBoxState extends ConsumerState<LoginBox> {
   FocusNode _focusNode = FocusNode();
 
   bool obscureText = true;
@@ -31,155 +33,149 @@ class _LoginBoxState extends State<LoginBox> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (BuildContext context, state) {
-        if (state is LoginFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-              backgroundColor: Colors.red,
-            ),
-          );
-        } else if (state is InsufficientPos) {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const NoMerchantScreen()));
-        }
-      },
-      child: BlocBuilder<LoginBloc, LoginState>(
-        builder: (
-          BuildContext context,
-          LoginState state,
-        ) {
-          return Center(
-            child: ListView(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 6,
-                ),
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const Spacer(),
-                            Image.asset(
-                              'assets/logo_wom.png',
-                              height: 60.0,
-                            ),
-                            const Spacer(),
-                            TextField(
-                              controller:
-                                  context.read<LoginBloc>().usernameController,
-                              decoration: const InputDecoration(
-                                hintText: "Email",
-                                prefixIcon: Icon(Icons.email),
-                              ),
-                            ),
-                            const Spacer(),
-                            TextField(
-                              obscureText: obscureText,
-                              controller:
-                                  context.read<LoginBloc>().passwordController,
-                              decoration: InputDecoration(
-                                hintText: "Password",
-                                prefixIcon: const Icon(Icons.lock),
-                                suffixIcon: IconButton(
-                                    icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
-                                    color: Colors.blue,
-                                    onPressed: () {
-                                      setState(() {
-                                        obscureText = !obscureText;
-                                      });
-                                    }),
-                              ),
-                            ),
-                            const Spacer(),
-                            ElevatedButton(
-                              onPressed: _onLoginButtonPressed,
-                              child: const Text('Login'),
-                            ),
-                            const Spacer(),
-                          ],
+    ref.listen(loginProvider, (previous, next) {
+      if (next is LoginFailure) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else if (next is InsufficientPos) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const NoMerchantScreen()));
+      }
+    });
+    // final loginBloc = ref.watch(loginProvider);
+    final usernameController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    return Center(
+      child: ListView(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 6,
+          ),
+          AspectRatio(
+            aspectRatio: 1,
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Spacer(),
+                      Image.asset(
+                        'assets/logo_wom.png',
+                        height: 60.0,
+                      ),
+                      const Spacer(),
+                      TextField(
+                        controller: usernameController,
+                        decoration: const InputDecoration(
+                          hintText: "Email",
+                          prefixIcon: Icon(Icons.email),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 50,
-                  margin: const EdgeInsets.all(4),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: InkWell(
-                        splashColor: Colors.green,
-                        borderRadius: BorderRadius.circular(15),
-                        onTap: () {
-                          context.read<LoginBloc>().anonymousLogin();
-                        },
-                        child: const Center(
-                          child: Text(
-                            'Accesso Anonimo',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                      const Spacer(),
+                      TextField(
+                        obscureText: obscureText,
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                              icon: Icon(obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
+                              color: Colors.blue,
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              }),
                         ),
                       ),
-                    ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () => _onLoginButtonPressed(
+                            usernameController.text.trim(),
+                            passwordController.text.trim()),
+                        child: const Text('Login'),
+                      ),
+                      const Spacer(),
+                    ],
                   ),
                 ),
-                const SizedBox(
-                  height: 16.0,
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () =>
-                      launchUrl('https://wom.social/authentication/signup'),
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      text: 'Non sei registrato? ',
-                      children: [
-                        TextSpan(
-                          text: 'Clicca qui',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )
-                      ],
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
-              ],
+              ),
             ),
-          );
-        },
+          ),
+          Container(
+            height: 50,
+            margin: const EdgeInsets.all(4),
+            child: Material(
+              color: Colors.transparent,
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: InkWell(
+                  splashColor: Colors.green,
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () {
+                    ref.read(loginProvider.notifier).anonymousLogin();
+                  },
+                  child: const Center(
+                    child: Text(
+                      'Accesso Anonimo',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 16.0,
+          ),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => launchUrl('https://wom.social/authentication/signup'),
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(
+                text: 'Non sei registrato? ',
+                children: [
+                  TextSpan(
+                    text: 'Clicca qui',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 8.0,
+          ),
+        ],
       ),
     );
   }
 
-  _onLoginButtonPressed() {
+  _onLoginButtonPressed(String email, String password) {
     print('_onLoginButtonPressed');
-    final password = context.read<LoginBloc>().passwordController.text.trim();
     if (password.length > 5) {
       FocusScope.of(context).requestFocus(FocusNode());
-      context.read<LoginBloc>().login(LoginButtonPressed(
-            username: context.read<LoginBloc>().usernameController.text.trim(),
+      ref.read(loginProvider.notifier).login(LoginButtonPressed(
+            username: email,
             password: password,
           ));
     } else {

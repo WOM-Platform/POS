@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 import '../../back_button_text.dart';
 
-class MaxAgeSelectionPage extends StatefulWidget {
+class MaxAgeSelectionPage extends ConsumerStatefulWidget {
+  const MaxAgeSelectionPage({
+    Key? key,
+  }) : super(key: key);
+
   @override
-  _MaxAgeSelectionPageState createState() => _MaxAgeSelectionPageState();
+  ConsumerState createState() => _MaxAgeSelectionPageState();
 }
 
-class _MaxAgeSelectionPageState extends State<MaxAgeSelectionPage> {
-  late CreatePaymentRequestBloc bloc;
+class _MaxAgeSelectionPageState extends ConsumerState<MaxAgeSelectionPage> {
 
   @override
-  Widget build(BuildContext context) {
-    bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
+  Widget build(BuildContext contex) {
+    final bloc = ref.watch(createPaymentNotifierProvider);
     final isValid = bloc.isValidMaxAge;
     return SafeArea(
       child: GestureDetector(

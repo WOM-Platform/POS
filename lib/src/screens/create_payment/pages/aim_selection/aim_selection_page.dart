@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
+import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 
 import 'package:pos/src/screens/create_payment/pages/aim_selection/select_aim.dart';
 
 import '../../back_button_text.dart';
 
-class AimSelectionPage extends StatefulWidget {
+class AimSelectionPage extends ConsumerStatefulWidget {
   @override
   _AimSelectionPageState createState() => _AimSelectionPageState();
 }
 
-class _AimSelectionPageState extends State<AimSelectionPage> {
+class _AimSelectionPageState extends ConsumerState<AimSelectionPage> {
   late CreatePaymentRequestBloc bloc;
 
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
+    bloc = ref.watch(createPaymentNotifierProvider);
     final isValid = bloc.isValidAim;
     return SafeArea(
       child: GestureDetector(
@@ -39,7 +41,7 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)?.translate('what_aim') ??'',
+                    AppLocalizations.of(context)?.translate('what_aim') ?? '',
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -52,15 +54,16 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                   children: <Widget>[
                     Text(
                       AppLocalizations.of(context)
-                          ?.translate('enable_disable_filter') ?? '',
+                              ?.translate('enable_disable_filter') ??
+                          '',
                       style: TextStyle(color: Colors.white),
                     ),
                     Switch(
-                      value: bloc.aimSelectionBloc.aimEnabled,
+                      value: ref.watch(aimSelectionNotifierProvider).aimEnabled,
                       onChanged: (value) {
                         setState(
                           () {
-                            bloc.aimSelectionBloc.aimEnabled = value;
+                            ref.read(aimSelectionNotifierProvider.notifier).toggle();
                           },
                         );
                       },
@@ -68,18 +71,17 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                   ],
                 ),
                 SelectAim(
-                  bloc: bloc.aimSelectionBloc,
+                  // bloc: bloc.aimSelectionBloc,
                   updateState: () {
                     if (isValid != bloc.isValidAim) setState(() {});
                   },
                 ),
-                SizedBox(
-                  height: 10.0
-                ),
+                SizedBox(height: 10.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    AppLocalizations.of(context)?.translate('aim_suggestion') ?? '',
+                    AppLocalizations.of(context)?.translate('aim_suggestion') ??
+                        '',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -89,7 +91,8 @@ class _AimSelectionPageState extends State<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    AppLocalizations.of(context)?.translate('aim_warning') ?? '',
+                    AppLocalizations.of(context)?.translate('aim_warning') ??
+                        '',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,

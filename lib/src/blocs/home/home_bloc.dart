@@ -1,8 +1,8 @@
-import 'package:bloc/bloc.dart';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:pos/src/blocs/home/home_event.dart';
+import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/home/home_state.dart';
 import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
@@ -16,13 +16,17 @@ import '../../my_logger.dart';
 
 import '../../extensions.dart';
 
-class HomeBloc extends Cubit<HomeState> {
+final homeNotifierProvider = StateNotifierProvider<HomeBloc, HomeState>((ref) {
+  return HomeBloc(ref: ref);
+});
+
+class HomeBloc extends StateNotifier<HomeState> {
   TextEditingController amountController = TextEditingController();
   late AimRepository _aimRepository;
   late PaymentDatabase _requestDb;
-  UserRepository userRepository;
+  final Ref ref;
 
-  HomeBloc({required this.userRepository}) : super(RequestLoading()) {
+  HomeBloc({required this.ref}) : super(RequestLoading()) {
     _aimRepository = AimRepository();
     _requestDb = PaymentDatabase.get();
     //TODO spostare aggiornamento aim in appBloc
@@ -39,32 +43,32 @@ class HomeBloc extends Cubit<HomeState> {
   String? _selectedPosId;
   String? _selectedMerchantId;
 
-  List<Merchant> get merchants => globalUser?.merchants ?? <Merchant>[];
+  // List<Merchant> get merchants => globalUser?.merchants ?? <Merchant>[];
 
-  List<PointOfSale> get posList => selectedMerchant?.posList ?? <PointOfSale>[];
+  // List<PointOfSale> get posList => selectedMerchant?.posList ?? <PointOfSale>[];
 
-  bool get isOnlyOneMerchantAndPos =>
-      merchants.length == 1 && posList.length <= 1;
+  // bool get isOnlyOneMerchantAndPos =>
+  //     merchants.length == 1 && posList.length <= 1;
 
-  bool get posSelectionEnabled =>
-      merchants.isNotEmpty && !isOnlyOneMerchantAndPos;
+  // bool get posSelectionEnabled =>
+  //     merchants.isNotEmpty && !isOnlyOneMerchantAndPos;
 
-  Merchant? get selectedMerchant => _selectedMerchantId.isNotNullAndNotEmpty
-      ? merchants.firstWhereOrNull((m) => m.id == _selectedMerchantId)
-      : merchants.isNotEmpty
-          ? merchants.first
-          : null;
+  // Merchant? get selectedMerchant => _selectedMerchantId.isNotNullAndNotEmpty
+  //     ? merchants.firstWhereOrNull((m) => m.id == _selectedMerchantId)
+  //     : merchants.isNotEmpty
+  //         ? merchants.first
+  //         : null;
 
-  PointOfSale? get selectedPos => _selectedPosId.isNotNullAndNotEmpty
-      ? posList.firstWhereOrNull((p) => p.id == _selectedPosId)
-      : posList.isNotEmpty
-          ? posList.first
-          : null;
+  // PointOfSale? get selectedPos => _selectedPosId.isNotNullAndNotEmpty
+  //     ? posList.firstWhereOrNull((p) => p.id == _selectedPosId)
+  //     : posList.isNotEmpty
+  //         ? posList.first
+  //         : null;
 
   Future<void> checkAndSetPreviousSelectedMerchantAndPos() async {
     //Check previous merchant and pos selected
     final lastMerchantAndPosIdUsed =
-        await userRepository.readLastMerchantIdAndPosIdUsed();
+        await ref.read(userRepositoryProvider).readLastMerchantIdAndPosIdUsed();
     if (lastMerchantAndPosIdUsed != null &&
         lastMerchantAndPosIdUsed.length == 2) {
       final merchantId = lastMerchantAndPosIdUsed[0];
@@ -78,21 +82,23 @@ class HomeBloc extends Cubit<HomeState> {
     }
   }
 
-  void setMerchantAndPosId(String merchantId, String posId) {
-    if (posId != _selectedPosId) {
-      userRepository.saveMerchantAndPosIdUsed(posId, merchantId);
-      _selectedMerchantId = merchantId;
-      _selectedPosId = posId;
-      loadRequest();
-    }
-  }
+  // void setMerchantAndPosId(String merchantId, String posId) {
+  //   if (posId != _selectedPosId) {
+  //     ref
+  //         .read(userRepositoryProvider)
+  //         .saveMerchantAndPosIdUsed(posId, merchantId);
+  //     _selectedMerchantId = merchantId;
+  //     _selectedPosId = posId;
+  //     loadRequest();
+  //   }
+  // }
 
-  loadRequest() async {
+  /*loadRequest() async {
     if (merchants.isEmpty) {
-      emit(NoMerchantState());
+      state = NoMerchantState();
       return;
     } else if (posList.isEmpty) {
-      emit(NoPosState());
+      state = NoPosState();
       return;
     }
 
@@ -112,7 +118,7 @@ class HomeBloc extends Cubit<HomeState> {
           await setAimCheckDateTime(DateTime.now());
         } else {
           logger.i("Aims null or empty and No internet connection");
-          emit(NoDataConnectionState());
+          state = NoDataConnectionState();
           return;
         }
       }
@@ -130,23 +136,17 @@ class HomeBloc extends Cubit<HomeState> {
             r.aim = aim;
           }
         }
-        emit(RequestLoaded(requests: requests));
+        state = RequestLoaded(requests: requests);
       } else {
-        emit(NoPosState());
+        state = NoPosState();
       }
     } catch (ex) {
       logger.i(ex.toString());
-      emit(RequestsLoadingErrorState('somethings_wrong'));
+      state = RequestsLoadingErrorState('somethings_wrong');
     }
-  }
+  }*/
 
   Future<int> deleteRequest(int id) async {
     return await _requestDb.deleteRequest(id);
-  }
-
-  @override
-  Future<void> close() {
-    amountController.dispose();
-    return super.close();
   }
 }

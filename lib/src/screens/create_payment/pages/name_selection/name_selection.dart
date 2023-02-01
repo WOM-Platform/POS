@@ -1,21 +1,21 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
-class NameSelectionPage extends StatefulWidget {
+class NameSelectionPage extends ConsumerStatefulWidget {
   @override
   _NameSelectionPageState createState() => _NameSelectionPageState();
 }
 
-class _NameSelectionPageState extends State<NameSelectionPage> {
-  late CreatePaymentRequestBloc bloc;
+class _NameSelectionPageState extends ConsumerState<NameSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
+   final bloc = ref.watch(createPaymentNotifierProvider);
 
     final isValid = bloc.isValidName;
     return GestureDetector(

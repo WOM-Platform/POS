@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
+import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/aim_selection_page.dart';
+import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:pos/src/screens/create_payment/pages/name_selection/name_selection.dart';
 import 'package:pos/src/screens/create_payment/pages/position_selection/position_selection_page.dart';
 import 'package:pos/src/screens/create_payment/pages/amount_selection/amount_selection_page.dart';
@@ -13,33 +16,25 @@ import 'package:pos/src/screens/create_payment/pages/amount_selection/amount_sel
 import 'pages/age_selection/age_selection_page.dart';
 import 'pages/type_selection/type_selection.dart';
 
-class GenerateWomScreen extends StatefulWidget {
+class GenerateWomScreen extends ConsumerStatefulWidget {
   @override
   _GenerateWomScreenState createState() => _GenerateWomScreenState();
 }
 
-class _GenerateWomScreenState extends State<GenerateWomScreen> {
+class _GenerateWomScreenState extends ConsumerState<GenerateWomScreen> {
   int page = 0;
-  late CreatePaymentRequestBloc bloc;
-  late HomeBloc homeBloc;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   Future<bool> onWillPop() {
-    if (bloc.pageController.page?.round() == bloc.pageController.initialPage) {
+    if (ref.read(createPaymentNotifierProvider).pageController.page?.round() == ref.read(createPaymentNotifierProvider).pageController.initialPage) {
       return Future.value(true);
     }
-    bloc.goToPreviousPage();
+    ref.read(createPaymentNotifierProvider).goToPreviousPage();
     return Future.value(false);
   }
 
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
-    homeBloc = BlocProvider.of<HomeBloc>(context);
+    ref.listen(aimSelectionNotifierProvider, (previous, next) { });
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
@@ -49,7 +44,7 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
           child: Stack(
             children: <Widget>[
               PageView(
-                controller: bloc.pageController,
+                controller: ref.watch(createPaymentNotifierProvider).pageController,
                 physics: new NeverScrollableScrollPhysics(),
                 children: <Widget>[
                   NameSelectionPage(),
@@ -69,7 +64,7 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    if (bloc.pageController.page?.round() != 0) {
+                    if (ref.read(createPaymentNotifierProvider).pageController.page?.round() != 0) {
                       showAlert(context);
                     } else {
                       Navigator.of(context).pop();
@@ -84,7 +79,7 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
     );
   }
 
-  showAlert(BuildContext context) async {
+  showAlert(BuildContext context, ) async {
     bool result = await showDialog(
       context: context,
       builder: (ctx) {
@@ -111,15 +106,15 @@ class _GenerateWomScreenState extends State<GenerateWomScreen> {
     );
 
     if (result) {
-      await bloc.saveDraftRequest();
-      homeBloc.loadRequest();
+      await ref.read(createPaymentNotifierProvider).saveDraftRequest();
+      ref.invalidate(requestNotifierProvider);
     }
     Navigator.of(context).pop();
   }
 
   @override
   void dispose() {
-    bloc.close();
+    // ref.read(createPaymentNotifierProvider).close();
     super.dispose();
   }
 }

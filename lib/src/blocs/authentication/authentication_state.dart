@@ -12,7 +12,7 @@ class AuthenticationUninitialized extends AuthenticationState {
 }
 
 class AuthenticationAuthenticated extends AuthenticationState {
-  final User user;
+  final POSUser user;
 
   AuthenticationAuthenticated(this.user);
   @override

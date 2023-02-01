@@ -2,25 +2,26 @@ import 'dart:async';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 import 'package:location/location.dart' as locService;
+import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import '../../../../my_logger.dart';
 import '../../back_button_text.dart';
 
-class PositionSelectionPage extends StatefulWidget {
+class PositionSelectionPage extends ConsumerStatefulWidget {
   @override
   _PositionSelectionPageState createState() => _PositionSelectionPageState();
 }
 
-class _PositionSelectionPageState extends State<PositionSelectionPage> {
-  late CreatePaymentRequestBloc bloc;
+class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
   MinMaxZoomPreference _minMaxZoomPreference = MinMaxZoomPreference.unbounded;
   Set<Marker> markers = <Marker>{};
   final _locationService = locService.Location();
@@ -45,7 +46,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     1000000
   ];
 
-  Future<bool> initPlatformState() async {
+  Future<bool> initPlatformState(CreatePaymentRequestBloc bloc) async {
     locService.LocationData? location;
     try {
       bool serviceStatus = await _locationService.serviceEnabled();
@@ -61,7 +62,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
       if (permissionStatus == locService.PermissionStatus.granted) {
         await _locationService.changeSettings(
             accuracy: locService.LocationAccuracy.high, interval: 1000);
-        _updateMyLocation();
+        _updateMyLocation(bloc);
         return true;
       }
       return false;
@@ -83,7 +84,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
   void _updateCameraPosition(CameraPosition position) {}
 
-  _updateMyLocation() async {
+  _updateMyLocation(CreatePaymentRequestBloc bloc) async {
     logger.i("_updateMyLocation");
     locService.LocationData? location;
     try {
@@ -99,7 +100,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
       if (mounted) {
         logger.i("updateCurrentLocation()");
-        _updateCurrentLocation(target);
+        _updateCurrentLocation(bloc, target);
         controller.animateCamera(
             CameraUpdate.newCameraPosition(_currentCameraPosition));
       }
@@ -113,11 +114,11 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
   }
 
   //Add pin to tapped position
-  _onTapMap(LatLng location) {
-    _updateCurrentLocation(location);
+  _onTapMap(CreatePaymentRequestBloc bloc, LatLng location) {
+    _updateCurrentLocation(bloc, location);
   }
 
-  void _updateCurrentLocation(LatLng target) {
+  void _updateCurrentLocation(CreatePaymentRequestBloc bloc, LatLng target) {
     bloc.currentPosition = target;
     bloc.updatePolylines();
     setState(() {});
@@ -125,7 +126,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
+    final bloc = ref.watch(createPaymentNotifierProvider);
     final isValid = bloc.isValidPosition;
     final square = Polygon(
       polygonId: PolygonId('bounding_box'),
@@ -146,7 +147,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
       onCameraMove: _updateCameraPosition,
 //      circles: {circle},
       polygons: {square},
-      onTap: _onTapMap,
+      onTap: (l) => _onTapMap(bloc, l),
     );
 
     return SafeArea(
@@ -155,9 +156,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(
-              height: 30.0
-            ),
+            const SizedBox(height: 30.0),
             Padding(
               padding: const EdgeInsets.only(left: 8.0, top: 8.0),
               child: Text(
@@ -183,7 +182,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                   value: bloc.boundingBoxEnabled,
                   onChanged: (value) {
                     if (value) {
-                      initPlatformState();
+                      initPlatformState(bloc);
                     }
                     setState(
                       () {
@@ -236,7 +235,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                     onTap: bloc.boundingBoxEnabled
                         ? null
                         : () {
-                            initPlatformState();
+                            initPlatformState(bloc);
                             setState(
                               () {
                                 bloc.boundingBoxEnabled = true;
@@ -276,7 +275,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                             Icons.update,
                             size: 21.0,
                           ),
-                          onPressed: _updateMyLocation,
+                          onPressed: () => _updateMyLocation(bloc),
                         ),
                       ),
                     ),
@@ -298,7 +297,7 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
                 child: const Icon(Icons.arrow_forward_ios),
                 onPressed: () {
                   bloc.saveCurrentPosition();
-                  goToRequestScreen();
+                  goToRequestScreen(bloc);
                 },
               )
             : null,
@@ -306,18 +305,24 @@ class _PositionSelectionPageState extends State<PositionSelectionPage> {
     );
   }
 
-  goToRequestScreen() async {
+  goToRequestScreen(CreatePaymentRequestBloc bloc) async {
     final womRequest = await bloc.createModelForCreationRequest();
-    final pos = context.read<HomeBloc>().selectedPos;
+    final pos = ref.read(selectedPosProvider)?.pos;
     if (pos == null) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (ctx) => BlocProvider(
-          create: (c) => RequestConfirmBloc(
-            pos: context.read<PosClient>(),
-            pointOfSale: pos,
-            paymentRequest: womRequest,
-          ),
+        builder: (ctx) => ProviderScope(
+          // parent:  ProviderScope.containerOf(context),
+          overrides: [
+            paymentRequestProvider.overrideWith((ref) => womRequest),
+            requestConfirmNotifierProvider.overrideWith(
+              (ref) => RequestConfirmBloc(
+                ref: ref,
+                pos: ref.read(getPosProvider),
+                pointOfSale: pos,
+              ),
+            ),
+          ],
           child: const RequestConfirmScreen(),
         ),
       ),

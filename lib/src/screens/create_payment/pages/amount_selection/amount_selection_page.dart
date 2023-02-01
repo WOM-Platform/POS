@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 import '../../../../my_logger.dart';
 import '../../back_button_text.dart';
 
-class AmountSelectionPage extends StatefulWidget {
+class AmountSelectionPage extends ConsumerStatefulWidget {
   @override
   _AmountSelectionPageState createState() => _AmountSelectionPageState();
 }
 
-class _AmountSelectionPageState extends State<AmountSelectionPage> {
-  late CreatePaymentRequestBloc bloc;
+class _AmountSelectionPageState extends ConsumerState<AmountSelectionPage> {
+  // late CreatePaymentRequestBloc bloc;
 
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
+    final bloc = ref.watch(createPaymentNotifierProvider);
     final isValid = bloc.isValidAmount;
     return SafeArea(
       child: GestureDetector(
@@ -27,9 +28,7 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: Theme
-              .of(context)
-              .primaryColor,
+          backgroundColor: Theme.of(context).primaryColor,
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -85,11 +84,13 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
                       hintText:
-                      AppLocalizations.of(context)?.translate('how_wom') ?? '',
+                          AppLocalizations.of(context)?.translate('how_wom') ??
+                              '',
                       errorText: isValid
                           ? null
                           : AppLocalizations.of(context)
-                          ?.translate('error_text_amount') ?? '',
+                                  ?.translate('error_text_amount') ??
+                              '',
                     ),
                   ),
                 ),
@@ -100,7 +101,8 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     AppLocalizations.of(context)
-                        ?.translate('insert_service_price') ?? '',
+                            ?.translate('insert_service_price') ??
+                        '',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -116,8 +118,8 @@ class _AmountSelectionPageState extends State<AmountSelectionPage> {
           ),
           floatingActionButton: isValid
               ? FloatingActionButton(
-              child: Icon(Icons.arrow_forward_ios),
-              onPressed: () => bloc.goToNextPage())
+                  child: Icon(Icons.arrow_forward_ios),
+                  onPressed: () => bloc.goToNextPage())
               : null,
         ),
       ),

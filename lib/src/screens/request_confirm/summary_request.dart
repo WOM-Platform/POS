@@ -1,23 +1,24 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pdf/widgets.dart' as pdfWidgets;
 import 'package:pos/localization/app_localizations.dart';
-import 'package:pos/src/blocs/home/home_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
+import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/screens/request_confirm/request_confirm.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:clippy_flutter/arc.dart';
 
-class SummaryRequest extends StatelessWidget {
+class SummaryRequest extends ConsumerWidget {
   final PaymentRequest paymentRequest;
 
   const SummaryRequest({Key? key, required this.paymentRequest})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
@@ -63,21 +64,23 @@ class SummaryRequest extends StatelessWidget {
                     height: height / 3,
                     width: height / 3,
                     child: Center(
-                      child: MyBarcode(link: paymentRequest.deepLink!,)
-                      // child: Card(
-                      //   child: paymentRequest.deepLink != null
-                      //       ? pdf.BarcodeWidget(
-                      //           barcode: pdf.Barcode.qrCode(
-                      //             errorCorrectLevel:
-                      //                 pdf.BarcodeQRCorrectionLevel.high,
-                      //           ),
-                      //           data: paymentRequest.deepLink,
-                      //           width: 200,
-                      //           height: 200,
-                      //         )
-                      //       : Text('Errore QRCode'),
-                      // ),
-                    ),
+                        child: MyBarcode(
+                      link: paymentRequest.deepLink!,
+                    )
+                        // child: Card(
+                        //   child: paymentRequest.deepLink != null
+                        //       ? pdf.BarcodeWidget(
+                        //           barcode: pdf.Barcode.qrCode(
+                        //             errorCorrectLevel:
+                        //                 pdf.BarcodeQRCorrectionLevel.high,
+                        //           ),
+                        //           data: paymentRequest.deepLink,
+                        //           width: 200,
+                        //           height: 200,
+                        //         )
+                        //       : Text('Errore QRCode'),
+                        // ),
+                        ),
                   ),
                 const SizedBox(
                   height: 20,
@@ -113,16 +116,22 @@ class SummaryRequest extends StatelessWidget {
             ? null
             : FloatingActionButton.extended(
                 onPressed: () {
-                  final pos = context.read<HomeBloc>().selectedPos;
+                  final pos = ref.read(selectedPosProvider)?.pos;
                   if (pos == null) return;
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (ctx) => BlocProvider(
-                        create: (BuildContext context) => RequestConfirmBloc(
-                          pos: context.read<PosClient>(),
-                          pointOfSale: pos,
-                          paymentRequest: paymentRequest.copyFrom(),
-                        ),
+                      builder: (ctx) => ProviderScope(
+                        overrides: [
+                          paymentRequestProvider
+                              .overrideWith((ref) => paymentRequest.copyFrom()),
+                          requestConfirmNotifierProvider.overrideWith(
+                            (ref) => RequestConfirmBloc(
+                              ref: ref,
+                              pos: ref.read(getPosProvider),
+                              pointOfSale: pos,
+                            ),
+                          )
+                        ],
                         child: const RequestConfirmScreen(),
                       ),
                     ),
@@ -138,6 +147,7 @@ class SummaryRequest extends StatelessWidget {
 
 class MyBarcode extends StatelessWidget {
   final String link;
+
   const MyBarcode({Key? key, required this.link}) : super(key: key);
 
   @override
@@ -148,8 +158,7 @@ class MyBarcode extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: BarcodeWidget(
           barcode: pdfWidgets.Barcode.qrCode(
-            errorCorrectLevel:
-            pdfWidgets.BarcodeQRCorrectionLevel.high,
+            errorCorrectLevel: pdfWidgets.BarcodeQRCorrectionLevel.high,
           ),
           data: link,
           width: 200,
@@ -159,4 +168,3 @@ class MyBarcode extends StatelessWidget {
     );
   }
 }
-

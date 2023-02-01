@@ -2,8 +2,15 @@ import 'dart:convert';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pos/src/offers/application/offers.dart';
 
 import 'package:pos/src/services/auth_local_data_sources.dart';
+
+
+final userRepositoryProvider = Provider<UserRepository>((ref) {
+  return UserRepository(ref.watch(getPosProvider), AuthLocalDataSourcesImpl());
+});
 
 class UserRepository {
   final PosClient pos;

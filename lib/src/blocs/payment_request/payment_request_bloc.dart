@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/db/payment_database/payment_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 
@@ -19,15 +19,16 @@ enum RequestType {
   MULTIPLE,
 }
 
-class CreatePaymentRequestBloc extends Bloc {
-  late AimSelectionBloc aimSelectionBloc;
+final createPaymentNotifierProvider = Provider<CreatePaymentRequestBloc>((ref) {
+  throw UnimplementedError();
+});
+
+class CreatePaymentRequestBloc {
 
   late TextEditingController nameController;
   late TextEditingController amountController;
   late TextEditingController maxAgeController;
-  // late TextEditingController passwordController;
 
-//  RequestType requestType = RequestType.SINGLE;
   bool persistentRequest = false;
   final PageController pageController = PageController();
   final String posId;
@@ -45,14 +46,15 @@ class CreatePaymentRequestBloc extends Bloc {
 
   final PaymentRequest? draftRequest;
 
+  final Ref ref;
   final String? languageCode;
 
   CreatePaymentRequestBloc({
+    required this.ref,
     required this.draftRequest,
     required this.languageCode,
     required this.posId,
-  })  : assert(posId != null),
-        super(null) {
+  }) {
     logger.i("CreatePaymentRequestBloc()");
     nameController = TextEditingController(text: draftRequest?.name ?? "");
     amountController =
@@ -61,16 +63,16 @@ class CreatePaymentRequestBloc extends Bloc {
         text: draftRequest?.simpleFilter?.maxAge?.toString() ?? "");
     // passwordController =
     //     TextEditingController(text: draftRequest?.password ?? "");
-    aimSelectionBloc = AimSelectionBloc(languageCode ?? 'en');
+    // aimSelectionBloc = AimSelectionBloc(ref, languageCode ?? 'en');
     if (draftRequest?.aimCode != null) {
-      aimSelectionBloc.setAimCode(draftRequest!.aimCode!);
+      ref.read(aimSelectionNotifierProvider.notifier).setAimCode(draftRequest!.aimCode!);
     }
     updatePolylines();
     getLastPosition();
   }
 
-  createModelForCreationRequest() async {
-    final aim = await aimSelectionBloc.getAim();
+  Future<PaymentRequest> createModelForCreationRequest() async {
+    final aim = await ref.read(aimSelectionNotifierProvider.notifier).getAim();
 
     if (_amount == null) {
       throw Exception('PaymentRequestloc amount or aim are null');
@@ -97,7 +99,7 @@ class CreatePaymentRequestBloc extends Bloc {
       amount: _amount!,
       aim: aim,
       aimCode: aim?.code,
-      aimName: aim != null ? aim.title(languageCode:languageCode) ?? '' : '',
+      aimName: aim != null ? aim.title(languageCode: 'en') ?? '' : '',
       location: currentPosition,
       persistent: persistentRequest,
       name: name,
@@ -182,8 +184,8 @@ class CreatePaymentRequestBloc extends Bloc {
   }
 
   _validateAim() {
-    final aimCode = aimSelectionBloc.getAimCode();
-    if (aimCode != null || !aimSelectionBloc.aimEnabled) {
+    final aimCode = ref.read(aimSelectionNotifierProvider.notifier).getAimCode();
+    if (aimCode != null) {
       return true;
     }
     return false;
@@ -253,14 +255,9 @@ class CreatePaymentRequestBloc extends Bloc {
     // locationPoints.forEach(print);
   }
 
-  @override
-  Future<void> close() {
-    // pageController.dispose();
-    nameController.dispose();
-    // passwordController.dispose();
-    amountController.dispose();
-    aimSelectionBloc.dispose();
-    maxAgeController.dispose();
-    return super.close();
-  }
+  // void close() {
+  //   nameController.dispose();
+  //   amountController.dispose();
+  //   maxAgeController.dispose();
+  // }
 }

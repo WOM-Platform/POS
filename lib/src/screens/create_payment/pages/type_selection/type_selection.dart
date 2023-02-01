@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 import '../../back_button_text.dart';
 
-class TypeSelectionPage extends StatelessWidget {
-  late CreatePaymentRequestBloc bloc;
+class TypeSelectionPage extends ConsumerStatefulWidget {
+  const TypeSelectionPage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  ConsumerState createState() => _TypeSelectionPageState();
+}
+
+class _TypeSelectionPageState extends ConsumerState<TypeSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<CreatePaymentRequestBloc>(context);
 
+    final bloc = ref.watch(createPaymentNotifierProvider);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {

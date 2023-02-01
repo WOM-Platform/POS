@@ -1,9 +1,15 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/db/aim_db.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../constants.dart';
 import '../my_logger.dart';
+
+
+final aimRepositoryProvider = Provider<AimRepository>((ref) {
+  return AimRepository();
+});
 
 class AimRepository {
   late AimRemoteDataSources _apiProvider;

@@ -1,15 +1,18 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
+import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
+import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/screens/request_confirm/summary_request.dart';
 import 'package:pos/src/screens/request_confirm/wom_creation_event.dart';
 import 'package:pos/src/screens/request_confirm/wom_creation_state.dart';
 
-class RequestConfirmScreen extends StatefulWidget {
+class RequestConfirmScreen extends ConsumerStatefulWidget {
   // final PaymentRequest paymentRequest;
 
   const RequestConfirmScreen({
@@ -21,9 +24,9 @@ class RequestConfirmScreen extends StatefulWidget {
   _RequestConfirmScreenState createState() => _RequestConfirmScreenState();
 }
 
-class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
-  late RequestConfirmBloc bloc;
-  late HomeBloc homeBloc;
+class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
+  // late RequestConfirmBloc bloc;
+  // late HomeBloc homeBloc;
 
   bool isComplete = false;
   bool isWrong = false;
@@ -41,7 +44,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   Future<bool> onWillPop() {
     if (isComplete || isWrong || noDataConnection) {
-      homeBloc.loadRequest();
+      ref.invalidate(requestNotifierProvider);
       return Future.value(true);
     }
     return Future.value(false);
@@ -49,23 +52,24 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bloc = context.read<RequestConfirmBloc>();
-    homeBloc = BlocProvider.of<HomeBloc>(context);
+    // final bloc = context.read<RequestConfirmBloc>();
+    // final homeBloc = ref.watch(homeNotifierProvider);
 
+    final paymentRequest = ref.watch(paymentRequestProvider);
+    final state = ref.watch(requestConfirmNotifierProvider);
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(bloc.paymentRequest.name),
+          title: Text(paymentRequest.name),
           centerTitle: true,
           elevation: 0.0,
 //          actions: <Widget>[
 //            Text("${bloc.paymentRequest.id}"),
 //          ],
         ),
-        body: BlocBuilder(
-          bloc: bloc,
-          builder: (_, WomCreationState state) {
+        body: Builder(
+          builder: (c) {
             if (state is WomCreationRequestEmpty) {
               return Center(
                 child: Text(AppLocalizations.of(context)
@@ -98,7 +102,9 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                   ),
                   Center(
                     child: FloatingActionButton.extended(
-                      onPressed: () => bloc.createWomRequest(CreateWomRequest()),
+                      onPressed: () => ref
+                          .read(requestConfirmNotifierProvider.notifier)
+                          .createWomRequest(CreateWomRequest()),
                       label: Text(
                         AppLocalizations.of(context)?.translate('try_again') ??
                             '',
@@ -138,7 +144,9 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
                                 ?.translate('try_again') ??
                             ''),
                         onPressed: () {
-                          bloc.createWomRequest(CreateWomRequest());
+                          ref
+                              .read(requestConfirmNotifierProvider.notifier)
+                              .createWomRequest(CreateWomRequest());
                         }),
                   ],
                 ),
@@ -146,7 +154,7 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
             } else if (state is WomVerifyCreationRequestComplete) {
               isComplete = true;
               return SummaryRequest(
-                paymentRequest: bloc.paymentRequest,
+                paymentRequest: ref.read(paymentRequestProvider),
               );
             }
 
@@ -162,8 +170,8 @@ class _RequestConfirmScreenState extends State<RequestConfirmScreen> {
 
   @override
   void dispose() {
-    homeBloc.loadRequest();
-    bloc.close();
+    ref.invalidate(requestNotifierProvider);
+    // bloc.close();
     super.dispose();
   }
 }

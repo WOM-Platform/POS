@@ -1,63 +1,21 @@
-import 'package:equatable/equatable.dart';
 import 'package:pos/src/model/payment_request.dart';
-import 'package:meta/meta.dart';
 
-abstract class HomeState extends Equatable {
-  HomeState([List props = const []]);
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'home_state.freezed.dart';
+
+@freezed
+class HomeState with _$HomeState {
+
+  const factory HomeState.requestLoading() = RequestLoading;
+  const factory HomeState.noDataConnectionState() = NoDataConnectionState;
+  const factory HomeState.noPosState() = NoPosState;
+  const factory HomeState.noMerchantState() = NoMerchantState;
+
+  const factory HomeState.requestLoaded(
+      {required List<PaymentRequest> requests}) = RequestLoaded;
+
+  const factory HomeState.requestsLoadingErrorState(String error) = RequestsLoadingErrorState;
+  const factory HomeState.error(Object error, StackTrace st) = HomeStateError;
 }
 
-class RequestLoading extends HomeState {
-  @override
-  List<Object> get props => [];
-}
-
-class RequestLoaded extends HomeState {
-  final List<PaymentRequest> requests;
-
-  RequestLoaded({required this.requests}) : super([requests]);
-
-  RequestLoaded copyWith({List<PaymentRequest>? requests}) {
-    return RequestLoaded(
-      requests: requests ?? this.requests,
-    );
-  }
-
-  @override
-  List<Object> get props => [requests];
-}
-
-class RequestsLoadingErrorState extends HomeState {
-  final String error;
-
-  RequestsLoadingErrorState(this.error) : super([error]);
-
-  @override
-  String toString() => "RequestsLoadingErrorState";
-
-  @override
-  List<Object> get props => [error];
-}
-
-class NoDataConnectionState extends HomeState {
-  @override
-  String toString() => 'NoDataConnectionState';
-
-  @override
-  List<Object> get props => [];
-}
-
-class NoPosState extends HomeState {
-  @override
-  String toString() => 'NoPosState';
-
-  @override
-  List<Object> get props => [];
-}
-
-class NoMerchantState extends HomeState {
-  @override
-  String toString() => 'NoMerchantState';
-
-  @override
-  List<Object> get props => [];
-}

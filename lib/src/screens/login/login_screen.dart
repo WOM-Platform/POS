@@ -1,24 +1,15 @@
 import 'dart:math';
 
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/multi_tween/multi_tween.dart';
 import 'login_box.dart';
 
-class LoginScreen extends StatefulWidget {
-  final UserRepository userRepository;
-
-  LoginScreen({Key? key, required this.userRepository})
-      : assert(userRepository != null),
-        super(key: key);
-
+class LoginScreen extends ConsumerWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
+  Widget build(BuildContext context,WidgetRef ref) {
 
-class _LoginScreenState extends State<LoginScreen> {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue,
       body: Stack(

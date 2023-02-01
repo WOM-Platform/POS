@@ -1,29 +1,34 @@
 import 'package:clippy_flutter/arc.dart';
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pos/localization/app_localizations.dart';
-import 'package:pos/src/blocs/home/bloc.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
+import 'package:pos/src/offers/application/offers.dart';
+import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
+import 'package:pos/src/offers/ui/offers_screen.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
+import 'package:pos/src/screens/home/widgets/select_pos_modal.dart';
 import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
 import 'package:pos/src/screens/settings/settings.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../main_common.dart';
-import '../../utils.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatefulHookConsumerWidget {
   static const String routeName = '/home';
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
@@ -36,18 +41,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Theme.of(context).primaryColor,
-        statusBarBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Theme.of(context).primaryColor,
-      ),
-    );
+    final selectedPos = ref.watch(selectedPosProvider);
+    final index = useState(0);
 
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Theme.of(context).primaryColor,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: Theme.of(context).primaryColor,
+        ),
         title: DescribedFeatureOverlay(
           featureId: 'show_pos_selection_info',
           tapTarget: Text('POS'),
@@ -59,30 +64,35 @@ class _HomeScreenState extends State<HomeScreen> {
           textColor: Theme.of(context).primaryColor,
           child: GestureDetector(
             onTap: () async {
-              if (context.read<HomeBloc>().posSelectionEnabled) {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => PosSelectionPage(),
-                  ),
-                );
-                setState(() {});
-              }
+              showMaterialModalBottomSheet(
+                context: context,
+                useRootNavigator: true,
+                builder: (context) => PosSelectorWidget(),
+              );
+
+              // if (ref.read(homeNotifierProvider.notifier).posSelectionEnabled) {
+              // await Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => PosSelectionPage(),
+              //   ),
+              // );
+
+              // }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text(context.read<HomeBloc>().selectedPos?.name ?? 'Seleziona POS'),
-                if (context.read<HomeBloc>().posSelectionEnabled)
-                  Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.white,
-                  ),
+                Text(selectedPos?.pos?.name ?? 'Seleziona POS'),
+                // if (ref.read(homeNotifierProvider.notifier).posSelectionEnabled)
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.white,
+                ),
               ],
             ),
           ),
         ),
-        centerTitle: true,
         elevation: 0.0,
         actions: <Widget>[
           IconButton(
@@ -92,150 +102,198 @@ class _HomeScreenState extends State<HomeScreen> {
               _showTutorial(context);
             },
           ),
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              _goToSettingsScreen();
-            },
-          ),
         ],
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Align(
-            alignment: Alignment.topCenter,
-            child: Arc(
-              child: Container(
-                color: Theme.of(context).primaryColor,
-                height: MediaQuery.of(context).size.height / 2 - 50,
+      body: IndexedStack(
+        index: index.value,
+        children: [
+          OffersScreen(),
+          Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              Align(
+                alignment: Alignment.topCenter,
+                child: Arc(
+                  child: Container(
+                    color: Theme.of(context).primaryColor,
+                    height: MediaQuery.of(context).size.height / 2 - 50,
+                  ),
+                  height: 50,
+                ),
               ),
-              height: 50,
-            ),
-          ),
-          BlocBuilder<HomeBloc, HomeState>(
-            builder: (BuildContext context, HomeState state) {
-              if (state is NoPosState) {
-                return Center(
-                  child: WarningWidget(
-                    text:
-                        AppLocalizations.of(context)?.translate('no_pos') ?? '',
-                  ),
-                );
-              } else if (state is NoMerchantState) {
-                return Center(
-                  child: WarningWidget(
-                    text: AppLocalizations.of(context)
-                            ?.translate('no_merchants') ??
-                        '',
-                  ),
-                );
-              } else if (state is RequestLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state is RequestLoaded) {
-                if (state.requests.isEmpty) {
-                  return Center(
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          AppLocalizations.of(context)
-                                  ?.translate('no_request') ??
-                              '',
-                          style: const TextStyle(fontSize: 20),
-                          textAlign: TextAlign.center,
+              HomeList(),
+              /*Consumer(
+                builder: (BuildContext context, ref, child) {
+                  final state = ref.watch(homeNotifierProvider);
+                  if (state is NoPosState) {
+                    return Center(
+                      child: WarningWidget(
+                        text:
+                            AppLocalizations.of(context)?.translate('no_pos') ??
+                                '',
+                      ),
+                    );
+                  } else if (state is NoMerchantState) {
+                    return Center(
+                      child: WarningWidget(
+                        text: AppLocalizations.of(context)
+                                ?.translate('no_merchants') ??
+                            '',
+                      ),
+                    );
+                  } else if (state is RequestLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is RequestLoaded) {
+                    if (state.requests.isEmpty) {
+                      return Center(
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              AppLocalizations.of(context)
+                                      ?.translate('no_request') ??
+                                  '',
+                              style: const TextStyle(fontSize: 20),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
+                      );
+                    }
+                    return ;
+                  } else if (state is RequestsLoadingErrorState) {
+                    return Center(
+                      child: Text(
+                        AppLocalizations.of(context)?.translate(state.error) ??
+                            '',
+                        textAlign: TextAlign.center,
                       ),
-                    ),
+                    );
+                  } else if (state is NoDataConnectionState) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            AppLocalizations.of(context)
+                                    ?.translate('no_connection_title') ??
+                                '',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            AppLocalizations.of(context)
+                                    ?.translate('no_connection_aim_desc') ??
+                                '',
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          FloatingActionButton.extended(
+                              label: Text(AppLocalizations.of(context)
+                                      ?.translate('try_again') ??
+                                  ''),
+                              onPressed: () {
+                                ref.invalidate(requestNotifierProvider);
+                              }),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return Center(
+                    child: Text(AppLocalizations.of(context)
+                            ?.translate('error_screen_state') ??
+                        ''),
                   );
-                }
-                return HomeList(
-                  requests: state.requests,
-                );
-              } else if (state is RequestsLoadingErrorState) {
-                return Center(
-                  child: Text(
-                    AppLocalizations.of(context)?.translate(state.error) ?? '',
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              } else if (state is NoDataConnectionState) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        AppLocalizations.of(context)
-                                ?.translate('no_connection_title') ??
-                            '',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        AppLocalizations.of(context)
-                                ?.translate('no_connection_aim_desc') ??
-                            '',
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      FloatingActionButton.extended(
-                          label: Text(AppLocalizations.of(context)
-                                  ?.translate('try_again') ??
-                              ''),
-                          onPressed: () {
-                            context.read<HomeBloc>().loadRequest();
-                          }),
+                },
+              ),*/
+            ],
+          ),
+          SettingsScreen(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index.value,
+        onTap: (page) {
+          index.value = page;
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.local_offer), label: 'Offerte'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.payment), label: 'Pagamenti'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Impostazioni'),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: index.value == 2
+          ? null
+          : index.value == 0
+              ? FloatingActionButton.extended(
+                  backgroundColor: Colors.blue,
+                  heroTag: Key("HomeFab"),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => NewOfferScreen()));
+                  },
+                  label: Row(
+                    children: [
+                      Icon(Icons.add),
+                      Text('Crea offerta'),
                     ],
                   ),
-                );
-              }
-
-              return Center(
-                  child: Text(AppLocalizations.of(context)
-                          ?.translate('error_screen_state') ??
-                      ''));
-            },
-          ),
-        ],
-      ),
-      floatingActionButton: DescribedFeatureOverlay(
-        featureId: 'show_fab_info',
-        tapTarget: const Icon(Icons.add),
-        title:
-            Text(AppLocalizations.of(context)?.translate('create_offer') ?? ''),
-        description: Text(''),
-        backgroundColor: Theme.of(context).accentColor,
-        targetColor: Colors.white,
-        textColor: Theme.of(context).primaryColor,
-        child: FloatingActionButton(
-          heroTag: Key("HomeFab"),
-          child: Icon(Icons.add),
-          onPressed: () async {
-            await _goToCreatePaymentScreen(context);
-          },
-        ),
-      ),
+                )
+              : DescribedFeatureOverlay(
+                  featureId: 'show_fab_info',
+                  tapTarget: const Icon(Icons.add),
+                  title: Text(
+                      AppLocalizations.of(context)?.translate('create_offer') ??
+                          ''),
+                  description: Text(''),
+                  backgroundColor: Theme.of(context).accentColor,
+                  targetColor: Colors.white,
+                  textColor: Theme.of(context).primaryColor,
+                  child: FloatingActionButton.extended(
+                    heroTag: Key("HomeFab"),
+                    label: Row(
+                      children: [
+                        Icon(Icons.add),
+                        Text('Crea pagamento'),
+                      ],
+                    ),
+                    onPressed: () async {
+                      await _goToCreatePaymentScreen(context, selectedPos?.pos);
+                    },
+                  ),
+                ),
     );
   }
 
-  Future _goToCreatePaymentScreen(BuildContext context) async {
-    final posId = context.read<HomeBloc>().selectedPos?.id;
+  Future _goToCreatePaymentScreen(
+      BuildContext context, PointOfSale? pos) async {
+    final posId = pos?.id;
     if (posId == null) return;
 
-    final provider = BlocProvider(
+    final provider = ProviderScope(
       child: GenerateWomScreen(),
-      create: (ctx) => CreatePaymentRequestBloc(
-          posId: posId,
-          draftRequest: null,
-          languageCode: AppLocalizations.of(context)?.locale.languageCode),
+      overrides: [
+        createPaymentNotifierProvider.overrideWith((ref) =>
+            CreatePaymentRequestBloc(
+                ref: ref,
+                posId: posId,
+                draftRequest: null,
+                languageCode:
+                    AppLocalizations.of(context)?.locale.languageCode))
+      ],
     );
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => provider));

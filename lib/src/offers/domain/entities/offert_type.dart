@@ -1,0 +1,1 @@
+enum OfferType { persistent, ephemeral }
