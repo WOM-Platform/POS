@@ -5,16 +5,19 @@ import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/constants.dart';
 import 'package:pos/src/model/flavor_enum.dart';
+import 'package:pos/src/pos_handler/ui/screens/pos_manager.dart';
 import 'package:pos/src/screens/intro/intro.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../../app.dart';
 import '../../utils.dart';
 
 class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final posUser = ref.watch(posUserProvider);
+    final posCount = posUser?.merchants.fold<int>(
+        0, (previousValue, element) => previousValue + element.posList.length);
+    // final selectedPos = ref.watch(selectedPosProvider);
     return Scaffold(
       backgroundColor: Colors.grey[100],
       // appBar: AppBar(
@@ -35,12 +38,26 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         children: <Widget>[
           if (posUser != null)
+            // if(selectedPos.merchant.)
+            ...[
+            ListTile(
+              leading: Icon(Icons.manage_accounts),
+              title: Text('Hai ${posCount ?? '-'} POS'),
+              subtitle: Text('Organizza e modifica i tuoi POS'),
+              onTap: () {
+                if (posCount == null) return;
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => POSManagerScreen(posCount)));
+              },
+              contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+            ),
             ListTile(
               leading: Icon(Icons.account_circle),
               title: Text('${posUser.name} ${posUser.surname}'),
               subtitle: Text(posUser.email),
               contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             ),
+          ],
           ListTile(
             title: Text(
                 AppLocalizations.of(context)?.translate('wom_platform') ?? ''),
@@ -64,12 +81,14 @@ class SettingsScreen extends ConsumerWidget {
                       )),
             ),
           ),
+          const VersionInfo(),
+          Divider(),
           ListTile(
             title:
                 Text(AppLocalizations.of(context)?.translate('sign_out') ?? ''),
             subtitle: Text(
                 AppLocalizations.of(context)?.translate('sign_out_desc') ?? ''),
-            leading: const Icon(Icons.info),
+            leading: const Icon(Icons.exit_to_app),
             contentPadding: const EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () {
               _showLogoutDialog(context, () {
@@ -77,7 +96,6 @@ class SettingsScreen extends ConsumerWidget {
               });
             },
           ),
-          const VersionInfo(),
           /*if (Config.appFlavor == Flavor.DEVELOPMENT) ...[
             ListTile(
               title: Text('Visita WOM DB'),

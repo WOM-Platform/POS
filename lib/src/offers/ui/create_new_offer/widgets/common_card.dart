@@ -6,11 +6,13 @@ class CreateOfferCard extends StatelessWidget {
   final String title;
   final String description;
   final Widget child;
+  final Widget? extra;
 
   const CreateOfferCard({
     Key? key,
     this.mandatory = false,
     required this.title,
+    this.extra,
     required this.description,
     required this.child,
   }) : super(key: key);
@@ -36,7 +38,8 @@ class CreateOfferCard extends StatelessWidget {
                   Text(
                     'Obbligatorio',
                     style: TextStyle(color: Colors.red),
-                  )
+                  ),
+                if (extra != null) extra!
               ],
             ),
             const SizedBox(height: 8),

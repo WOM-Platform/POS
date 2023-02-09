@@ -95,186 +95,63 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         elevation: 0.0,
         actions: <Widget>[
+          // IconButton(
+          //   icon: Icon(Icons.info),
+          //   onPressed: () async {
+          //     await _clearTutorial(context);
+          //     _showTutorial(context);
+          //   },
+          // ),
           IconButton(
-            icon: Icon(Icons.info),
+            icon: Icon(Icons.settings),
             onPressed: () async {
-              await _clearTutorial(context);
-              _showTutorial(context);
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => SettingsScreen()));
             },
           ),
         ],
       ),
-      body: IndexedStack(
-        index: index.value,
-        children: [
-          OffersScreen(),
-          Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Arc(
-                  child: Container(
-                    color: Theme.of(context).primaryColor,
-                    height: MediaQuery.of(context).size.height / 2 - 50,
-                  ),
-                  height: 50,
-                ),
-              ),
-              HomeList(),
-              /*Consumer(
-                builder: (BuildContext context, ref, child) {
-                  final state = ref.watch(homeNotifierProvider);
-                  if (state is NoPosState) {
-                    return Center(
-                      child: WarningWidget(
-                        text:
-                            AppLocalizations.of(context)?.translate('no_pos') ??
-                                '',
-                      ),
-                    );
-                  } else if (state is NoMerchantState) {
-                    return Center(
-                      child: WarningWidget(
-                        text: AppLocalizations.of(context)
-                                ?.translate('no_merchants') ??
-                            '',
-                      ),
-                    );
-                  } else if (state is RequestLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (state is RequestLoaded) {
-                    if (state.requests.isEmpty) {
-                      return Center(
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              AppLocalizations.of(context)
-                                      ?.translate('no_request') ??
-                                  '',
-                              style: const TextStyle(fontSize: 20),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    return ;
-                  } else if (state is RequestsLoadingErrorState) {
-                    return Center(
-                      child: Text(
-                        AppLocalizations.of(context)?.translate(state.error) ??
-                            '',
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  } else if (state is NoDataConnectionState) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)
-                                    ?.translate('no_connection_title') ??
-                                '',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            AppLocalizations.of(context)
-                                    ?.translate('no_connection_aim_desc') ??
-                                '',
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          FloatingActionButton.extended(
-                              label: Text(AppLocalizations.of(context)
-                                      ?.translate('try_again') ??
-                                  ''),
-                              onPressed: () {
-                                ref.invalidate(requestNotifierProvider);
-                              }),
-                        ],
-                      ),
-                    );
-                  }
-
-                  return Center(
-                    child: Text(AppLocalizations.of(context)
-                            ?.translate('error_screen_state') ??
-                        ''),
-                  );
-                },
-              ),*/
-            ],
-          ),
-          SettingsScreen(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: index.value,
-        onTap: (page) {
-          index.value = page;
-        },
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.local_offer), label: 'Offerte'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.payment), label: 'Pagamenti'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Impostazioni'),
-        ],
-      ),
+      // body: IndexedStack(
+      //   index: index.value,
+      //   children: [
+      //     OffersScreen(),
+      //     SettingsScreen(),
+      //   ],
+      // ),
+      body: OffersScreen(),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: index.value,
+      //   onTap: (page) {
+      //     index.value = page;
+      //   },
+      //   items: [
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.local_offer), label: 'Offerte'),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.settings), label: 'Impostazioni'),
+      //   ],
+      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: index.value == 2
-          ? null
-          : index.value == 0
-              ? FloatingActionButton.extended(
-                  backgroundColor: Colors.blue,
-                  heroTag: Key("HomeFab"),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => NewOfferScreen()));
-                  },
-                  label: Row(
-                    children: [
-                      Icon(Icons.add),
-                      Text('Crea offerta'),
-                    ],
-                  ),
-                )
-              : DescribedFeatureOverlay(
-                  featureId: 'show_fab_info',
-                  tapTarget: const Icon(Icons.add),
-                  title: Text(
-                      AppLocalizations.of(context)?.translate('create_offer') ??
-                          ''),
-                  description: Text(''),
-                  backgroundColor: Theme.of(context).accentColor,
-                  targetColor: Colors.white,
-                  textColor: Theme.of(context).primaryColor,
-                  child: FloatingActionButton.extended(
-                    heroTag: Key("HomeFab"),
-                    label: Row(
-                      children: [
-                        Icon(Icons.add),
-                        Text('Crea pagamento'),
-                      ],
-                    ),
-                    onPressed: () async {
-                      await _goToCreatePaymentScreen(context, selectedPos?.pos);
-                    },
-                  ),
-                ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.blue,
+        heroTag: Key("HomeFab"),
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => NewOfferScreen()));
+        },
+        label: Row(
+          children: [
+            Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            Text(
+              'Crea offerta',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

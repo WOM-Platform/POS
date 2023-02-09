@@ -2,13 +2,21 @@ import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:pos/src/model/payment_request.dart';
+import 'package:pos/src/model/request_status_enum.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/domain/entities/offert_type.dart';
 import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
+import 'package:pos/src/screens/request_confirm/bloc.dart';
+import 'package:pos/src/services/aim_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'dart:math' as math;
+
+import '../../db/app_database/app_database.dart';
+import '../../db/payment_database/payment_database.dart';
 
 part 'create_offer_notifier.freezed.dart';
 
@@ -39,10 +47,8 @@ class CreateOfferState with _$CreateOfferState {
   factory CreateOfferState.initial() => CreateOfferState(activeStep: 0);
 }
 
-
-
 final titleControllerProvider =
-Provider.autoDispose<TextEditingController>((ref) {
+    Provider.autoDispose<TextEditingController>((ref) {
   final c = TextEditingController();
   ref.onDispose(() {
     c.dispose();
@@ -51,7 +57,7 @@ Provider.autoDispose<TextEditingController>((ref) {
 });
 
 final descControllerProvider =
-Provider.autoDispose<TextEditingController>((ref) {
+    Provider.autoDispose<TextEditingController>((ref) {
   final c = TextEditingController();
   ref.onDispose(() {
     c.dispose();
@@ -60,7 +66,7 @@ Provider.autoDispose<TextEditingController>((ref) {
 });
 
 final womControllerProvider =
-Provider.autoDispose<TextEditingController>((ref) {
+    Provider.autoDispose<TextEditingController>((ref) {
   final c = TextEditingController();
   ref.onDispose(() {
     c.dispose();
@@ -69,7 +75,7 @@ Provider.autoDispose<TextEditingController>((ref) {
 });
 
 final maxAgeControllerProvider =
-Provider.autoDispose<TextEditingController>((ref) {
+    Provider.autoDispose<TextEditingController>((ref) {
   final c = TextEditingController();
   ref.onDispose(() {
     c.dispose();
@@ -149,8 +155,9 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
 
   createOffer() async {
     final posId = ref.read(selectedPosProvider)?.pos?.id;
-    if (posId == null) {
-      return;
+    final privateKey = ref.read(selectedPosProvider)?.pos?.privateKey;
+    if (posId == null || privateKey == null) {
+      throw Exception('Pos id or private key are null');
     }
 
     final request = CreateOfferRequestDTO(
@@ -181,9 +188,105 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
       logger.i('username or password are null');
       return;
     }
-    final res = await ref
-        .read(getPosProvider)
-        .createOffer(posId, request, email, password);
+    if (state.type == OfferType.persistent) {
+      await createCloudOffer(
+        request,
+        posId,
+        email,
+        password,
+      );
+    } else {
+      await createLocalOffer(request, posId, privateKey);
+    }
+  }
+
+  createCloudOffer(
+    CreateOfferRequestDTO request,
+    String posId,
+    String email,
+    String password,
+  ) async {
+    final res = await ref.read(getPosProvider).createOffer(
+          posId,
+          request,
+          email,
+          password,
+        );
+  }
+
+  createLocalOffer(
+    CreateOfferRequestDTO request,
+    String posId,
+    String privateKey,
+  ) async {
+    if (await InternetConnectionChecker().hasConnection) {
+      // final RequestVerificationResponse response = await _repository
+      //     .generateNewPaymentRequest(paymentRequest, pointOfSale);
+      try {
+        final payload = RequestPaymentPayload(
+          amount: state.wom!,
+          nonce: CoreUtils.generateGUID(),
+          posId: posId,
+          persistent: true,
+          pocketAckUrl: 'pocketAckUrl',
+          posAckUrl: 'posAckUrl',
+          simpleFilter: request.filter,
+        );
+        final response =
+            await ref.read(getPosProvider).requestPayment(payload, privateKey);
+        Aim? aim;
+        if (request.filter?.aim != null) {
+          aim = await ref.read(aimRepositoryProvider).getAim(
+                database: AppDatabase.get().getDb(),
+                aimCode: request.filter!.aim!,
+              );
+        }
+        final paymentRequest = PaymentRequest(
+          password: response.password,
+          name: request.title,
+          posId: posId,
+          amount: request.cost,
+          aimCode: request.filter?.aim,
+          persistent: true,
+          simpleFilter: request.filter,
+          location: state.mapPolygon?.target,
+          pocketAckUrl: 'pocketAckUrl',
+          posAckUrl: 'posAckUrl',
+          deepLink:
+              DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build(),
+          nonce: payload.nonce,
+          status: RequestStatus.COMPLETE,
+          aim: aim,
+          aimName: aim?.title(languageCode: 'en') ?? '-',
+        );
+        await insertRequestOnDb(paymentRequest);
+      } on ServerException catch (ex, stack) {
+        logger.e('${ex.url}: ${ex.statusCode} => ${ex.error}');
+        logger.e(stack);
+        // paymentRequest.status = RequestStatus.DRAFT;
+        // insertRequestOnDb(paymentRequest);
+        // state = WomCreationRequestError(error: ex.error);
+      } catch (ex) {
+        logger.e(ex);
+        // paymentRequest.status = RequestStatus.DRAFT;
+        // insertRequestOnDb(paymentRequest);
+        // state = WomCreationRequestError();
+      }
+    }
+  }
+
+  insertRequestOnDb(PaymentRequest paymentRequest) async {
+    try {
+      if (paymentRequest.id == null) {
+        int id = await PaymentDatabase.get().insertRequest(paymentRequest);
+        paymentRequest.id = id;
+        logger.i(paymentRequest.id);
+      } else {
+        await PaymentDatabase.get().updateRequest(paymentRequest);
+      }
+    } catch (ex) {
+      logger.i("insertRequestOnDb $ex");
+    }
   }
 
   validateState() {
@@ -220,5 +323,50 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
     double latO = location.latitude + dLat * 180 / math.pi;
     double lonO = location.longitude + dLon * 180 / math.pi;
     return LatLng(latO, lonO);
+  }
+
+  // saveDraftRequest() async {
+  //   logger.i("saveDraftRequest");
+  //   try {
+  //     final db = PaymentDatabase.get();
+  //     final paymentRequest = await createModelForCreationRequest();
+  //
+  //     if (draftRequest == null) {
+  //       await db.insertRequest(paymentRequest);
+  //     } else {
+  //       await db.updateRequest(paymentRequest);
+  //     }
+  //   } catch (ex) {
+  //     logger.i(ex.toString());
+  //   }
+  // }
+
+  CreateOfferRequestDTO createOfferRequest() {
+    final request = CreateOfferRequestDTO(
+      title: state.title!,
+      cost: state.wom!,
+      description: state.description,
+      filter: SimpleFilter(
+        maxAge: state.maxAge,
+        bounds: state.mapPolygon != null
+            ? Bounds(
+                leftTop: [
+                  state.mapPolygon!.polygon[0].latitude,
+                  state.mapPolygon!.polygon[0].longitude
+                ],
+                rightBottom: [
+                  state.mapPolygon!.polygon[2].latitude,
+                  state.mapPolygon!.polygon[2].longitude
+                ],
+              )
+            : null,
+        aim: state.aimCode,
+      ),
+    );
+    return request;
+  }
+
+  void resetPolygon() {
+    state = state.copyWith(mapPolygon: null);
   }
 }

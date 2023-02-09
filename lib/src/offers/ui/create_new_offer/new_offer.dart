@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
+import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/common_card.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/filter_fields.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/summary.dart';
@@ -18,8 +19,6 @@ import 'package:pos/src/offers/ui/create_new_offer/widgets/type_selector.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-
 
 class NewOfferScreen extends HookConsumerWidget {
   NewOfferScreen({Key? key}) : super(key: key);
@@ -70,11 +69,19 @@ class NewOfferScreen extends HookConsumerWidget {
     ),
   ];
 
+  showError(BuildContext context, {String? desc}) {
+    Alert(
+      context: context,
+      title: 'Si è verificato un errore',
+      desc: desc,
+      buttons: [],
+    ).show();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(createOfferNotifierProvider);
     final activeStep = state.activeStep;
-    final stepperStyle = TextStyle(color: Colors.white);
     return WillPopScope(
       onWillPop: () {
         if (activeStep > 0) {
@@ -220,10 +227,20 @@ class NewOfferScreen extends HookConsumerWidget {
                         buttons: [
                           DialogButton(
                             child: Text('Sì'),
-                            onPressed: () {
-                              ref
-                                  .read(createOfferNotifierProvider.notifier)
-                                  .createOffer();
+                            onPressed: () async {
+                              try {
+                                await ref
+                                    .read(createOfferNotifierProvider.notifier)
+                                    .createOffer();
+                                ref.invalidate(getOffersProvider(posId:ref.read(selectedPosProvider)?.pos!.id));
+                                Navigator.of(context).pop();
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                              } catch (ex) {
+                                logger.e(ex);
+                                Navigator.of(context).pop();
+                                showError(context);
+                              }
                             },
                           )
                         ]).show();
@@ -296,10 +313,6 @@ class NewOfferScreen extends HookConsumerWidget {
   }
 }
 
-
-
-
-
 class MandatoryInfo extends HookConsumerWidget {
   const MandatoryInfo({Key? key}) : super(key: key);
 
@@ -361,6 +374,3 @@ class MandatoryInfo extends HookConsumerWidget {
     );
   }
 }
-
-
-

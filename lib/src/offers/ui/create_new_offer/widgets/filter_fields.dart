@@ -51,7 +51,7 @@ class SelectAim extends ConsumerWidget {
             ),
             Text(
               AppLocalizations.of(context)
-                  ?.translate('no_connection_aim_desc') ??
+                      ?.translate('no_connection_aim_desc') ??
                   '',
               textAlign: TextAlign.center,
             ),
@@ -78,7 +78,7 @@ class SelectAim extends ConsumerWidget {
             list: state.aimList,
             value: state.aimCode,
             labelText:
-            AppLocalizations.of(context)?.translate('primary_aim') ?? '',
+                AppLocalizations.of(context)?.translate('primary_aim') ?? '',
             onChanged: (aim) {
               if (aim == null) return;
               ref
@@ -89,39 +89,39 @@ class SelectAim extends ConsumerWidget {
           ),
           state.aimCode != null && state.subAimList.isNotEmpty
               ? AimDropdown(
-            list: state.subAimList,
-            value: state.subAimCode,
-            labelText: AppLocalizations.of(context)
-                ?.translate('secondary_aim') ??
-                '',
-            onChanged: (String? aimCode) {
-              if (aimCode == null) return;
-              ref
-                  .read(aimSelectionNotifierProvider.notifier)
-                  .changeSubAim(aimCode);
-              ref
-                  .read(createOfferNotifierProvider.notifier)
-                  .setAim(aimCode);
-            },
-          )
+                  list: state.subAimList,
+                  value: state.subAimCode,
+                  labelText: AppLocalizations.of(context)
+                          ?.translate('secondary_aim') ??
+                      '',
+                  onChanged: (String? aimCode) {
+                    if (aimCode == null) return;
+                    ref
+                        .read(aimSelectionNotifierProvider.notifier)
+                        .changeSubAim(aimCode);
+                    ref
+                        .read(createOfferNotifierProvider.notifier)
+                        .setAim(aimCode);
+                  },
+                )
               : Container(),
           state.subAimCode != null &&
-              state.subAimList.isNotEmpty &&
-              state.subSubAimList.isNotEmpty
+                  state.subAimList.isNotEmpty &&
+                  state.subSubAimList.isNotEmpty
               ? AimDropdown(
-            list: state.subSubAimList,
-            value: state.subSubAimCode,
-            labelText: AppLocalizations.of(context)
-                ?.translate('tiertiary_aim') ??
-                '',
-            onChanged: (aim) {
-              if (aim == null) return;
-              ref
-                  .read(aimSelectionNotifierProvider.notifier)
-                  .changeSubAim(aim);
-              ref.read(createOfferNotifierProvider.notifier).setAim(aim);
-            },
-          )
+                  list: state.subSubAimList,
+                  value: state.subSubAimCode,
+                  labelText: AppLocalizations.of(context)
+                          ?.translate('tiertiary_aim') ??
+                      '',
+                  onChanged: (aim) {
+                    if (aim == null) return;
+                    ref
+                        .read(aimSelectionNotifierProvider.notifier)
+                        .changeSubAim(aim);
+                    ref.read(createOfferNotifierProvider.notifier).setAim(aim);
+                  },
+                )
               : Container(),
         ],
       ),
@@ -147,23 +147,31 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
         .watch(createOfferNotifierProvider.select((value) => value.mapPolygon));
     ref.listen<MapPolygon?>(
         createOfferNotifierProvider.select((value) => value.mapPolygon),
-            (previous, next) {
-          if (next != null) {
-            logger.i('Select bounds update the current position');
-            _controller.future.then((value) {
-              value.moveCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                    target: next.target,
-                    zoom: next.zoom,
-                  ),
-                ),
-              );
-            });
-          }
+        (previous, next) {
+      if (next != null) {
+        logger.i('Select bounds update the current position');
+        _controller.future.then((value) {
+          value.moveCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: next.target,
+                zoom: next.zoom,
+              ),
+            ),
+          );
         });
+      }
+    });
     return CreateOfferCard(
       title: 'Bounding box',
+      extra: mapPolygon != null
+          ? TextButton(
+              onPressed: () {
+                ref.read(createOfferNotifierProvider.notifier).resetPolygon();
+              },
+              child: Text('Reset'),
+            )
+          : null,
       description: 'descrizione del bounding box',
       child: AspectRatio(
         aspectRatio: 1,
@@ -175,6 +183,7 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => PositionSelectionPage()));
           },
+          zoomControlsEnabled: false,
           polygons: {
             if (mapPolygon != null)
               Polygon(

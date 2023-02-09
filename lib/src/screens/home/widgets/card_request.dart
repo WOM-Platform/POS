@@ -88,14 +88,14 @@ class CardRequest extends StatelessWidget {
                       width: 8.0,
                     ),
                     const Spacer(),
-                    Tooltip(
-                      child: Icon(
-                          request.onCloud ? Icons.cloud_done : Icons.cloud_off),
-                      message: request.onCloud ? 'In cloud' : 'In locale',
-                    ),
-                    const SizedBox(
-                      width: 8.0,
-                    ),
+                    // Tooltip(
+                    //   child: Icon(
+                    //       request.onCloud ? Icons.cloud_done : Icons.cloud_off),
+                    //   message: request.onCloud ? 'In cloud' : 'In locale',
+                    // ),
+                    // const SizedBox(
+                    //   width: 8.0,
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Tooltip(
@@ -168,17 +168,18 @@ class CardRequest extends StatelessWidget {
                           ),
                           ItemRow2(
                             tooltip: 'Bounding Box',
-                            onPressed: () {
-                              if ((request.location != null &&
-                                  request.simpleFilter?.bounds != null)) {
-                                cardKey.currentState?.toggleCard();
-                              }
-                            },
+                            onPressed: request.location != null &&
+                                    request.simpleFilter?.bounds != null
+                                ? () {
+                                    cardKey.currentState?.toggleCard();
+                                  }
+                                : null,
                             icon: request.simpleFilter?.bounds != null
                                 ? MdiIcons.mapCheckOutline
                                 : MdiIcons.mapOutline,
-                            text:
-                                request.simpleFilter?.bounds?.toString() ?? '-',
+                            text: request.simpleFilter?.bounds != null
+                                ? 'Configurato'
+                                : '-',
                           ),
                         ],
                       ),

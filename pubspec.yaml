@@ -69,6 +69,7 @@ dev_dependencies:
   build_runner:
   riverpod_generator: ^1.1.1
   freezed:
+  cached_network_image: ^3.2.3
 
 flutter:
 

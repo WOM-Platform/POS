@@ -52,7 +52,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
   final _locationService = locService.Location();
   final Completer<GoogleMapController> _controller = Completer();
   CameraPosition _currentCameraPosition =
-  const CameraPosition(target: LatLng(0.0, 0.0), zoom: 17);
+      const CameraPosition(target: LatLng(0.0, 0.0), zoom: 17);
 
   @override
   initState() {
@@ -112,7 +112,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
       logger.i(location.latitude.toString());
       logger.i(location.longitude.toString());
       final target =
-      LatLng(location.latitude ?? 0.0, location.longitude ?? 0.0);
+          LatLng(location.latitude ?? 0.0, location.longitude ?? 0.0);
       _currentCameraPosition = CameraPosition(target: target, zoom: 17);
 
       final GoogleMapController controller = await _controller.future;
@@ -153,53 +153,46 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
+        appBar: AppBar(
+          elevation: 0,
+          title: Text(
+              AppLocalizations.of(context)?.translate('what_are_interest') ??
+                  ''),
+        ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 30.0),
+            const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                AppLocalizations.of(context)?.translate('what_are_interest') ??
-                    '',
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  AppLocalizations.of(context)
-                      ?.translate('enable_disable_filter') ??
-                      '',
-                  style: const TextStyle(color: Colors.white),
+                'Definisci l\'area del tuo bounding box tramite lo slider. Puoi cambiare il punto di ancoraggio del bounding box cliccando sulla mappa',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
                 ),
-              ],
+              ),
             ),
             SliderTheme(
               data: Theme.of(context).sliderTheme.copyWith(
-                activeTrackColor: Colors.grey[100],
-                inactiveTrackColor: Theme.of(context).accentColor,
-                activeTickMarkColor: Colors.grey,
-                inactiveTickMarkColor: Colors.white,
-                overlayColor: Colors.black12,
-                thumbColor: Theme.of(context).accentColor,
-                valueIndicatorColor: Theme.of(context).accentColor,
-                valueIndicatorTextStyle: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold),
-              ),
+                    activeTrackColor: Colors.grey[100],
+                    inactiveTrackColor: Theme.of(context).accentColor,
+                    activeTickMarkColor: Colors.grey,
+                    inactiveTickMarkColor: Colors.white,
+                    overlayColor: Colors.black12,
+                    thumbColor: Theme.of(context).accentColor,
+                    valueIndicatorColor: Theme.of(context).accentColor,
+                    valueIndicatorTextStyle: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold),
+                  ),
               child: Slider(
                 value: slider.value,
                 min: 0.0,
                 max: sliderSteps.length.toDouble() - 1.0,
                 divisions: sliderSteps.length - 1,
                 label:
-                '${radius > 500 ? radius ~/ 1000 : radius.toInt()}${radius > 500 ? 'km' : 'm'}',
+                    '${radius > 500 ? radius ~/ 1000 : radius.toInt()}${radius > 500 ? 'km' : 'm'}',
                 activeColor: Theme.of(context).accentColor,
                 inactiveColor: Colors.white,
                 onChanged: (value) {
@@ -212,11 +205,11 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                   }
 
                   if (currentZoom > cameraZoom[slider.value.toInt()]) {
-                    _controller.future.then((value) => value.moveCamera(
+                    _controller.future.then((value) => value.animateCamera(
                         CameraUpdate.newCameraPosition(CameraPosition(
                             target: state.mapPolygon!.target,
                             zoom:
-                            cameraZoom[slider.value.toInt()].toDouble()))));
+                                cameraZoom[slider.value.toInt()].toDouble()))));
                   }
                   ref.read(createOfferNotifierProvider.notifier).updatePolygone(
                       state.mapPolygon!.target,
@@ -233,6 +226,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                       target: state.mapPolygon?.target ?? LatLng(0, 0),
                       zoom: 17.0,
                     ),
+                    zoomControlsEnabled: false,
                     minMaxZoomPreference: _minMaxZoomPreference,
                     myLocationEnabled: true,
                     onCameraMove: _updateCameraPosition,
@@ -247,7 +241,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                           strokeWidth: 2,
                         )
                     },
-                    onTap: (l) => _onTapMap(l, radius),
+                    onTap: (l) => _onTapMap(l, sliderSteps[slider.value.toInt()].toDouble()),
                   ),
                   Positioned(
                     left: 5.0,
@@ -269,9 +263,6 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                   ),
                 ],
               ),
-            ),
-            Container(
-              height: 20.0,
             ),
           ],
         ),

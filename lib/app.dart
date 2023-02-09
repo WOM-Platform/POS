@@ -51,7 +51,6 @@ class App extends StatelessWidget {
           Locale('it', 'IT'),
         ],
         theme: ThemeData(
-
           primaryColor: Colors.blue,
           accentColor: Colors.yellow,
         ),

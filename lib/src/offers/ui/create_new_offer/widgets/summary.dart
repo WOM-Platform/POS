@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 
@@ -40,8 +39,9 @@ class Summary extends ConsumerWidget {
         const SizedBox(height: 16),
         InfoText(
           text: 'Bounding box',
+          value: state.mapPolygon != null ? 'Configurato' : '-',
         ),
-        if (state.mapPolygon != null)
+     /*   if (state.mapPolygon != null)
           AspectRatio(
             aspectRatio: 1,
             child: GoogleMap(
@@ -60,7 +60,7 @@ class Summary extends ConsumerWidget {
                 zoom: state.mapPolygon!.zoom,
               ),
             ),
-          ),
+          ),*/
         const SizedBox(height: 16),
         InfoText(
           text: 'Filtro età',

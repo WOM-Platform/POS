@@ -29,20 +29,20 @@ class _SystemHash {
   }
 }
 
-String _$RequestNotifierHash() => r'e4f8160f8ad209c9707b3c9c499a6abad520e22a';
+String _$RequestNotifierHash() => r'b7df7569071e39b99c75c4ea9e994b95df50afd7';
 
 /// See also [RequestNotifier].
 final requestNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<RequestNotifier, HomeState>(
+    AsyncNotifierProvider<RequestNotifier, HomeState>(
   RequestNotifier.new,
   name: r'requestNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$RequestNotifierHash,
 );
-typedef RequestNotifierRef = AutoDisposeAsyncNotifierProviderRef<HomeState>;
+typedef RequestNotifierRef = AsyncNotifierProviderRef<HomeState>;
 
-abstract class _$RequestNotifier extends AutoDisposeAsyncNotifier<HomeState> {
+abstract class _$RequestNotifier extends AsyncNotifier<HomeState> {
   @override
   FutureOr<HomeState> build();
 }

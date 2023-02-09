@@ -31,16 +31,16 @@ class AimDropdown extends StatelessWidget {
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(7),
           labelText: labelText,
-          labelStyle: const TextStyle(
-            color: Colors.white,
-          ),
-          hintStyle: const TextStyle(
-            color: Colors.white,
-          ),
+          // labelStyle: const TextStyle(
+          //   color: Colors.white,
+          // ),
+          // hintStyle: const TextStyle(
+          //   color: Colors.white,
+          // ),
           border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
           ),
-          filled: true,
+          // filled: true,
           // fillColor: Colors.white,
         ),
         child: DropdownButtonHideUnderline(
@@ -48,7 +48,7 @@ class AimDropdown extends StatelessWidget {
             value: value,
             hint: Text(
               AppLocalizations.of(context)?.translate('choose') ?? '',
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(),
             ),
             onChanged: onChanged,
             items: list.map((Aim aim) {

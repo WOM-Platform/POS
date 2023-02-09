@@ -66,7 +66,7 @@ class SelectedPos {
   SelectedPos(this.merchant, this.pos);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class RequestNotifier extends _$RequestNotifier {
   FutureOr<HomeState> build() async {
     final selectedPos = ref.watch(selectedPosProvider);
