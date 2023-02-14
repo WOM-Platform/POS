@@ -60,11 +60,13 @@ class POSHandler extends ConsumerWidget {
             aspectRatio: 16 / 9,
             child: Stack(
               children: [
-                Positioned.fill(
-                  child: CachedNetworkImage(
-                    imageUrl: '',
+                if (pos.cover?.midDensityFullWidthUrl != null)
+                  Positioned.fill(
+                    child: CachedNetworkImage(
+                      imageUrl: pos.cover!.midDensityFullWidthUrl,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
                 Positioned(
                   bottom: 16,
                   right: 16,
@@ -102,7 +104,7 @@ class POSHandler extends ConsumerWidget {
               Expanded(
                 child: Text(
                   pos.name,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(width: 16),
@@ -123,11 +125,13 @@ class POSHandler extends ConsumerWidget {
                 )
             ],
           ),
-          const SizedBox(height: 24),
-          Text(
-            'descrizione ci va?',
-            style: TextStyle(fontSize: 18),
-          ),
+          if (pos.description != null && pos.description!.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Text(
+              pos.description!,
+              style: TextStyle(fontSize: 18),
+            ),
+          ],
           if (pos.latitude != null && pos.longitude != null)
             Padding(
               padding: const EdgeInsets.only(top: 24.0),
