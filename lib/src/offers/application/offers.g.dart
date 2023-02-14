@@ -29,6 +29,95 @@ class _SystemHash {
   }
 }
 
+String _$CloudOffersNotifierHash() =>
+    r'dd432e974338a02428b628b72db626b08136c850';
+
+/// See also [CloudOffersNotifier].
+class CloudOffersNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
+    CloudOffersNotifier, List<Offer>> {
+  CloudOffersNotifierProvider(
+    this.posId,
+  ) : super(
+          () => CloudOffersNotifier()..posId = posId,
+          from: cloudOffersNotifierProvider,
+          name: r'cloudOffersNotifierProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$CloudOffersNotifierHash,
+        );
+
+  final String? posId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is CloudOffersNotifierProvider && other.posId == posId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, posId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+
+  @override
+  FutureOr<List<Offer>> runNotifierBuild(
+    covariant _$CloudOffersNotifier notifier,
+  ) {
+    return notifier.build(
+      posId,
+    );
+  }
+}
+
+typedef CloudOffersNotifierRef
+    = AutoDisposeAsyncNotifierProviderRef<List<Offer>>;
+
+/// See also [CloudOffersNotifier].
+final cloudOffersNotifierProvider = CloudOffersNotifierFamily();
+
+class CloudOffersNotifierFamily extends Family<AsyncValue<List<Offer>>> {
+  CloudOffersNotifierFamily();
+
+  CloudOffersNotifierProvider call(
+    String? posId,
+  ) {
+    return CloudOffersNotifierProvider(
+      posId,
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderImpl<CloudOffersNotifier, List<Offer>>
+      getProviderOverride(
+    covariant CloudOffersNotifierProvider provider,
+  ) {
+    return call(
+      provider.posId,
+    );
+  }
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  String? get name => r'cloudOffersNotifierProvider';
+}
+
+abstract class _$CloudOffersNotifier
+    extends BuildlessAutoDisposeAsyncNotifier<List<Offer>> {
+  late final String? posId;
+
+  FutureOr<List<Offer>> build(
+    String? posId,
+  );
+}
+
 String _$RequestNotifierHash() => r'b7df7569071e39b99c75c4ea9e994b95df50afd7';
 
 /// See also [RequestNotifier].
@@ -68,72 +157,3 @@ final getSecureStorageProvider = AutoDisposeProvider<FlutterSecureStorage>(
       : _$getSecureStorageHash,
 );
 typedef GetSecureStorageRef = AutoDisposeProviderRef<FlutterSecureStorage>;
-String _$getOffersHash() => r'ec9d345d24b4741e998f694d9d73d860c95b045a';
-
-/// See also [getOffers].
-class GetOffersProvider extends AutoDisposeFutureProvider<List<Offer>> {
-  GetOffersProvider({
-    this.posId,
-  }) : super(
-          (ref) => getOffers(
-            ref,
-            posId: posId,
-          ),
-          from: getOffersProvider,
-          name: r'getOffersProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$getOffersHash,
-        );
-
-  final String? posId;
-
-  @override
-  bool operator ==(Object other) {
-    return other is GetOffersProvider && other.posId == posId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, posId.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-typedef GetOffersRef = AutoDisposeFutureProviderRef<List<Offer>>;
-
-/// See also [getOffers].
-final getOffersProvider = GetOffersFamily();
-
-class GetOffersFamily extends Family<AsyncValue<List<Offer>>> {
-  GetOffersFamily();
-
-  GetOffersProvider call({
-    String? posId,
-  }) {
-    return GetOffersProvider(
-      posId: posId,
-    );
-  }
-
-  @override
-  AutoDisposeFutureProvider<List<Offer>> getProviderOverride(
-    covariant GetOffersProvider provider,
-  ) {
-    return call(
-      posId: provider.posId,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'getOffersProvider';
-}

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
+import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/services/user_repository.dart';
 import '../../my_logger.dart';
 import '../../utils.dart';
@@ -34,19 +35,20 @@ class LoginBloc extends StateNotifier<LoginState> {
     print('anonymousLogin');
     // if (user == null) return;/**/
     logger.i('anonimo');
-    final key = await getAnonymousPrivateKey();
+    final anonymous = await ref.read(getPosProvider).getAnonymousPos();
+    //final key = await getAnonymousPrivateKey();
     user = POSUser(
       name: 'Anonymous',
-      surname: 'Anonymous',
-      email: '',
+      surname: 'User',
+      email: '-',
       merchants: [
         Merchant(
           id: 'anonymousId',
           posList: [
             PointOfSale(
-              id: '5f69a60698e66631aaf79929',
-              name: 'Anonymous',
-              privateKey: key,
+              id: anonymous.posId,
+              name: 'Anonymous POS',
+              privateKey: anonymous.posPrivateKey,
               latitude: 0.0,
               longitude: 0.0,
               isActive: true,
@@ -54,7 +56,7 @@ class LoginBloc extends StateNotifier<LoginState> {
           ],
           fiscalCode: '',
           city: '',
-          name: '',
+          name: 'Anonymous Merchant',
           zipCode: '',
           country: '',
           address: '',

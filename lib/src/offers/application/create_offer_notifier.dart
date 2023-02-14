@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/model/request_status_enum.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/domain/entities/offert_type.dart';
 import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
+import 'package:pos/src/offers/ui/offers_screen.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
 import 'package:pos/src/services/aim_repository.dart';
@@ -89,6 +91,7 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
     ref.listen(titleControllerProvider, (_, __) {});
     ref.listen(descControllerProvider, (_, __) {});
     ref.listen(womControllerProvider, (_, __) {});
+    ref.listen(maxAgeControllerProvider, (_, __) {});
     ref.listen(aimSelectionNotifierProvider, (_, next) {});
     return CreateOfferState.initial();
   }
@@ -132,7 +135,10 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
   bool canGoNext() {
     switch (state.activeStep) {
       case 0:
-        return state.type != null;
+        final isAnonymous = ref.read(isAnonymousUserProvider);
+        return isAnonymous
+            ? state.type == OfferType.ephemeral
+            : state.type != null;
       case 1:
         final title = ref.read(titleControllerProvider).text.trim();
         // final desc = ref.read(descControllerProvider).text.trim();
@@ -147,6 +153,8 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
         // }
         return canGo;
       case 2:
+        final maxAge =
+            int.tryParse(ref.read(maxAgeControllerProvider).text.trim());
         return true;
       default:
         return false;
@@ -154,10 +162,15 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
   }
 
   createOffer() async {
+    final isAnonymous = ref.read(isAnonymousUserProvider);
     final posId = ref.read(selectedPosProvider)?.pos?.id;
     final privateKey = ref.read(selectedPosProvider)?.pos?.privateKey;
     if (posId == null || privateKey == null) {
       throw Exception('Pos id or private key are null');
+    }
+
+    if (isAnonymous && state.type == OfferType.persistent) {
+      throw Exception('Anonymous user cant use persistent offers');
     }
 
     final request = CreateOfferRequestDTO(
@@ -212,6 +225,8 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
           email,
           password,
         );
+    ref.invalidate(cloudOffersNotifierProvider(posId));
+    ref.read(offersTabProvider.notifier).state = 0;
   }
 
   createLocalOffer(
@@ -228,8 +243,8 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
           nonce: CoreUtils.generateGUID(),
           posId: posId,
           persistent: true,
-          pocketAckUrl: 'pocketAckUrl',
-          posAckUrl: 'posAckUrl',
+          // pocketAckUrl: 'pocketAckUrl',
+          // posAckUrl: 'posAckUrl',
           simpleFilter: request.filter,
         );
         final response =
@@ -250,8 +265,8 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
           persistent: true,
           simpleFilter: request.filter,
           location: state.mapPolygon?.target,
-          pocketAckUrl: 'pocketAckUrl',
-          posAckUrl: 'posAckUrl',
+          // pocketAckUrl: 'pocketAckUrl',
+          // posAckUrl: 'posAckUrl',
           deepLink:
               DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build(),
           nonce: payload.nonce,
@@ -260,6 +275,11 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
           aimName: aim?.title(languageCode: 'en') ?? '-',
         );
         await insertRequestOnDb(paymentRequest);
+        ref.invalidate(requestNotifierProvider);
+        final isAnonymous = ref.read(isAnonymousUserProvider);
+        if (!isAnonymous) {
+          ref.read(offersTabProvider.notifier).state = 1;
+        }
       } on ServerException catch (ex, stack) {
         logger.e('${ex.url}: ${ex.statusCode} => ${ex.error}');
         logger.e(stack);
@@ -368,5 +388,13 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
 
   void resetPolygon() {
     state = state.copyWith(mapPolygon: null);
+  }
+
+  void resetMaxAge() {
+    state = state.copyWith(maxAge: null);
+  }
+
+  void resetAim() {
+    state = state.copyWith(aimCode: null);
   }
 }

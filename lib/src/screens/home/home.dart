@@ -42,7 +42,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final selectedPos = ref.watch(selectedPosProvider);
-    final index = useState(0);
+    // final index = useState(0);
 
     return Scaffold(
       extendBody: true,
@@ -79,17 +79,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
               // }
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(selectedPos?.pos?.name ?? 'Seleziona POS'),
-                // if (ref.read(homeNotifierProvider.notifier).posSelectionEnabled)
-                Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.white,
-                ),
-              ],
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.blue[300],
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(selectedPos?.pos?.name ?? 'Seleziona POS'),
+                  // if (ref.read(homeNotifierProvider.notifier).posSelectionEnabled)
+                  Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -132,26 +139,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       //   ],
       // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.blue,
-        heroTag: Key("HomeFab"),
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => NewOfferScreen()));
-        },
-        label: Row(
-          children: [
-            Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            Text(
-              'Crea offerta',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
+      floatingActionButton: selectedPos != null
+          ? FloatingActionButton.extended(
+              backgroundColor: Colors.blue,
+              heroTag: Key("HomeFab"),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => NewOfferScreen()));
+              },
+              label: Row(
+                children: [
+                  Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  Text(
+                    'Crea offerta',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            )
+          : null,
     );
   }
 

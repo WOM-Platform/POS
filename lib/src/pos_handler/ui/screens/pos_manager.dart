@@ -4,8 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pos/src/add_image/ui/add_image.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pos/src/offers/application/offers.dart';
+import 'package:pos/src/services/user_repository.dart';
 
 class POSManagerScreen extends HookConsumerWidget {
   final int size;
@@ -63,9 +66,33 @@ class POSHandler extends ConsumerWidget {
                   ),
                 ),
                 Positioned(
-                    bottom: 16,
-                    right: 16,
-                    child: CircleAvatar(child: Icon(Icons.edit)))
+                  bottom: 16,
+                  right: 16,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => AddImageScreen(
+                            onSave: (bytes) async {
+                              final secureStorage = ref
+                                  .read(userRepositoryProvider)
+                                  .secureStorage;
+                              final email =
+                                  await secureStorage.read(key: 'email');
+                              final password =
+                                  await secureStorage.read(key: 'password');
+                              ref.read(getPosProvider).updateCover(
+                                  pos.id, bytes, email!, password!);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: CircleAvatar(
+                      child: Icon(Icons.edit),
+                    ),
+                  ),
+                )
               ],
             ),
           ),

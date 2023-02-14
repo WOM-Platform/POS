@@ -30,23 +30,70 @@ FlutterSecureStorage getSecureStorage(GetSecureStorageRef ref) {
 }
 
 @riverpod
-Future<List<Offer>> getOffers(GetOffersRef ref, {String? posId}) async {
-  final mmkv = Hive.box('settings');
-  final posId = await mmkv.get('lastPosId');
-  await mmkv.get('lastMerchantId');
+class CloudOffersNotifier extends _$CloudOffersNotifier {
+  String? posId;
+  String? email;
+  String? password;
 
-  if (posId == null) {
-    throw Exception();
+  Future<List<Offer>> build(String? posId) async {
+    final mmkv = Hive.box('settings');
+    final posId = await mmkv.get('lastPosId');
+    await mmkv.get('lastMerchantId');
+
+    if (posId == null) {
+      throw Exception();
+    }
+    final secureStorage = ref.watch(userRepositoryProvider).secureStorage;
+    email = await secureStorage.read(key: 'email');
+    password = await secureStorage.read(key: 'password');
+    final pos = ref.watch(getPosProvider);
+    if (email == null || password == null) {
+      throw Exception();
+    }
+    return pos.getOffers(posId, email!, password!);
   }
-  final secureStorage = ref.watch(userRepositoryProvider).secureStorage;
-  final email = await secureStorage.read(key: 'email');
-  final password = await secureStorage.read(key: 'password');
-  final pos = ref.watch(getPosProvider);
-  if (email == null || password == null) {
-    throw Exception();
+
+  refreshList() async {
+    try {
+      if (posId == null || email == null || password == null) return;
+      state = AsyncLoading();
+      final list =
+          await ref.read(getPosProvider).getOffers(posId!, email!, password!);
+      state = AsyncData(list);
+    } catch (ex, st) {
+      logger.e(ex);
+      logger.e(st);
+      state = AsyncError(ex, st);
+    }
   }
-  return pos.getOffers(posId, email, password);
+
+  deleteOffer(String offerId) async {
+    if (posId == null || email == null || password == null) return;
+    await ref
+        .read(getPosProvider)
+        .deleteOffer(posId!, offerId, email!, password!);
+    refreshList();
+  }
 }
+
+// @riverpod
+// Future<List<Offer>> getOffers(GetOffersRef ref, {String? posId}) async {
+//   final mmkv = Hive.box('settings');
+//   final posId = await mmkv.get('lastPosId');
+//   await mmkv.get('lastMerchantId');
+//
+//   if (posId == null) {
+//     throw Exception();
+//   }
+//   final secureStorage = ref.watch(userRepositoryProvider).secureStorage;
+//   final email = await secureStorage.read(key: 'email');
+//   final password = await secureStorage.read(key: 'password');
+//   final pos = ref.watch(getPosProvider);
+//   if (email == null || password == null) {
+//     throw Exception();
+//   }
+//   return pos.getOffers(posId, email, password);
+// }
 
 final selectedPosProvider = StateProvider<SelectedPos?>((ref) {
   ref.listenSelf((previous, next) {

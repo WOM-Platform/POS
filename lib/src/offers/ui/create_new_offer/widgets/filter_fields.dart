@@ -72,6 +72,15 @@ class SelectAim extends ConsumerWidget {
     return CreateOfferCard(
       title: 'AIM',
       description: 'Accetta WOM di un determinato dipo di AIM',
+      extra: state.aimCode != null
+          ? TextButton(
+        onPressed: () {
+          ref.read(aimSelectionNotifierProvider.notifier).resetAim();
+          ref.read(createOfferNotifierProvider.notifier).resetAim();
+        },
+        child: Text('Reset'),
+      )
+          : null,
       child: Column(
         children: [
           AimDropdown(
@@ -206,9 +215,19 @@ class SelectMaxAge extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final maxAge = ref
+        .watch(createOfferNotifierProvider.select((value) => value.maxAge));
     return CreateOfferCard(
       title: 'Età dei wom',
       description: 'Descrizione...',
+      extra: maxAge != null
+          ? TextButton(
+        onPressed: () {
+          ref.read(createOfferNotifierProvider.notifier).resetMaxAge();
+        },
+        child: Text('Reset'),
+      )
+          : null,
       child: TextFormField(
         textInputAction: TextInputAction.done,
         controller: ref.watch(maxAgeControllerProvider),

@@ -1,6 +1,7 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
+import 'package:pos/src/extensions.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/services/user_repository.dart';
 import '../../../app.dart';
@@ -8,6 +9,15 @@ import '../../my_logger.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'package:collection/collection.dart';
+
+
+final isAnonymousUserProvider = Provider((ref){
+  final s = ref.watch(authNotifierProvider);
+  if (s is AuthenticationAuthenticated) {
+    return s.user.isAnonymous;
+  }
+  return false;
+});
 
 final authNotifierProvider =
     StateNotifierProvider<AuthenticationNotifier, AuthenticationState>((ref) {
@@ -86,9 +96,9 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
         .persistToken(event.user, event.email, event.password);
 
     final user = event.user;
-
-    // globalUser = user;
-    // ref.read(homeNotifierProvider.notifier).loadRequest();
+    final m = user.merchants.firstWhere((m) => m.posList.isNotEmpty);
+    final p = m.posList.first;
+    ref.read(selectedPosProvider.notifier).state = SelectedPos(m, p);
 
     state = AuthenticationAuthenticated(user);
   }

@@ -71,10 +71,6 @@ Future<String> getPublicKey(Flavor flavor) async {
   return await _loadKey('assets/registry.pub');
 }
 
-Future<String> getAnonymousPrivateKey() async {
-  return await _loadKey('assets/anonymous.pem');
-}
-
 Future<String> _loadKey(String path) async {
   return await rootBundle.loadString(path);
 }

@@ -20,26 +20,31 @@ class SettingsScreen extends ConsumerWidget {
     // final selectedPos = ref.watch(selectedPosProvider);
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   centerTitle: true,
-      //   title: Text(
-      //     AppLocalizations.of(context)?.translate('settings_title') ?? '',
-      //     style: TextStyle(
-      //       color: Colors.white,
-      //     ),
-      //   ),
-      //   backgroundColor: Theme.of(context).primaryColor,
-      //   brightness: Brightness.dark,
-      //   iconTheme: IconThemeData(
-      //     color: Colors.white,
-      //   ),
-      // ),
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          AppLocalizations.of(context)?.translate('settings_title') ?? '',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+        brightness: Brightness.dark,
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+      ),
       body: ListView(
         children: <Widget>[
           if (posUser != null)
-            // if(selectedPos.merchant.)
             ...[
+            ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text('${posUser.name} ${posUser.surname}'),
+              subtitle: Text(posUser.email),
+              contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+            ),
             ListTile(
               leading: Icon(Icons.manage_accounts),
               title: Text('Hai ${posCount ?? '-'} POS'),
@@ -49,12 +54,7 @@ class SettingsScreen extends ConsumerWidget {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => POSManagerScreen(posCount)));
               },
-              contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
-            ),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('${posUser.name} ${posUser.surname}'),
-              subtitle: Text(posUser.email),
+              trailing: Icon(Icons.arrow_forward_ios_sharp),
               contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             ),
           ],
@@ -64,6 +64,7 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: Text(
                 AppLocalizations.of(context)?.translate('go_to_site') ?? ''),
             leading: Icon(Icons.public),
+            trailing: Icon(Icons.arrow_forward_ios_sharp),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () => launchUrl('https://wom.social'),
           ),
@@ -73,6 +74,7 @@ class SettingsScreen extends ConsumerWidget {
                 AppLocalizations.of(context)?.translate('tutorial_desc') ?? ''),
             leading: Icon(Icons.info),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+            trailing: Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -89,6 +91,7 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: Text(
                 AppLocalizations.of(context)?.translate('sign_out_desc') ?? ''),
             leading: const Icon(Icons.exit_to_app),
+            trailing: Icon(Icons.arrow_forward_ios_sharp),
             contentPadding: const EdgeInsets.only(left: 16.0, right: 24.0),
             onTap: () {
               _showLogoutDialog(context, () {

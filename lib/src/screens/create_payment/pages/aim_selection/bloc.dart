@@ -83,8 +83,9 @@ class AimSelectorNotifier extends StateNotifier<AimSelectionState> {
 
   Future<void> getAimListFromDb() async {
     try {
-      final aimList =
-          await ref.read(aimRepositoryProvider).getAimList(database: AppDatabase.get().getDb());
+      final aimList = await ref
+          .read(aimRepositoryProvider)
+          .getAimList(database: AppDatabase.get().getDb());
       state = AimSelectionState(
         aimList: aimList,
         subSubAimList: [],
@@ -97,8 +98,9 @@ class AimSelectorNotifier extends StateNotifier<AimSelectionState> {
   }
 
   updateAims() async {
-    final aimList =
-        await ref.read(aimRepositoryProvider).updateAim(database: AppDatabase.get().getDb());
+    final aimList = await ref
+        .read(aimRepositoryProvider)
+        .updateAim(database: AppDatabase.get().getDb());
     state = AimSelectionState(
       aimList: aimList,
       subSubAimList: [],
@@ -116,8 +118,8 @@ class AimSelectorNotifier extends StateNotifier<AimSelectionState> {
     }
     final firstLevel = firstLevelAim.titles[languageCode];
 
-    final secondLevelAim =
-        state.subAimList.firstWhereOrNull((aim) => aim.code == state.subAimCode);
+    final secondLevelAim = state.subAimList
+        .firstWhereOrNull((aim) => aim.code == state.subAimCode);
 
     if (secondLevelAim == null) {
       return firstLevel;
@@ -125,8 +127,8 @@ class AimSelectorNotifier extends StateNotifier<AimSelectionState> {
 
     final secondLevel = secondLevelAim.titles[languageCode];
 
-    final thirdLevelAim =
-        state.subSubAimList.firstWhereOrNull((aim) => aim.code == state.subSubAimCode);
+    final thirdLevelAim = state.subSubAimList
+        .firstWhereOrNull((aim) => aim.code == state.subSubAimCode);
 
     if (thirdLevelAim == null) {
       return firstLevel + " -> " + secondLevel;
@@ -150,11 +152,17 @@ class AimSelectorNotifier extends StateNotifier<AimSelectionState> {
     changeSubSubAim(aimCode);
   }
 
+  resetAim() {
+    state =
+        state.copyWith(aimCode: null, subAimCode: null, subSubAimCode: null);
+  }
+
   Future<Aim?> getAim() async {
     final aimCode = getAimCode();
     if (aimCode != null) {
-      return await ref.read(aimRepositoryProvider).getAim(
-          database: AppDatabase.get().getDb(), aimCode: aimCode);
+      return await ref
+          .read(aimRepositoryProvider)
+          .getAim(database: AppDatabase.get().getDb(), aimCode: aimCode);
     }
 
     return null;
