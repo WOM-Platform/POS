@@ -7,7 +7,6 @@ import 'package:pos/src/offers/application/offers.dart';
 
 import 'package:pos/src/services/auth_local_data_sources.dart';
 
-
 final userRepositoryProvider = Provider<UserRepository>((ref) {
   return UserRepository(ref.watch(getPosProvider), AuthLocalDataSourcesImpl());
 });
@@ -23,7 +22,19 @@ class UserRepository {
     required String username,
     required String password,
   }) async {
-    return pos.authenticate(username, password);
+    final user = await pos.authenticate(username, password);
+    await persistToken(user, username, password);
+    return user;
+  }
+
+  Future<String?> getSavedEmail() async {
+    final email = await secureStorage.read(key: 'email');
+    return email;
+  }
+
+  Future<String?> getSavedPassword() async {
+    final email = await secureStorage.read(key: 'password');
+    return email;
   }
 
   Future<void> deleteToken() async {
@@ -34,18 +45,8 @@ class UserRepository {
   }
 
   Future<void> persistToken(POSUser user, String email, String password) async {
-    // final mmkv = Hive.box('settings');
-    // await mmkv.put(User.dbName, user.name);
-    // await mmkv.put(User.dbSurname, user.surname);
-    // await mmkv.put(User.dbEmail, user.email);
-
-    // final array = user.merchants.map((merchant) => merchant.toJson()).toList();
-    //
-    // final jsonArray = json.encode(array);
-    // await secureStorage.write(key: 'actors', value: jsonArray);
     await secureStorage.write(key: 'email', value: email);
     await secureStorage.write(key: 'password', value: password);
-    // await mmkv.put('lastLogin', DateTime.now().millisecondsSinceEpoch);
   }
 
   /* Future<POSUser?> readUser() async {
@@ -88,7 +89,7 @@ class UserRepository {
     final mmkv = Hive.box('settings');
     final merchantId = await mmkv.get('lastMerchantId');
     final posId = await mmkv.get('lastPosId');
-    if(merchantId == null || posId == null){
+    if (merchantId == null || posId == null) {
       return null;
     }
     print(merchantId);
@@ -104,12 +105,6 @@ class UserRepository {
     return POSUser(
         name: name, surname: surname, email: email, merchants: merchants);
   }*/
-
-  Future<String?> readEmail() async {
-    final mmkv = Hive.box('settings');
-    final email = await mmkv.get('email');
-    return email;
-  }
 
   Future<bool> hasToken() async {
     final mmkv = Hive.box('settings');

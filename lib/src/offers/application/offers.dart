@@ -43,9 +43,9 @@ class CloudOffersNotifier extends _$CloudOffersNotifier {
     if (posId == null) {
       throw Exception();
     }
-    final secureStorage = ref.watch(userRepositoryProvider).secureStorage;
-    email = await secureStorage.read(key: 'email');
-    password = await secureStorage.read(key: 'password');
+    final repo = ref.watch(userRepositoryProvider);
+    email = await repo.getSavedEmail();
+    password = await repo.getSavedPassword();
     final pos = ref.watch(getPosProvider);
     if (email == null || password == null) {
       throw Exception();

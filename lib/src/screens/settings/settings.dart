@@ -4,6 +4,7 @@ import 'package:package_info/package_info.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/constants.dart';
+import 'package:pos/src/extensions.dart';
 import 'package:pos/src/model/flavor_enum.dart';
 import 'package:pos/src/pos_handler/ui/screens/pos_manager.dart';
 import 'package:pos/src/screens/intro/intro.dart';
@@ -37,8 +38,7 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: <Widget>[
-          if (posUser != null)
-            ...[
+          if (posUser != null && !posUser.isAnonymous) ...[
             ListTile(
               leading: Icon(Icons.account_circle),
               title: Text('${posUser.name} ${posUser.surname}'),
@@ -51,8 +51,11 @@ class SettingsScreen extends ConsumerWidget {
               subtitle: Text('Organizza e modifica i tuoi POS'),
               onTap: () {
                 if (posCount == null) return;
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => POSManagerScreen(posCount)));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => POSManagerScreen(posCount),
+                  ),
+                );
               },
               trailing: Icon(Icons.arrow_forward_ios_sharp),
               contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),

@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:pos/src/add_image/ui/add_image.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pos/src/blocs/authentication/authentication_state.dart';
+import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/services/user_repository.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class POSManagerScreen extends HookConsumerWidget {
   final int size;
@@ -23,6 +28,7 @@ class POSManagerScreen extends HookConsumerWidget {
     final List<PointOfSale> list = merchants.expand((e) => e.posList).toList();
     return Scaffold(
       appBar: AppBar(
+        elevation: 1,
         title: Text('Organizza i tuoi POS'),
         bottom: TabBar(
           isScrollable: true,
@@ -51,110 +57,295 @@ class POSHandler extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Stack(
-              children: [
-                if (pos.cover?.midDensityFullWidthUrl != null)
-                  Positioned.fill(
-                    child: CachedNetworkImage(
-                      imageUrl: pos.cover!.midDensityFullWidthUrl,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                Positioned(
-                  bottom: 16,
-                  right: 16,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => AddImageScreen(
-                            onSave: (bytes) async {
-                              final secureStorage = ref
-                                  .read(userRepositoryProvider)
-                                  .secureStorage;
-                              final email =
-                                  await secureStorage.read(key: 'email');
-                              final password =
-                                  await secureStorage.read(key: 'password');
-                              ref.read(getPosProvider).updateCover(
-                                  pos.id, bytes, email!, password!);
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                    child: CircleAvatar(
-                      child: Icon(Icons.edit),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          Row(
+    final keyStyle = TextStyle(color: Colors.grey);
+    return ListView(
+      // padding: const EdgeInsets.symmetric(vertical: 16.0),
+      children: [
+        AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Stack(
             children: [
-              Expanded(
-                child: Text(
-                  pos.name,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(width: 16),
-              if (pos.isActive)
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(16)),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  child: Text(
-                    'ATTIVO',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+              if (pos.cover?.midDensityFullWidthUrl != null)
+                Positioned.fill(
+                  child: CachedNetworkImage(
+                    imageUrl: pos.cover!.midDensityFullWidthUrl,
+                    fit: BoxFit.contain,
                   ),
                 )
+              else
+                Container(
+                  color: Colors.grey[300],
+                  child: Center(
+                    child: Icon(
+                      Icons.image,
+                      size: 120,
+                    ),
+                  ),
+                ),
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: CircleButton(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AddImageScreen(
+                          aspectRatio: 16 / 9,
+                          onSave: (bytes) async {
+                            final userRepo = ref.read(userRepositoryProvider);
+                            final email = await userRepo.getSavedEmail();
+                            final password = await userRepo.getSavedPassword();
+                            await ref
+                                .read(getPosProvider)
+                                .updateCover(pos.id, bytes, email!, password!);
+                            ref.read(authNotifierProvider.notifier).refresh();
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  icon: Icons.edit,
+                ),
+              )
             ],
           ),
-          if (pos.description != null && pos.description!.isNotEmpty) ...[
-            const SizedBox(height: 24),
-            Text(
-              pos.description!,
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-          if (pos.latitude != null && pos.longitude != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 24.0),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: GoogleMap(
-                  zoomGesturesEnabled: false,
-                  rotateGesturesEnabled: false,
-                  scrollGesturesEnabled: false,
-                  zoomControlsEnabled: false,
-                  markers: {
-                    Marker(
-                        markerId: MarkerId(pos.id),
-                        position: LatLng(pos.latitude!, pos.longitude!))
-                  },
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(pos.latitude!, pos.longitude!),
-                    zoom: 18,
+        ),
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Nome',
+                    style: keyStyle,
                   ),
+                  const SizedBox(width: 8),
+                  CircleButton(
+                    radius: 10,
+                    icon: Icons.edit,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            child: EditTextDialog(
+                              title: 'Nome del tuo POS',
+                              initialText: pos.name,
+                              onSave: (title) async {
+                                final authState =
+                                    ref.read(authNotifierProvider);
+
+                                if (authState is! AuthenticationAuthenticated)
+                                  return;
+
+                                await ref.read(getPosProvider).updateTitle(
+                                      pos.id,
+                                      title,
+                                      null,
+                                      authState.email,
+                                      authState.password,
+                                    );
+                                ref
+                                    .read(authNotifierProvider.notifier)
+                                    .refresh();
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      pos.name,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: pos.isActive ? Colors.green : Colors.red,
+                        borderRadius: BorderRadius.circular(16)),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    child: Text(
+                      pos.isActive ? 'ATTIVO' : 'INATTIVO',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Text(
+                    'Descrizione',
+                    style: keyStyle,
+                  ),
+                  const SizedBox(width: 8),
+                  CircleButton(
+                    radius: 10,
+                    icon: Icons.edit,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            child: EditTextDialog(
+                              title: 'Descrizione del tuo POS',
+                              initialText: pos.description,
+                              onSave: (description) async {
+                                final authState =
+                                    ref.read(authNotifierProvider);
+
+                                if (authState is! AuthenticationAuthenticated)
+                                  return;
+
+                                await ref.read(getPosProvider).updateTitle(
+                                      pos.id,
+                                      null,
+                                      description,
+                                      authState.email,
+                                      authState.password,
+                                    );
+                                ref
+                                    .read(authNotifierProvider.notifier)
+                                    .refresh();
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+              Text(
+                pos.description ?? '-',
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+        ),
+        if (pos.latitude != null && pos.longitude != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 24.0),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: GoogleMap(
+                zoomGesturesEnabled: false,
+                rotateGesturesEnabled: false,
+                scrollGesturesEnabled: false,
+                zoomControlsEnabled: false,
+                markers: {
+                  Marker(
+                      markerId: MarkerId(pos.id),
+                      position: LatLng(pos.latitude!, pos.longitude!))
+                },
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(pos.latitude!, pos.longitude!),
+                  zoom: 18,
                 ),
               ),
-            )
-        ],
+            ),
+          ),
+         const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+class CircleButton extends StatelessWidget {
+  final Function()? onTap;
+  final double radius;
+  final IconData icon;
+
+  const CircleButton({
+    Key? key,
+    this.onTap,
+    required this.icon,
+    this.radius = 20,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: CircleAvatar(
+        radius: radius,
+        child: Icon(
+          icon,
+          size: radius + 4,
+        ),
+      ),
+    );
+  }
+}
+
+class EditTextDialog extends HookConsumerWidget {
+  final String? initialText;
+  final String title;
+  final Future Function(String)? onSave;
+
+  const EditTextDialog(
+      {Key? key, this.initialText, this.onSave, required this.title})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tc = useTextEditingController(text: initialText);
+    final isLoading = useState<bool>(false);
+    return Container(
+      constraints: BoxConstraints(maxHeight: 200),
+      child: LoadingOverlay(
+        isLoading: isLoading.value,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: tc,
+                decoration: InputDecoration(border: OutlineInputBorder()),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    isLoading.value = true;
+                    await onSave?.call(tc.text.trim());
+                    isLoading.value = false;
+                    Navigator.of(context).pop();
+                  } catch (ex) {
+                    logger.e(ex);
+                    isLoading.value = false;
+                  }
+                },
+                child: Text('Aggiorna'),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,39 +1,27 @@
 import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/multi_tween/multi_tween.dart';
 import 'login_box.dart';
 
+final loginLoadingProvider = StateProvider.autoDispose<bool>((ref) {
+  return false;
+});
+
 class LoginScreen extends ConsumerWidget {
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: Colors.blue,
-      body: Stack(
-        children: <Widget>[
-          // Positioned.fill(child: AnimatedBackground()),
-          // Positioned.fill(child: Particles(30)),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
-            child: const Align(
-              alignment: Alignment.center,
-              child: const LoginBox(),
-              // child: ControlledAnimation(
-              //   duration: Duration(milliseconds: 1500),
-              //   tween: Tween(begin: 0.0, end: 1.0),
-              //   builder: (context, opacity) {
-              //     return Opacity(
-              //       opacity: opacity,
-              //       child: LoginBox(),
-              //     );
-              //   },
-              // ),
-            ),
-          )
-        ],
+      body: LoadingOverlay(
+        isLoading: ref.watch(loginLoadingProvider),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Center(child: LoginBox()),
+        ),
       ),
     );
   }

@@ -1,17 +1,17 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/blocs/home/bloc.dart';
+import 'package:pos/src/blocs/login/bloc.dart';
 import 'package:pos/src/extensions.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/services/user_repository.dart';
-import '../../../app.dart';
+import 'package:pos/src/utils.dart';
 import '../../my_logger.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'package:collection/collection.dart';
 
-
-final isAnonymousUserProvider = Provider((ref){
+final isAnonymousUserProvider = Provider((ref) {
   final s = ref.watch(authNotifierProvider);
   if (s is AuthenticationAuthenticated) {
     return s.user.isAnonymous;
@@ -55,14 +55,25 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
 
   startApp() async {
     try {
-      // final user = await userRepository.readUser();
-      final user = await ref.read(userRepositoryProvider).autoLogin();
-      if (user != null) {
-        // globalUser = user;
-        // await ref
-        //     .read(homeNotifierProvider.notifier)
-        //     .checkAndSetPreviousSelectedMerchantAndPos();
-
+      final email = await ref.read(userRepositoryProvider).getSavedEmail();
+      final password =
+          await ref.read(userRepositoryProvider).getSavedPassword();
+      if (email == null || password == null) {
+        state = AuthenticationUnauthenticated();
+        return;
+      }
+      if (email == anonymousEmail && password == anonymousPassword) {
+        final pos = ref.read(getPosProvider);
+        final user = await getAnonymousUser(pos);
+        final merchant =
+            user.merchants.firstWhere((element) => element.posList.isNotEmpty);
+        ref.read(selectedPosProvider.notifier).state =
+            SelectedPos(merchant, merchant.posList.first);
+        state = AuthenticationAuthenticated(user, email, password);
+      } else {
+        final user = await ref
+            .read(userRepositoryProvider)
+            .authenticate(username: email, password: password);
         final lastMerchantAndPosIdUsed = await ref
             .read(userRepositoryProvider)
             .readLastMerchantIdAndPosIdUsed();
@@ -78,11 +89,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
                 SelectedPos(merchant, pos ?? merchant.posList.first);
           }
         }
-
-        // await ref.read(homeNotifierProvider.notifier).loadRequest();
-        state = AuthenticationAuthenticated(user);
-      } else {
-        state = AuthenticationUnauthenticated();
+        state = AuthenticationAuthenticated(user, email, password);
       }
     } catch (ex) {
       logger.i(ex.toString());
@@ -100,7 +107,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     final p = m.posList.first;
     ref.read(selectedPosProvider.notifier).state = SelectedPos(m, p);
 
-    state = AuthenticationAuthenticated(user);
+    state = AuthenticationAuthenticated(user, event.email, event.password);
   }
 
   logOut() async {
@@ -109,6 +116,22 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     state = AuthenticationUnauthenticated();
   }
 
+  Future refresh() async {
+    final currentState = state;
+    if (currentState is! AuthenticationAuthenticated) {
+      return;
+    }
+
+    final user = await ref.read(userRepositoryProvider).authenticate(
+          username: currentState.email,
+          password: currentState.password,
+        );
+    state = AuthenticationAuthenticated(
+      user,
+      currentState.email,
+      currentState.password,
+    );
+  }
 /*  @override
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,

@@ -1,3 +1,4 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -9,7 +10,7 @@ const String IS_FIRST_OPEN_KEY = 'isFirstOpen';
 
 Future<bool> readIsFirstOpen() async {
   final mmkv = Hive.box('settings');
-  return !(await mmkv.get(IS_FIRST_OPEN_KEY,defaultValue: true));
+  return !(await mmkv.get(IS_FIRST_OPEN_KEY, defaultValue: true));
 }
 
 Future setIsFirstOpen(bool value) async {
@@ -73,4 +74,34 @@ Future<String> getPublicKey(Flavor flavor) async {
 
 Future<String> _loadKey(String path) async {
   return await rootBundle.loadString(path);
+}
+
+Future<POSUser> getAnonymousUser(PosClient pos) async {
+  final anonymous = await pos.getAnonymousPos();
+  return POSUser(
+    name: 'Anonymous',
+    surname: 'User',
+    email: '',
+    merchants: [
+      Merchant(
+        id: 'anonymousId',
+        posList: [
+          PointOfSale(
+            id: anonymous.posId,
+            name: 'Anonymous POS',
+            privateKey: anonymous.posPrivateKey,
+            latitude: 0.0,
+            longitude: 0.0,
+            isActive: true,
+          )
+        ],
+        fiscalCode: '',
+        city: '',
+        name: 'Anonymous Merchant',
+        zipCode: '',
+        country: '',
+        address: '',
+      )
+    ],
+  );
 }

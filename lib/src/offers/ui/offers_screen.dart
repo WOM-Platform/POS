@@ -8,6 +8,7 @@ import 'package:pos/custom_icons.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
+import 'package:pos/src/offers/ui/empty_offers.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
 import 'package:pos/src/services/pdf_creator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -91,8 +92,7 @@ class OffersScreen extends HookConsumerWidget {
                   child: offersAsync.when(
                     data: (list) {
                       if (list.isEmpty) {
-                        return Center(
-                            child: Text('Non ci sono offerte attive'));
+                        return EmptyOffers();
                       }
                       return ListView.builder(
                         padding: const EdgeInsets.all(16),

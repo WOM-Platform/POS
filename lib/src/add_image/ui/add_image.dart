@@ -30,12 +30,14 @@ class AddImageScreen extends HookConsumerWidget {
   final CropType cropType;
   final int minWidth;
   final int minHeight;
+  final double aspectRatio;
   final Future Function(Uint8List)? onSave;
 
   const AddImageScreen({
     Key? key,
     this.imageUrl,
     this.onSave,
+    this.aspectRatio =1.0,
     this.minWidth = 1024,
     this.minHeight = 1024,
     this.cropType = CropType.square,
@@ -140,7 +142,7 @@ class AddImageScreen extends HookConsumerWidget {
                       Positioned.fill(
                         child: Crop(
                           image: selectedImage,
-                          aspectRatio: 1.0,
+                          aspectRatio: aspectRatio,
                           // radius: cropType == CropType.circle ? 100 : 0,
                           controller: cropController,
                           onCropped: (image) {

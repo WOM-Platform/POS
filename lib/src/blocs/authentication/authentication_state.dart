@@ -13,12 +13,14 @@ class AuthenticationUninitialized extends AuthenticationState {
 
 class AuthenticationAuthenticated extends AuthenticationState {
   final POSUser user;
+  final String email;
+  final String password;
 
-  AuthenticationAuthenticated(this.user);
+  AuthenticationAuthenticated(this.user, this.email, this.password);
   @override
   String toString() => 'AuthenticationAuthenticated';
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [user, email, password];
 }
 
 class AuthenticationUnauthenticated extends AuthenticationState {

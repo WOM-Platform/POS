@@ -6,9 +6,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
+import 'package:pos/src/my_logger.dart';
 import '../../constants.dart';
 import '../../utils.dart';
 import 'load_stuff_button.dart';
+import 'login_screen.dart';
 import 'no_merchant_screen.dart';
 
 class LoginBox extends StatefulHookConsumerWidget {
@@ -129,8 +131,15 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
                 child: InkWell(
                   splashColor: Colors.green,
                   borderRadius: BorderRadius.circular(15),
-                  onTap: () {
-                    ref.read(loginProvider.notifier).anonymousLogin();
+                  onTap: () async {
+                    try {
+                      ref.read(loginLoadingProvider.notifier).state = true;
+                      await ref.read(loginProvider.notifier).anonymousLogin();
+                      ref.read(loginLoadingProvider.notifier).state = false;
+                    } catch (ex) {
+                      logger.e(ex);
+                      ref.read(loginLoadingProvider.notifier).state = false;
+                    }
                   },
                   child: const Center(
                     child: Text(
@@ -170,14 +179,23 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
     );
   }
 
-  _onLoginButtonPressed(String email, String password) {
+  _onLoginButtonPressed(String email, String password) async {
     print('_onLoginButtonPressed');
     if (password.length > 5) {
-      FocusScope.of(context).requestFocus(FocusNode());
-      ref.read(loginProvider.notifier).login(LoginButtonPressed(
-            username: email,
-            password: password,
-          ));
+      try {
+        FocusScope.of(context).requestFocus(FocusNode());
+        ref.read(loginLoadingProvider.notifier).state = true;
+        await ref.read(loginProvider.notifier).login(
+              LoginButtonPressed(
+                username: email,
+                password: password,
+              ),
+            );
+        ref.read(loginLoadingProvider.notifier).state = false;
+      } catch (ex) {
+        logger.e(ex);
+        ref.read(loginLoadingProvider.notifier).state = false;
+      }
     } else {
       FocusScope.of(context).requestFocus(_focusNode);
     }

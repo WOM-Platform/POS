@@ -12,70 +12,38 @@ import '../../utils.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
-final loginProvider = StateNotifierProvider.autoDispose<LoginBloc, LoginState>((ref) {
+final loginProvider =
+    StateNotifierProvider.autoDispose<LoginBloc, LoginState>((ref) {
   return LoginBloc(ref: ref);
 });
+
+const anonymousEmail = 'anonymous@email.com';
+const anonymousPassword = 'password';
 
 class LoginBloc extends StateNotifier<LoginState> {
   final Ref ref;
   POSUser? user;
 
-  // final usernameController = TextEditingController();
-  // final passwordController = TextEditingController();
-
   LoginBloc({
     required this.ref,
-  })  : super(LoginInitial()) {
-    ref.read(userRepositoryProvider).readEmail().then((value) {
-      // usernameController.text = value ?? '';
-    });
-  }
+  }) : super(LoginInitial());
 
-  anonymousLogin() async {
-    print('anonymousLogin');
-    // if (user == null) return;/**/
+  Future anonymousLogin() async {
     logger.i('anonimo');
-    final anonymous = await ref.read(getPosProvider).getAnonymousPos();
-    //final key = await getAnonymousPrivateKey();
-    user = POSUser(
-      name: 'Anonymous',
-      surname: 'User',
-      email: '-',
-      merchants: [
-        Merchant(
-          id: 'anonymousId',
-          posList: [
-            PointOfSale(
-              id: anonymous.posId,
-              name: 'Anonymous POS',
-              privateKey: anonymous.posPrivateKey,
-              latitude: 0.0,
-              longitude: 0.0,
-              isActive: true,
-            )
-          ],
-          fiscalCode: '',
-          city: '',
-          name: 'Anonymous Merchant',
-          zipCode: '',
-          country: '',
-          address: '',
-        )
-      ],
-    );
-    ref.read(authNotifierProvider.notifier)
-        .logIn(LoggedIn(user: user!, email: user!.email, password: 'password'));
+    user = await getAnonymousUser(ref.read(getPosProvider));
+    await ref.read(authNotifierProvider.notifier).logIn(LoggedIn(
+        user: user!, email: anonymousEmail, password: anonymousPassword));
     state = LoginSuccessfull();
   }
 
-  login(LoginButtonPressed event) async {
-    print('login');
+  Future login(LoginButtonPressed event) async {
+    logger.i('login');
     state = LoginLoading();
     try {
       user = await ref.read(userRepositoryProvider).authenticate(
-        username: event.username,
-        password: event.password,
-      );
+            username: event.username,
+            password: event.password,
+          );
 
       if (user == null) return;
 
@@ -89,7 +57,7 @@ class LoginBloc extends StateNotifier<LoginState> {
               0) {
         state = InsufficientPos();
       } else {
-        ref.read(authNotifierProvider.notifier).logIn(LoggedIn(
+        await ref.read(authNotifierProvider.notifier).logIn(LoggedIn(
             user: user!, email: event.username, password: event.password));
         state = LoginSuccessfull();
       }

@@ -9,6 +9,7 @@ import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/model/request_status_enum.dart';
 import 'package:pos/src/offers/application/offers.dart';
+import 'package:pos/src/offers/ui/empty_offers.dart';
 
 import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/home.dart';
@@ -97,19 +98,7 @@ class _HomeListState extends ConsumerState<HomeList> {
           },
           requestLoaded: (requests) {
             if (requests.isEmpty) {
-              return Center(
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      AppLocalizations.of(context)?.translate('no_request') ??
-                          '',
-                      style: const TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              );
+              return EmptyOffers();
             }
 
             return ListView.builder(
