@@ -127,34 +127,15 @@ class POSHandler extends ConsumerWidget {
                     radius: 10,
                     icon: Icons.edit,
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            child: EditTextDialog(
-                              title: 'Nome del tuo POS',
-                              initialText: pos.name,
-                              onSave: (title) async {
-                                final authState =
-                                    ref.read(authNotifierProvider);
-
-                                if (authState is! AuthenticationAuthenticated)
-                                  return;
-
-                                await ref.read(getPosProvider).updateTitle(
-                                      pos.id,
-                                      title,
-                                      null,
-                                      authState.email,
-                                      authState.password,
-                                    );
-                                ref
-                                    .read(authNotifierProvider.notifier)
-                                    .refresh();
-                              },
-                            ),
-                          );
-                        },
+                      edit(
+                        ref: ref,
+                        initialText: pos.name,
+                        title: 'Nome del tuo POS',
+                        maxLength: 28,
+                        minLength: 4,
+                        maxLines: 1,
+                        onSave: (title) =>
+                            updateFields(ref, title, pos.description, pos.url),
                       );
                     },
                   ),
@@ -200,34 +181,14 @@ class POSHandler extends ConsumerWidget {
                     radius: 10,
                     icon: Icons.edit,
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            child: EditTextDialog(
-                              title: 'Descrizione del tuo POS',
-                              initialText: pos.description,
-                              onSave: (description) async {
-                                final authState =
-                                    ref.read(authNotifierProvider);
-
-                                if (authState is! AuthenticationAuthenticated)
-                                  return;
-
-                                await ref.read(getPosProvider).updateTitle(
-                                      pos.id,
-                                      null,
-                                      description,
-                                      authState.email,
-                                      authState.password,
-                                    );
-                                ref
-                                    .read(authNotifierProvider.notifier)
-                                    .refresh();
-                              },
-                            ),
-                          );
-                        },
+                      edit(
+                        ref: ref,
+                        initialText: pos.description,
+                        title: 'Descrizione del tuo POS',
+                        maxLength: 4096,
+                        maxLines: 3,
+                        onSave: (description) =>
+                            updateFields(ref, pos.name, description, pos.url),
                       );
                     },
                   ),
@@ -235,6 +196,34 @@ class POSHandler extends ConsumerWidget {
               ),
               Text(
                 pos.description ?? '-',
+                style: TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Text(
+                    'Sito web',
+                    style: keyStyle,
+                  ),
+                  const SizedBox(width: 8),
+                  CircleButton(
+                    radius: 10,
+                    icon: Icons.edit,
+                    onTap: () {
+                      edit(
+                        ref: ref,
+                        initialText: pos.url,
+                        title: 'Modifica url',
+                        maxLines: 1,
+                        onSave: (url) =>
+                            updateFields(ref, pos.name, pos.description, url),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              Text(
+                pos.url ?? '-',
                 style: TextStyle(fontSize: 18),
               ),
             ],
@@ -262,9 +251,56 @@ class POSHandler extends ConsumerWidget {
               ),
             ),
           ),
-         const SizedBox(height: 24),
+        const SizedBox(height: 24),
       ],
     );
+  }
+
+  void edit({
+    required WidgetRef ref,
+    required String title,
+    String? initialText,
+    int? maxLines,
+    int? maxLength,
+    int? minLength,
+    Future Function(String)? onSave,
+  }) {
+    showDialog(
+      context: ref.context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: EditTextDialog(
+            title: 'Descrizione del tuo POS',
+            initialText: initialText,
+            onSave: onSave,
+            maxLines: maxLines ?? 1,
+            minLength: minLength,
+            maxLength: maxLength,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateFields(
+    WidgetRef ref,
+    String title,
+    String? description,
+    String? url,
+  ) async {
+    final authState = ref.read(authNotifierProvider);
+
+    if (authState is! AuthenticationAuthenticated) return;
+
+    final newPos =
+        pos.copyWith(name: title, description: description, url: url);
+    if (pos == newPos) return;
+    await ref.read(getPosProvider).updatePos(
+          newPos,
+          authState.email,
+          authState.password,
+        );
+    await ref.read(authNotifierProvider.notifier).refresh();
   }
 }
 
@@ -284,6 +320,7 @@ class CircleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: CircleAvatar(
         radius: radius,
         child: Icon(
@@ -298,18 +335,28 @@ class CircleButton extends StatelessWidget {
 class EditTextDialog extends HookConsumerWidget {
   final String? initialText;
   final String title;
+  final int maxLines;
+  final int? maxLength;
+  final int? minLength;
   final Future Function(String)? onSave;
 
-  const EditTextDialog(
-      {Key? key, this.initialText, this.onSave, required this.title})
-      : super(key: key);
+  const EditTextDialog({
+    Key? key,
+    this.initialText,
+    this.onSave,
+    this.maxLength,
+    this.minLength,
+    this.maxLines = 1,
+    required this.title,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tc = useTextEditingController(text: initialText);
     final isLoading = useState<bool>(false);
+    final errorText = useState<String?>(null);
     return Container(
-      constraints: BoxConstraints(maxHeight: 200),
+      constraints: BoxConstraints(maxHeight: 180.0 + (maxLines * 24.0)),
       child: LoadingOverlay(
         isLoading: isLoading.value,
         child: Padding(
@@ -326,21 +373,36 @@ class EditTextDialog extends HookConsumerWidget {
               const SizedBox(height: 16),
               TextField(
                 controller: tc,
-                decoration: InputDecoration(border: OutlineInputBorder()),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () async {
-                  try {
-                    isLoading.value = true;
-                    await onSave?.call(tc.text.trim());
-                    isLoading.value = false;
-                    Navigator.of(context).pop();
-                  } catch (ex) {
-                    logger.e(ex);
-                    isLoading.value = false;
+                maxLines: maxLines,
+                maxLength: maxLength,
+                onChanged: (v) {
+                  if (v.length < (minLength ?? 0)) {
+                    errorText.value =
+                        'Il campo deve essere di almeno $minLength caratteri';
+                  } else {
+                    errorText.value = null;
                   }
                 },
+                decoration: InputDecoration(
+                  errorText: errorText.value,
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: errorText.value == null
+                    ? () async {
+                        try {
+                          isLoading.value = true;
+                          await onSave?.call(tc.text.trim());
+                          isLoading.value = false;
+                          Navigator.of(context).pop();
+                        } catch (ex) {
+                          logger.e(ex);
+                          isLoading.value = false;
+                        }
+                      }
+                    : null,
                 child: Text('Aggiorna'),
               )
             ],
