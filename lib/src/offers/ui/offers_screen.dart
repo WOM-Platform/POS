@@ -10,9 +10,13 @@ import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/ui/empty_offers.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
+import 'package:pos/src/screens/request_datails/request_datails.dart';
+import 'package:pos/src/services/aim_repository.dart';
 import 'package:pos/src/services/pdf_creator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
+
+import '../../db/app_database/app_database.dart';
 
 final offersTabProvider = StateProvider<int>((ref) {
   return 0;
@@ -98,16 +102,32 @@ class OffersScreen extends HookConsumerWidget {
                         padding: const EdgeInsets.all(16),
                         itemCount: list.length,
                         itemBuilder: (c, index) {
-                          return OfferTile(
-                            offer: list[index],
-                            onDelete: () async {
-                              if (selectedPosId == null) return;
-                              await ref
-                                  .read(
-                                      cloudOffersNotifierProvider(selectedPosId)
-                                          .notifier)
-                                  .deleteOffer(list[index].id);
+                          final offer = list[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) => RequestDetails(
+                                    id: '',
+                                    cost: offer.cost,
+                                    password: offer.payment.password,
+                                    link: offer.payment.link,
+                                    name: offer.title,
+                                  ),
+                                ),
+                              );
                             },
+                            child: OfferTile(
+                              offer: offer,
+                              onDelete: () async {
+                                if (selectedPosId == null) return;
+                                await ref
+                                    .read(cloudOffersNotifierProvider(
+                                            selectedPosId)
+                                        .notifier)
+                                    .deleteOffer(list[index].id);
+                              },
+                            ),
                           );
                         },
                       );
@@ -146,104 +166,140 @@ class OfferTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Slidable(
-      startActionPane: ActionPane(
-        extentRatio: 0.5,
-        motion: const BehindMotion(),
-        children: [
-          // if (requests[index].status ==
-          //     RequestStatus.COMPLETE) ...[
-          MySlidableAction(
-            icon: Icons.share,
-            onTap: () {
-              // Share.share('${offer.deepLink}');
-            },
-            color: Colors.green,
-          ),
-          // if (requests[index].persistent)
-          MySlidableAction(
-            icon: Icons.picture_as_pdf,
-            onTap: () async {
-              final pos = ref.read(selectedPosProvider)?.pos;
-              if (pos == null) return;
-              final pdfCreator = PdfCreator();
-              // final file = await pdfCreator.buildPdf(
-              //     offer,
-              //     pos,
-              //     AppLocalizations.of(context)?.locale.languageCode ??
-              //         'en');
-              // Share.shareFiles([file.path]);
-            },
-            color: Colors.pink,
-          ),
-          // ],
-          // if (requests[index].status != RequestStatus.COMPLETE)
-          //   MySlidableAction(
-          //     icon: Icons.edit,
-          //     onTap: () {
-          //     },
-          //     color: Colors.orange,
-          //   ),
-        ],
-      ),
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        extentRatio: 0.25,
-        children: [
-          MySlidableAction(
-            icon: Icons.delete,
-            onTap: onDelete,
-            color: Colors.red,
-          ),
-        ],
-      ),
-      child: Card(
-        margin: const EdgeInsets.only(top: 8),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      offer.title,
-                      maxLines: 2,
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Slidable(
+        startActionPane: ActionPane(
+          extentRatio: 0.5,
+          motion: const BehindMotion(),
+          children: [
+            MySlidableAction(
+              icon: Icons.share,
+              onTap: () {
+                Share.share(offer.payment.link);
+              },
+              color: Colors.green,
+            ),
+            MySlidableAction(
+              icon: Icons.picture_as_pdf,
+              onTap: () async {
+                final pos = ref.read(selectedPosProvider)?.pos;
+                if (pos == null) return;
+                final aims = await ref
+                    .watch(aimRepositoryProvider)
+                    .getFlatAimList(database: AppDatabase.get().getDb());
+                final pdfCreator = PdfCreator();
+                final file = await pdfCreator.buildPersistentPdf(
+                  offer,
+                  pos,
+                  AppLocalizations.of(context)?.locale.languageCode ?? 'en',
+                  aims ?? [],
+                );
+                Share.shareFiles([file.path]);
+              },
+              color: Colors.pink,
+            ),
+          ],
+        ),
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 0.25,
+          children: [
+            MySlidableAction(
+              icon: Icons.delete,
+              onTap: onDelete,
+              color: Colors.red,
+            ),
+          ],
+        ),
+        child: Card(
+          // margin: const EdgeInsets.only(top: 8),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              textBaseline: TextBaseline.alphabetic,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        offer.title,
+                        maxLines: 2,
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w600),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    dateFormat.format(offer.createdOn),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-              if (offer.description != null)
-                Text(
-                  offer.description!,
-                  style: TextStyle(),
+                    const SizedBox(width: 18),
+                    Text(
+                      dateFormat.format(offer.createdOn),
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
-              Row(
-                children: [
-                  Spacer(),
-                  Text(
-                    offer.cost.toString(),
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
+                if (offer.description != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      offer.description!,
+                      style: TextStyle(),
                     ),
                   ),
-                  Icon(
-                    CustomIcons.wom_logo,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ],
+                Row(
+                  children: [
+                    Spacer(),
+                    Text(
+                      offer.cost.toString(),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    Icon(
+                      CustomIcons.wom_logo,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MySlidableAction extends StatelessWidget {
+  final Color? color;
+  final Function()? onTap;
+  final IconData icon;
+
+  const MySlidableAction({Key? key, this.color, this.onTap, required this.icon})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      fit: FlexFit.tight,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Card(
+          clipBehavior: Clip.antiAlias,
+          child: Container(
+            // margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
+            decoration: BoxDecoration(
+              color: color,
+              // borderRadius: BorderRadius.circular(16),
+            ),
+            child: Center(
+              child: Icon(
+                icon,
+                color: Colors.white,
               ),
-            ],
+            ),
           ),
         ),
       ),

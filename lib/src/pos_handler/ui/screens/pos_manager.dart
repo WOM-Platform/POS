@@ -1,11 +1,10 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/add_image/ui/add_image.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,7 +12,6 @@ import 'package:pos/src/blocs/authentication/authentication_state.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/services/user_repository.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class POSManagerScreen extends HookConsumerWidget {
   final int size;
@@ -29,7 +27,8 @@ class POSManagerScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
-        title: Text('Organizza i tuoi POS'),
+        title:
+            Text(AppLocalizations.of(context)?.translate('handlePos') ?? '-'),
         bottom: TabBar(
           isScrollable: true,
           controller: tabController,
@@ -119,7 +118,9 @@ class POSHandler extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    'Nome',
+                    AppLocalizations.of(context)
+                        ?.translate('name') ??
+                        '-',
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
@@ -130,7 +131,9 @@ class POSHandler extends ConsumerWidget {
                       edit(
                         ref: ref,
                         initialText: pos.name,
-                        title: 'Nome del tuo POS',
+                        title: AppLocalizations.of(context)
+                            ?.translate('posName') ??
+                            '-',
                         maxLength: 28,
                         minLength: 4,
                         maxLines: 1,
@@ -160,7 +163,12 @@ class POSHandler extends ConsumerWidget {
                     padding:
                         const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     child: Text(
-                      pos.isActive ? 'ATTIVO' : 'INATTIVO',
+                      pos.isActive
+                          ? AppLocalizations.of(context)?.translate('active') ??
+                              '-'
+                          : AppLocalizations.of(context)
+                                  ?.translate('inactive') ??
+                              '-',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -173,7 +181,8 @@ class POSHandler extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    'Descrizione',
+                    AppLocalizations.of(context)?.translate('description') ??
+                        '-',
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
@@ -184,7 +193,9 @@ class POSHandler extends ConsumerWidget {
                       edit(
                         ref: ref,
                         initialText: pos.description,
-                        title: 'Descrizione del tuo POS',
+                        title: AppLocalizations.of(context)
+                                ?.translate('posDescription') ??
+                            '-',
                         maxLength: 4096,
                         maxLines: 3,
                         onSave: (description) =>
@@ -202,7 +213,7 @@ class POSHandler extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    'Sito web',
+                    AppLocalizations.of(context)?.translate('website') ?? '-',
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
@@ -213,7 +224,9 @@ class POSHandler extends ConsumerWidget {
                       edit(
                         ref: ref,
                         initialText: pos.url,
-                        title: 'Modifica url',
+                        title: AppLocalizations.of(context)
+                                ?.translate('edit_url') ??
+                            '-',
                         maxLines: 1,
                         onSave: (url) =>
                             updateFields(ref, pos.name, pos.description, url),
@@ -270,7 +283,7 @@ class POSHandler extends ConsumerWidget {
       builder: (BuildContext context) {
         return Dialog(
           child: EditTextDialog(
-            title: 'Descrizione del tuo POS',
+            title: title,
             initialText: initialText,
             onSave: onSave,
             maxLines: maxLines ?? 1,
@@ -378,7 +391,7 @@ class EditTextDialog extends HookConsumerWidget {
                 onChanged: (v) {
                   if (v.length < (minLength ?? 0)) {
                     errorText.value =
-                        'Il campo deve essere di almeno $minLength caratteri';
+                        '${AppLocalizations.of(context)?.translate('minLengthWarn2') ?? '-'} $minLength';
                   } else {
                     errorText.value = null;
                   }
@@ -403,7 +416,9 @@ class EditTextDialog extends HookConsumerWidget {
                         }
                       }
                     : null,
-                child: Text('Aggiorna'),
+                child: Text(
+                  AppLocalizations.of(context)?.translate('update') ?? '-',
+                ),
               )
             ],
           ),

@@ -1,79 +1,26 @@
 import 'dart:async';
 import 'package:another_stepper/another_stepper.dart';
-import 'package:another_stepper/widgets/another_stepper.dart';
-import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
-import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/common_card.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/filter_fields.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/summary.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/type_selector.dart';
-import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class NewOfferScreen extends HookConsumerWidget {
   NewOfferScreen({Key? key}) : super(key: key);
 
-  final stepperList = [
-    StepperData(
-      title: StepperText(
-        "Tipo",
-        // textStyle: const TextStyle(
-        //   color: Colors.grey,
-        // ),
-      ),
-      // iconWidget: Container(
-      //   padding: const EdgeInsets.all(8),
-      //   decoration: const BoxDecoration(
-      //       color: Colors.green,
-      //       borderRadius: BorderRadius.all(Radius.circular(30))),
-      //   child: const Icon(Icons.looks_one, color: Colors.white),
-      // ),
-    ),
-    StepperData(
-      title: StepperText("Info"),
-      // iconWidget: Container(
-      //   padding: const EdgeInsets.all(8),
-      //   decoration: const BoxDecoration(
-      //       color: Colors.green,
-      //       borderRadius: BorderRadius.all(Radius.circular(30))),
-      //   child: const Icon(Icons.looks_two, color: Colors.white),
-      // ),
-    ),
-    StepperData(
-      title: StepperText("Filtri"),
-      // iconWidget: Container(
-      //   padding: const EdgeInsets.all(8),
-      //   decoration: const BoxDecoration(
-      //       color: Colors.green,
-      //       borderRadius: BorderRadius.all(Radius.circular(30))),
-      //   child: const Icon(Icons.looks_3, color: Colors.white),
-      // ),
-    ),
-    StepperData(
-      title: StepperText(
-        "Sommario",
-        // textStyle: const TextStyle(
-        //   color: Colors.grey,
-        // ),
-      ),
-    ),
-  ];
-
   showError(BuildContext context, {String? desc}) {
     Alert(
       context: context,
-      title: 'Si è verificato un errore',
+      title: AppLocalizations.of(context)?.translate("somethings_wrong") ?? '-',
       desc: desc,
       buttons: [],
     ).show();
@@ -98,7 +45,8 @@ class NewOfferScreen extends HookConsumerWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            title: Text('Nuova offerta'),
+            title: Text(
+                AppLocalizations.of(context)?.translate('new_offer') ?? '-'),
             // bottom: PreferredSize(
             //   preferredSize: Size.fromHeight(100),
             //   child: AnotherStepper(
@@ -180,20 +128,45 @@ class NewOfferScreen extends HookConsumerWidget {
                   activeBarColor: Colors.blue,
                   // inActiveBarColor: Colors.white,
                   activeIndex: activeStep,
-                  stepperList: stepperList,
+                  stepperList: [
+                    StepperData(
+                      title: StepperText(
+                        AppLocalizations.of(context)?.translate("type") ?? '-',
+                      ),
+                    ),
+                    StepperData(
+                      title: StepperText(
+                          AppLocalizations.of(context)?.translate("info") ??
+                              '-'),
+                    ),
+                    StepperData(
+                      title: StepperText(
+                          AppLocalizations.of(context)?.translate("filters") ??
+                              '-'),
+                    ),
+                    StepperData(
+                      title: StepperText(
+                        AppLocalizations.of(context)
+                                ?.translate("summary") ??
+                            '-',
+                      ),
+                    ),
+                  ],
                   stepperDirection: Axis.horizontal,
                   iconWidth: 40,
                   iconHeight: 40,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  headerText(activeStep),
-                  style: TextStyle(fontSize: 30),
                 ),
                 const SizedBox(height: 8),
                 Expanded(
                   child: ListView(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          headerText(context, activeStep),
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
                       if (activeStep == 0)
                         SelectOfferType()
                       else if (activeStep == 1)
@@ -217,7 +190,8 @@ class NewOfferScreen extends HookConsumerWidget {
                     onPressed: () {
                       ref.read(createOfferNotifierProvider.notifier).backStep();
                     },
-                    child: Text('Indietro'),
+                    child: Text(
+                        AppLocalizations.of(context)?.translate('back') ?? '-'),
                   ),
                 Spacer(),
                 FloatingActionButton(
@@ -227,10 +201,14 @@ class NewOfferScreen extends HookConsumerWidget {
                     if (activeStep == 3) {
                       Alert(
                           context: context,
-                          title: 'Vuoi creare l\'offerta?',
+                          title: AppLocalizations.of(context)
+                                  ?.translate('do_you_want_create') ??
+                              '-',
                           buttons: [
                             DialogButton(
-                              child: Text('Sì'),
+                              child: Text(AppLocalizations.of(context)
+                                      ?.translate('yes') ??
+                                  '-'),
                               onPressed: () async {
                                 try {
                                   Navigator.of(context).pop();
@@ -300,22 +278,18 @@ class NewOfferScreen extends HookConsumerWidget {
     );
   }
 
-  String headerText(int activeStep) {
+  String headerText(BuildContext context, int activeStep) {
     switch (activeStep) {
       case 0:
-        return 'Tipo di offerta';
-
+        return AppLocalizations.of(context)?.translate('offer_type') ?? '-';
       case 1:
-        return 'Informazioni necessarie';
-
+        return AppLocalizations.of(context)?.translate('mandatory_info') ?? '-';
       case 2:
-        return 'Filtri';
-
+        return AppLocalizations.of(context)?.translate('filters') ?? '-';
       case 3:
-        return 'Resoconto';
-
+        return AppLocalizations.of(context)?.translate('summary') ?? '-';
       default:
-        return 'Offerta';
+        return AppLocalizations.of(context)?.translate('offer') ?? '-';
     }
   }
 }
@@ -336,8 +310,10 @@ class MandatoryInfo extends HookConsumerWidget {
       child: Column(
         children: [
           CreateOfferCard(
-            title: 'Titolo',
-            description: 'Il titolo dell\'offerta è importante...',
+            title: AppLocalizations.of(context)?.translate('title') ?? '-',
+            description:
+                AppLocalizations.of(context)?.translate('titleOfferDesc') ??
+                    '-',
             mandatory: true,
             child: TextFormField(
               focusNode: titleFocus,
@@ -347,23 +323,28 @@ class MandatoryInfo extends HookConsumerWidget {
               },
               onChanged: (value) {
                 if (value.trim().length < 6) {
-                  errorTitleText.value =
-                      'Il titolo deve essere di almeno 6 caratteri';
+                  errorTitleText.value = AppLocalizations.of(context)
+                          ?.translate('titleMinLengthWarning') ??
+                      '-';
                 } else {
                   errorTitleText.value = null;
                 }
               },
               controller: ref.watch(titleControllerProvider),
               decoration: InputDecoration(
-                hintText: 'Scrivi qui',
+                hintText:
+                    AppLocalizations.of(context)?.translate('write_here') ??
+                        '-',
                 errorText: errorTitleText.value,
               ),
             ),
           ),
           CreateOfferCard(
-            title: 'Descrizione',
-            description:
-                'Una descrizione può aiutare l utente a comprendere come....',
+            title:
+                AppLocalizations.of(context)?.translate('description') ?? '-',
+            description: AppLocalizations.of(context)
+                    ?.translate('descriptionOfferDesc') ??
+                '-',
             child: TextFormField(
               focusNode: descFocus,
               textInputAction: TextInputAction.next,
@@ -371,12 +352,16 @@ class MandatoryInfo extends HookConsumerWidget {
                 womFocus.requestFocus();
               },
               controller: ref.watch(descControllerProvider),
-              decoration: InputDecoration(hintText: 'Scrivi qui'),
+              decoration: InputDecoration(
+                  hintText:
+                      AppLocalizations.of(context)?.translate('write_here') ??
+                          '-'),
             ),
           ),
           CreateOfferCard(
-            title: 'Numero di WOM',
-            description: 'Il numero di WOM necessari per aderire all offerta',
+            title: AppLocalizations.of(context)?.translate('wom_number') ?? '-',
+            description:
+                AppLocalizations.of(context)?.translate('womNumberDesc') ?? '-',
             mandatory: true,
             child: TextFormField(
               focusNode: womFocus,
@@ -388,13 +373,17 @@ class MandatoryInfo extends HookConsumerWidget {
               ],
               onChanged: (value) {
                 if (int.parse(value) == 0) {
-                  errorWomText.value = 'Non puoi generare 0 wom';
+                  errorWomText.value = AppLocalizations.of(context)
+                          ?.translate('noZeroWomWarning') ??
+                      '-';
                 } else {
                   errorWomText.value = null;
                 }
               },
               decoration: InputDecoration(
-                hintText: 'Digita il numero di wom',
+                hintText:
+                    AppLocalizations.of(context)?.translate('writeWomNumber') ??
+                        '-',
                 errorText: errorWomText.value,
               ),
             ),

@@ -18,7 +18,6 @@ class SettingsScreen extends ConsumerWidget {
     final posUser = ref.watch(posUserProvider);
     final posCount = posUser?.merchants.fold<int>(
         0, (previousValue, element) => previousValue + element.posList.length);
-    // final selectedPos = ref.watch(selectedPosProvider);
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -47,8 +46,9 @@ class SettingsScreen extends ConsumerWidget {
             ),
             ListTile(
               leading: Icon(Icons.manage_accounts),
-              title: Text('Hai ${posCount ?? '-'} POS'),
-              subtitle: Text('Organizza e modifica i tuoi POS'),
+              title:
+                  Text(AppLocalizations.of(context)?.translate('handlePos') ?? '-'),
+              subtitle: Text(AppLocalizations.of(context)?.translate('handlePosDesc') ?? '-'),
               onTap: () {
                 if (posCount == null) return;
                 Navigator.of(context).push(

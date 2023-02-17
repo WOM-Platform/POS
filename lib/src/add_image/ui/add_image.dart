@@ -8,6 +8,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/my_logger.dart';
 
 final selectedImageProvider = StateProvider.autoDispose<Uint8List?>((ref) {
@@ -37,7 +38,7 @@ class AddImageScreen extends HookConsumerWidget {
     Key? key,
     this.imageUrl,
     this.onSave,
-    this.aspectRatio =1.0,
+    this.aspectRatio = 1.0,
     this.minWidth = 1024,
     this.minHeight = 1024,
     this.cropType = CropType.square,
@@ -72,8 +73,11 @@ class AddImageScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(imageUrl != null ? 'Modifica immagine' : 'Aggiungi immagine'),
+        title: Text(
+          imageUrl != null
+              ? AppLocalizations.of(context)?.translate('edit_image') ?? '-'
+              : AppLocalizations.of(context)?.translate('add_image') ?? '-',
+        ),
       ),
       body: LoadingOverlay(
         isLoading: isProcessing.value,
@@ -90,7 +94,9 @@ class AddImageScreen extends HookConsumerWidget {
                           onPressed: () async {
                             await pickImage(ref, isProcessing);
                           },
-                          child: Text('Modifica'),
+                          child: Text(
+                              AppLocalizations.of(context)?.translate('edit') ??
+                                  '-'),
                         ),
                       ),
                     ],
@@ -100,7 +106,9 @@ class AddImageScreen extends HookConsumerWidget {
                       onPressed: () async {
                         await pickImage(ref, isProcessing);
                       },
-                      child: Text('Seleziona immagine'),
+                      child: Text(AppLocalizations.of(context)
+                              ?.translate('select_image') ??
+                          '-'),
                     ),
                   )
             : croppedData != null
@@ -132,7 +140,9 @@ class AddImageScreen extends HookConsumerWidget {
                               isProcessing.value = false;
                             }
                           },
-                          child: Text('Salva'),
+                          child: Text(
+                              AppLocalizations.of(context)?.translate('crop') ??
+                                  '-'),
                         ),
                       ),
                     ],
@@ -163,7 +173,9 @@ class AddImageScreen extends HookConsumerWidget {
                             //   cropController.cropCircle();
                             // }
                           },
-                          child: Text('Crop'),
+                          child: Text(
+                              AppLocalizations.of(context)?.translate('crop') ??
+                                  '-'),
                         ),
                       ),
                     ],

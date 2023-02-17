@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/styles.dart';
@@ -29,11 +30,11 @@ class SelectOfferType extends ConsumerWidget {
                       .setOfferType(OfferType.persistent);
                 },
                 title: Text(
-                  'Offerta persistente',
+                  AppLocalizations.of(context)?.translate('persistent_offer') ?? '-',
                   style: titleStyle,
                 ),
                 subtitle: Text(
-                  'Questo tipo di offerta è...',
+                  AppLocalizations.of(context)?.translate('persistent_offer_desc') ?? '-',
                   style: descStyle,
                 ),
                 leading: IgnorePointer(
@@ -53,11 +54,11 @@ class SelectOfferType extends ConsumerWidget {
                     .setOfferType(OfferType.ephemeral);
               },
               title: Text(
-                'Offerta effimera',
+                AppLocalizations.of(context)?.translate('ephemeral_offer') ?? '-',
                 style: titleStyle,
               ),
               subtitle: Text(
-                'Questo tipo di offerta è...',
+                AppLocalizations.of(context)?.translate('ephemeral_offer_desc') ?? '-',
                 style: descStyle,
               ),
               leading: IgnorePointer(

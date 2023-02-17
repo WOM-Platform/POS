@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pos/localization/app_localizations.dart';
+import 'package:pos/src/extensions.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
+import 'package:pos/src/offers/domain/entities/offert_type.dart';
 
 class Summary extends ConsumerWidget {
   const Summary({Key? key}) : super(key: key);
@@ -13,22 +16,22 @@ class Summary extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         InfoText(
-          text: 'Tipo di offerta',
-          value: state.type.toString(),
+          text: AppLocalizations.of(context)?.translate('offer_type') ?? '-',
+          value: state.type?.translate(context),
         ),
         const SizedBox(height: 16),
         InfoText(
-          text: 'Titolo',
+          text: AppLocalizations.of(context)?.translate('title') ?? '-',
           value: state.title,
         ),
         const SizedBox(height: 16),
         InfoText(
-          text: 'Descrizione',
-          value: state.description,
+          text: AppLocalizations.of(context)?.translate('description') ?? '-',
+          value: state.description.isEmptyOrNull() ? null : state.description,
         ),
         const SizedBox(height: 16),
         InfoText(
-          text: 'WOM',
+          text: AppLocalizations.of(context)?.translate('wom_number') ?? '-',
           value: state.wom?.toString(),
         ),
         const SizedBox(height: 16),
@@ -38,10 +41,12 @@ class Summary extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         InfoText(
-          text: 'Bounding box',
-          value: state.mapPolygon != null ? 'Configurato' : '-',
+          text: AppLocalizations.of(context)?.translate('bounding_box') ?? '-',
+          value: state.mapPolygon != null
+              ? AppLocalizations.of(context)?.translate('offer_type') ?? '-'
+              : '-',
         ),
-     /*   if (state.mapPolygon != null)
+        /*   if (state.mapPolygon != null)
           AspectRatio(
             aspectRatio: 1,
             child: GoogleMap(
@@ -63,7 +68,7 @@ class Summary extends ConsumerWidget {
           ),*/
         const SizedBox(height: 16),
         InfoText(
-          text: 'Filtro età',
+          text: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
           value: state.maxAge?.toString(),
         ),
       ],

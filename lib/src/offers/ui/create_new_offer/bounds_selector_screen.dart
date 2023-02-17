@@ -166,7 +166,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'Definisci l\'area del tuo bounding box tramite lo slider. Puoi cambiare il punto di ancoraggio del bounding box cliccando sulla mappa',
+                AppLocalizations.of(context)?.translate('bounding_box_help') ?? '-',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,

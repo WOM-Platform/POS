@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
 
@@ -9,7 +10,6 @@ class PosSelectorWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final merchants = ref.watch(merchantsProvider);
-    // final merchants = [...m,...m,...m,...m];
     final selectedPos = ref.watch(selectedPosProvider);
 
     return SafeArea(
@@ -21,7 +21,8 @@ class PosSelectorWidget extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Seleziona il POS da gestire',
+                AppLocalizations.of(context)?.translate('selectPosToHandle') ??
+                    '-',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -45,7 +46,9 @@ class PosSelectorWidget extends ConsumerWidget {
                         if (merchants[i].posList.isEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
-                            child: Text('Non ci sono POS per questo Merchant'),
+                            child: Text(AppLocalizations.of(context)
+                                    ?.translate('noPosForThisMerchant') ??
+                                '-'),
                           ),
                         for (int index = 0;
                             index < merchants[i].posList.length;
@@ -56,9 +59,7 @@ class PosSelectorWidget extends ConsumerWidget {
                                   (states) => Colors.green),
                               groupValue: selectedPos?.pos?.id,
                               onChanged: (posId) {
-                                ref
-                                        .read(selectedPosProvider.notifier)
-                                        .state =
+                                ref.read(selectedPosProvider.notifier).state =
                                     SelectedPos(merchants[i],
                                         merchants[i].posList[index]);
                                 Navigator.of(context).pop();
@@ -77,9 +78,7 @@ class PosSelectorWidget extends ConsumerWidget {
                             //         : const Icon(Icons.arrow_right),
                             title: Text(merchants[i].posList[index].name),
                             onTap: () {
-                              ref
-                                      .read(selectedPosProvider.notifier)
-                                      .state =
+                              ref.read(selectedPosProvider.notifier).state =
                                   SelectedPos(merchants[i],
                                       merchants[i].posList[index]);
                               Navigator.of(context).pop();

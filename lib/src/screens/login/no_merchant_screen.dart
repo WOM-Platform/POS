@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NoMerchantScreen extends StatelessWidget {
@@ -15,20 +16,20 @@ class NoMerchantScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.asset('assets/logo_wom.png',fit: BoxFit.fitWidth,),
+                child: Image.asset(
+                  'assets/logo_wom.png',
+                  fit: BoxFit.fitWidth,
+                ),
               ),
               const SizedBox(height: 16),
               Text(
-                'Il login è andato a buon fine ma non hai merchant collegati al tuo account!',
+                AppLocalizations.of(context)?.translate('noMerchant') ?? '-',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-              Text('Crea il tuo merchant su ',
-                  style: TextStyle(
-
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600),
+              Text(AppLocalizations.of(context)?.translate('createYourMerchant') ?? '-',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center),
               const SizedBox(height: 8),
               GestureDetector(
@@ -45,18 +46,15 @@ class NoMerchantScreen extends StatelessWidget {
                     textAlign: TextAlign.center),
               ),
               const SizedBox(height: 16),
-              Text(' torna qui ed effettua di nuovo il login',
-                  style: TextStyle(
-
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600),
+              Text(AppLocalizations.of(context)?.translate('backHereAndLogin') ?? '-',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center),
               const Spacer(),
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Torna al login')),
+                  child: Text(AppLocalizations.of(context)?.translate('backToLogin') ?? '-')),
             ],
           ),
         ),

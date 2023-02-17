@@ -131,8 +131,7 @@ class _HomeListState extends ConsumerState<HomeList> {
                             MySlidableAction(
                               icon: Icons.picture_as_pdf,
                               onTap: () async {
-                                final pos =
-                                    ref.read(selectedPosProvider)?.pos;
+                                final pos = ref.read(selectedPosProvider)?.pos;
                                 if (pos == null) return;
                                 final pdfCreator = PdfCreator();
                                 final file = await pdfCreator.buildPdf(
@@ -212,8 +211,8 @@ class _HomeListState extends ConsumerState<HomeList> {
   goToDetails(PaymentRequest request) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => RequestDetails(
-          paymentRequest: request,
+        builder: (ctx) => RequestDetails.fromPaymentRequest(
+          request,
         ),
       ),
     );
@@ -249,7 +248,7 @@ class _HomeListState extends ConsumerState<HomeList> {
       overrides: [
         createPaymentNotifierProvider.overrideWith((ref) =>
             CreatePaymentRequestBloc(
-              ref:ref,
+                ref: ref,
                 posId: id,
                 draftRequest: request,
                 languageCode:

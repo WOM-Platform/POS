@@ -71,15 +71,15 @@ class SelectAim extends ConsumerWidget {
     }
     return CreateOfferCard(
       title: 'AIM',
-      description: 'Accetta WOM di un determinato dipo di AIM',
+      description: AppLocalizations.of(context)?.translate('aimDesc') ?? '',
       extra: state.aimCode != null
           ? TextButton(
-        onPressed: () {
-          ref.read(aimSelectionNotifierProvider.notifier).resetAim();
-          ref.read(createOfferNotifierProvider.notifier).resetAim();
-        },
-        child: Text('Reset'),
-      )
+              onPressed: () {
+                ref.read(aimSelectionNotifierProvider.notifier).resetAim();
+                ref.read(createOfferNotifierProvider.notifier).resetAim();
+              },
+              child: Text('Reset'),
+            )
           : null,
       child: Column(
         children: [
@@ -172,7 +172,9 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
       }
     });
     return CreateOfferCard(
-      title: 'Bounding box',
+      title: AppLocalizations.of(context)?.translate('bounding_box') ?? '-',
+      description:
+          AppLocalizations.of(context)?.translate('bounding_box_desc') ?? '-',
       extra: mapPolygon != null
           ? TextButton(
               onPressed: () {
@@ -181,7 +183,6 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
               child: Text('Reset'),
             )
           : null,
-      description: 'descrizione del bounding box',
       child: AspectRatio(
         aspectRatio: 1,
         child: GoogleMap(
@@ -215,25 +216,28 @@ class SelectMaxAge extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final maxAge = ref
-        .watch(createOfferNotifierProvider.select((value) => value.maxAge));
+    final maxAge =
+        ref.watch(createOfferNotifierProvider.select((value) => value.maxAge));
     return CreateOfferCard(
-      title: 'Età dei wom',
-      description: 'Descrizione...',
+      title: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
+      description:
+          AppLocalizations.of(context)?.translate('wom_age_desc') ?? '-',
       extra: maxAge != null
           ? TextButton(
-        onPressed: () {
-          ref.read(createOfferNotifierProvider.notifier).resetMaxAge();
-        },
-        child: Text('Reset'),
-      )
+              onPressed: () {
+                ref.read(createOfferNotifierProvider.notifier).resetMaxAge();
+              },
+              child: Text('Reset'),
+            )
           : null,
       child: TextFormField(
         textInputAction: TextInputAction.done,
         controller: ref.watch(maxAgeControllerProvider),
         keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-        decoration: InputDecoration(hintText: 'Digita...'),
+        decoration: InputDecoration(
+            hintText:
+                AppLocalizations.of(context)?.translate('write_here') ?? '-'),
       ),
     );
   }
