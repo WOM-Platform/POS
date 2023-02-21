@@ -20,32 +20,36 @@ class SelectOfferType extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (!isAnonymous)
-            Card(
-              child: ListTile(
-                onTap: () {
-                  ref
-                      .read(createOfferNotifierProvider.notifier)
-                      .setOfferType(OfferType.persistent);
-                },
-                title: Text(
-                  AppLocalizations.of(context)?.translate('persistent_offer') ?? '-',
-                  style: titleStyle,
-                ),
-                subtitle: Text(
-                  AppLocalizations.of(context)?.translate('persistent_offer_desc') ?? '-',
-                  style: descStyle,
-                ),
-                leading: IgnorePointer(
-                  child: Radio<OfferType>(
-                    value: OfferType.persistent,
-                    groupValue: type,
-                    onChanged: (value) {},
-                  ),
+          Card(
+            child: ListTile(
+              enabled: !isAnonymous,
+              onTap: () {
+                ref
+                    .read(createOfferNotifierProvider.notifier)
+                    .setOfferType(OfferType.persistent);
+              },
+              title: Text(
+                AppLocalizations.of(context)?.translate('persistent_offer') ??
+                    '-',
+                style: titleStyle,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(context)
+                        ?.translate('persistent_offer_desc') ??
+                    '-',
+                style: descStyle,
+              ),
+              leading: IgnorePointer(
+                child: Radio<OfferType>(
+                  value: OfferType.persistent,
+                  groupValue: type,
+                  onChanged: isAnonymous ? null : (value) {},
                 ),
               ),
             ),
+          ),
           Card(
             child: ListTile(
               onTap: () {
@@ -54,11 +58,14 @@ class SelectOfferType extends ConsumerWidget {
                     .setOfferType(OfferType.ephemeral);
               },
               title: Text(
-                AppLocalizations.of(context)?.translate('ephemeral_offer') ?? '-',
+                AppLocalizations.of(context)?.translate('ephemeral_offer') ??
+                    '-',
                 style: titleStyle,
               ),
               subtitle: Text(
-                AppLocalizations.of(context)?.translate('ephemeral_offer_desc') ?? '-',
+                AppLocalizations.of(context)
+                        ?.translate('ephemeral_offer_desc') ??
+                    '-',
                 style: descStyle,
               ),
               leading: IgnorePointer(
@@ -70,6 +77,15 @@ class SelectOfferType extends ConsumerWidget {
               ),
             ),
           ),
+          if (isAnonymous)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                AppLocalizations.of(context)
+                        ?.translate('anonymousTypeOfferSelectorMessage') ??
+                    '',
+              ),
+            ),
         ],
       ),
     );
