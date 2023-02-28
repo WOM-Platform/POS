@@ -8,6 +8,7 @@ import 'package:pos/custom_icons.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
+import 'package:pos/src/offers/domain/entities/offert_type.dart';
 import 'package:pos/src/offers/ui/empty_offers.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
 import 'package:pos/src/screens/request_datails/request_datails.dart';
@@ -18,8 +19,8 @@ import 'package:share/share.dart';
 
 import '../../db/app_database/app_database.dart';
 
-final offersTabProvider = StateProvider<int>((ref) {
-  return 0;
+final offersTabProvider = StateProvider<OfferType>((ref) {
+  return OfferType.persistent;
 });
 
 final refreshControllerProvider =
@@ -50,14 +51,22 @@ class OffersScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('offerscreen build');
     final selectedPosId = ref.watch(selectedPosProvider)?.pos?.id;
     final offersAsync = ref.watch(cloudOffersNotifierProvider(selectedPosId));
     final controller = ref.watch(refreshControllerProvider);
     final isAnonymous = ref.watch(isAnonymousUserProvider);
     final tabController = useTabController(initialLength: isAnonymous ? 1 : 2);
-    ref.listen<int>(offersTabProvider, (previous, next) {
+    tabController.addListener(() {
+      if (ref.read(offersTabProvider.notifier).state.index !=
+          tabController.index) {
+        ref.read(offersTabProvider.notifier).state =
+            OfferType.values[tabController.index];
+      }
+    });
+    ref.listen<OfferType>(offersTabProvider, (previous, next) {
       if (!isAnonymous && next != tabController.index) {
-        tabController.animateTo(next);
+        tabController.animateTo(next.index);
       }
     });
     return Scaffold(
@@ -71,11 +80,15 @@ class OffersScreen extends HookConsumerWidget {
               controller: tabController,
               tabs: [
                 Tab(
-                  text: AppLocalizations.of(context)?.translate('persistentTabBar') ?? '-',
+                  text: AppLocalizations.of(context)
+                          ?.translate('persistentTabBar') ??
+                      '-',
                   // icon: Icon(Icons.directions_car),
                 ),
                 Tab(
-                  text: AppLocalizations.of(context)?.translate('ephemeralTabBar') ?? '-',
+                  text: AppLocalizations.of(context)
+                          ?.translate('ephemeralTabBar') ??
+                      '-',
                   // icon: Icon(Icons.directions_transit),
                 ),
               ],

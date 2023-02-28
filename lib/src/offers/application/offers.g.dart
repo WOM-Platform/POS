@@ -30,7 +30,7 @@ class _SystemHash {
 }
 
 String _$CloudOffersNotifierHash() =>
-    r'dd432e974338a02428b628b72db626b08136c850';
+    r'1a45b8f474b0aa672a72867321489ad72af69be1';
 
 /// See also [CloudOffersNotifier].
 class CloudOffersNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<

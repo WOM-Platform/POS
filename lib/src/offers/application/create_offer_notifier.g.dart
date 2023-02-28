@@ -30,7 +30,7 @@ class _SystemHash {
 }
 
 String _$CreateOfferNotifierHash() =>
-    r'c51b3ef3e961e09d5c0f81ed5d260ac63b9a01a7';
+    r'58c18742f8505aaf72bd965ff13b706d7ac43bc6';
 
 /// See also [CreateOfferNotifier].
 final createOfferNotifierProvider =

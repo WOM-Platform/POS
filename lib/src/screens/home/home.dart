@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
+import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/offers/ui/offers_screen.dart';
@@ -144,8 +145,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               backgroundColor: Colors.blue,
               heroTag: Key("HomeFab"),
               onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => NewOfferScreen()));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => NewOfferScreen(),
+                  ),
+                );
               },
               label: Row(
                 children: [

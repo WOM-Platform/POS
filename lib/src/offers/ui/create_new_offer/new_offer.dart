@@ -8,6 +8,7 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
+import 'package:pos/src/offers/domain/entities/offert_type.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/common_card.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/filter_fields.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/summary.dart';
@@ -146,8 +147,7 @@ class NewOfferScreen extends HookConsumerWidget {
                     ),
                     StepperData(
                       title: StepperText(
-                        AppLocalizations.of(context)
-                                ?.translate("summary") ??
+                        AppLocalizations.of(context)?.translate("summary") ??
                             '-',
                       ),
                     ),
@@ -339,25 +339,27 @@ class MandatoryInfo extends HookConsumerWidget {
               ),
             ),
           ),
-          CreateOfferCard(
-            title:
-                AppLocalizations.of(context)?.translate('description') ?? '-',
-            description: AppLocalizations.of(context)
-                    ?.translate('descriptionOfferDesc') ??
-                '-',
-            child: TextFormField(
-              focusNode: descFocus,
-              textInputAction: TextInputAction.next,
-              onFieldSubmitted: (v) {
-                womFocus.requestFocus();
-              },
-              controller: ref.watch(descControllerProvider),
-              decoration: InputDecoration(
-                  hintText:
-                      AppLocalizations.of(context)?.translate('write_here') ??
-                          '-'),
+          if (ref.watch(createOfferNotifierProvider).type ==
+              OfferType.persistent)
+            CreateOfferCard(
+              title:
+                  AppLocalizations.of(context)?.translate('description') ?? '-',
+              description: AppLocalizations.of(context)
+                      ?.translate('descriptionOfferDesc') ??
+                  '-',
+              child: TextFormField(
+                focusNode: descFocus,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (v) {
+                  womFocus.requestFocus();
+                },
+                controller: ref.watch(descControllerProvider),
+                decoration: InputDecoration(
+                    hintText:
+                        AppLocalizations.of(context)?.translate('write_here') ??
+                            '-'),
+              ),
             ),
-          ),
           CreateOfferCard(
             title: AppLocalizations.of(context)?.translate('wom_number') ?? '-',
             description:

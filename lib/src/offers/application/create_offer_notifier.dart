@@ -46,7 +46,8 @@ class CreateOfferState with _$CreateOfferState {
     MapPolygon? mapPolygon,
   }) = _CreateOfferState;
 
-  factory CreateOfferState.initial() => CreateOfferState(activeStep: 0);
+  factory CreateOfferState.initial({required OfferType offerType}) =>
+      CreateOfferState(activeStep: 0, type: offerType);
 }
 
 final titleControllerProvider =
@@ -85,6 +86,12 @@ final maxAgeControllerProvider =
   return c;
 });
 
+
+final offerTypeProvider = Provider<OfferType>((ref){
+  throw UnimplementedError();
+});
+
+
 @riverpod
 class CreateOfferNotifier extends _$CreateOfferNotifier {
   CreateOfferState build() {
@@ -93,7 +100,10 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
     ref.listen(womControllerProvider, (_, __) {});
     ref.listen(maxAgeControllerProvider, (_, __) {});
     ref.listen(aimSelectionNotifierProvider, (_, next) {});
-    return CreateOfferState.initial();
+    final offerType = ref.watch(offersTabProvider);
+    return CreateOfferState.initial(
+      offerType: offerType,
+    );
   }
 
   nextStep() {
@@ -226,7 +236,7 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
           password,
         );
     ref.invalidate(cloudOffersNotifierProvider(posId));
-    ref.read(offersTabProvider.notifier).state = 0;
+    ref.read(offersTabProvider.notifier).state = OfferType.persistent;
   }
 
   createLocalOffer(
@@ -278,7 +288,7 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
         ref.invalidate(requestNotifierProvider);
         final isAnonymous = ref.read(isAnonymousUserProvider);
         if (!isAnonymous) {
-          ref.read(offersTabProvider.notifier).state = 1;
+          ref.read(offersTabProvider.notifier).state = OfferType.ephemeral;
         }
       } on ServerException catch (ex, stack) {
         logger.e('${ex.url}: ${ex.statusCode} => ${ex.error}');
