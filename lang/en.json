@@ -66,6 +66,7 @@
   "title": "Title",
   "description": "Description",
   "wom_number": "Amount",
+  "filter_aim": "Aim",
   "bounding_box": "Geographical area",
   "wom_age": "Maximum age",
   "configured": "Filter set",

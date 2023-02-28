@@ -66,6 +66,7 @@
   "title": "Titolo",
   "description": "Descrizione",
   "wom_number": "Numero di WOM",
+  "filter_aim": "Scopo",
   "bounding_box": "Area geografica",
   "wom_age": "Età massima",
   "configured": "Filtro impostato",
