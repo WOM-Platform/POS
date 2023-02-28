@@ -109,7 +109,7 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
                         onPressed: () => _onLoginButtonPressed(
                             usernameController.text.trim(),
                             passwordController.text.trim()),
-                        child: const Text('Login'),
+                        child: Text(AppLocalizations.of(context)?.translate('signIn') ?? '-'),
                       ),
                       const Spacer(),
                     ],
@@ -141,9 +141,11 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
                       ref.read(loginLoadingProvider.notifier).state = false;
                     }
                   },
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      'Accesso Anonimo',
+                      AppLocalizations.of(context)
+                              ?.translate('anonymousAccess') ??
+                          '-',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -159,11 +161,14 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
             onTap: () => launchUrl('https://wom.social/authentication/signup'),
             child: RichText(
               textAlign: TextAlign.center,
-              text: const TextSpan(
-                text: 'Non sei registrato? ',
+              text: TextSpan(
+                text: AppLocalizations.of(context)
+                        ?.translate('areYouNotRegistered') ??
+                    '-',
                 children: [
                   TextSpan(
-                    text: 'Clicca qui',
+                    text: AppLocalizations.of(context)?.translate('tapHere') ??
+                        '-',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )
                 ],

@@ -71,11 +71,11 @@ class OffersScreen extends HookConsumerWidget {
               controller: tabController,
               tabs: [
                 Tab(
-                  text: 'Persistenti',
+                  text: AppLocalizations.of(context)?.translate('persistentTabBar') ?? '-',
                   // icon: Icon(Icons.directions_car),
                 ),
                 Tab(
-                  text: 'Effimere',
+                  text: AppLocalizations.of(context)?.translate('ephemeralTabBar') ?? '-',
                   // icon: Icon(Icons.directions_transit),
                 ),
               ],

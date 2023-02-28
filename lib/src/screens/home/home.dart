@@ -154,7 +154,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     color: Colors.white,
                   ),
                   Text(
-                    'Crea offerta',
+                    AppLocalizations.of(context)?.translate('createOffer') ??
+                        '',
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
