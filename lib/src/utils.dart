@@ -79,12 +79,14 @@ Future<String> _loadKey(String path) async {
 Future<POSUser> getAnonymousUser(PosClient pos) async {
   final anonymous = await pos.getAnonymousPos();
   return POSUser(
+    id: '',
     name: 'Anonymous',
     surname: 'User',
     email: '',
     merchants: [
       Merchant(
         id: 'anonymousId',
+        access: MerchantAccess.admin,
         posList: [
           PointOfSale(
             id: anonymous.posId,

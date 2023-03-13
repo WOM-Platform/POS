@@ -132,6 +132,21 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       currentState.password,
     );
   }
+
+  void deleteAccount() async {
+    final currentState = state;
+    if (currentState is AuthenticationAuthenticated) {
+      final userId = currentState.user.id;
+      final repo = ref.watch(userRepositoryProvider);
+      final email = await repo.getSavedEmail();
+      final password = await repo.getSavedPassword();
+      if (email == null || password == null || userId == null) {
+        throw Exception();
+      }
+      await ref.read(getPosProvider).deleteAccount(userId, email, password);
+      logOut();
+    }
+  }
 /*  @override
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,

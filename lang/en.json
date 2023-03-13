@@ -123,5 +123,8 @@
   "areYouNotRegistered":"Not registered? ",
   "tapHere": "Tap here",
   "signIn": "Sign In",
-  "createOffer": "Create offer"
+  "createOffer": "Create offer",
+  "deleteAccount": "Delete account",
+  "doYouWantDeleteAccount": "Are you sure you want to delete your account and data?",
+  "doYouWantDeleteAccountDesc": "By confirming this operation you will lose your data and the management of yours"
 }

@@ -1,3 +1,4 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info/package_info.dart';
@@ -46,9 +47,11 @@ class SettingsScreen extends ConsumerWidget {
             ),
             ListTile(
               leading: Icon(Icons.manage_accounts),
-              title:
-                  Text(AppLocalizations.of(context)?.translate('handlePos') ?? '-'),
-              subtitle: Text(AppLocalizations.of(context)?.translate('handlePosDesc') ?? '-'),
+              title: Text(
+                  AppLocalizations.of(context)?.translate('handlePos') ?? '-'),
+              subtitle: Text(
+                  AppLocalizations.of(context)?.translate('handlePosDesc') ??
+                      '-'),
               onTap: () {
                 if (posCount == null) return;
                 Navigator.of(context).push(
@@ -102,6 +105,50 @@ class SettingsScreen extends ConsumerWidget {
               });
             },
           ),
+          Divider(),
+          if (posUser != null && !posUser.isAnonymous) ...[
+            const SizedBox(height: 24),
+            TextButton(
+                onPressed: () {
+                  final merchants = posUser.merchants.where(
+                      (element) => element.access == MerchantAccess.admin);
+                  final count = merchants.length;
+                  Alert(
+                    context: context,
+                    title: AppLocalizations.of(context)
+                            ?.translate('doYouWantDeleteAccount') ??
+                        '',
+                    desc:
+                        '${AppLocalizations.of(context)?.translate('doYouWantDeleteAccountDesc')}${count > 0 ? ' $count ' : ' '}merchant',
+                    buttons: [
+                      DialogButton(
+                        child: Text('No'),
+                        color: Colors.white,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      DialogButton(
+                        child: Text(
+                            AppLocalizations.of(context)?.translate('yes') ??
+                                ''),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).pop();
+                          ref
+                              .read(authNotifierProvider.notifier)
+                              .deleteAccount();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ).show();
+                },
+                child: Text(
+                  AppLocalizations.of(context)?.translate('deleteAccount') ??
+                      '-',
+                  style: TextStyle(color: Colors.red),
+                ))
+          ],
           /*if (Config.appFlavor == Flavor.DEVELOPMENT) ...[
             ListTile(
               title: Text('Visita WOM DB'),

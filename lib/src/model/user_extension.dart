@@ -10,6 +10,7 @@ extension UserExt on POSUser {
     String? email,
   }) {
     return POSUser(
+      id: id,
       merchants: merchants ?? this.merchants,
       name: name ?? this.name,
       surname: surname ?? this.surname,

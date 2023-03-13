@@ -12,66 +12,69 @@ class Summary extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(createOfferNotifierProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        InfoText(
-          text: AppLocalizations.of(context)?.translate('offer_type') ?? '-',
-          value: state.type?.translate(context),
-        ),
-        const SizedBox(height: 16),
-        InfoText(
-          text: AppLocalizations.of(context)?.translate('title') ?? '-',
-          value: state.title,
-        ),
-        const SizedBox(height: 16),
-        InfoText(
-          text: AppLocalizations.of(context)?.translate('description') ?? '-',
-          value: state.description.isEmptyOrNull() ? null : state.description,
-        ),
-        const SizedBox(height: 16),
-        InfoText(
-          text: AppLocalizations.of(context)?.translate('wom_number') ?? '-',
-          value: state.wom?.toString(),
-        ),
-        const SizedBox(height: 16),
-        InfoText(
-          text: 'Aim',
-          value: state.aimCode,
-        ),
-        const SizedBox(height: 16),
-        InfoText(
-          text: AppLocalizations.of(context)?.translate('bounding_box') ?? '-',
-          value: state.mapPolygon != null
-              ? AppLocalizations.of(context)?.translate('offer_type') ?? '-'
-              : '-',
-        ),
-        /*   if (state.mapPolygon != null)
-          AspectRatio(
-            aspectRatio: 1,
-            child: GoogleMap(
-              polygons: {
-                if (state.mapPolygon != null)
-                  Polygon(
-                    polygonId: PolygonId('bounding_box'),
-                    points: state.mapPolygon!.polygon,
-                    fillColor: Colors.green.withOpacity(0.3),
-                    strokeColor: Colors.green.withOpacity(0.7),
-                    strokeWidth: 2,
-                  )
-              },
-              initialCameraPosition: CameraPosition(
-                target: state.mapPolygon!.target,
-                zoom: state.mapPolygon!.zoom,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InfoText(
+            text: AppLocalizations.of(context)?.translate('offer_type') ?? '-',
+            value: state.type?.translate(context),
+          ),
+          const SizedBox(height: 16),
+          InfoText(
+            text: AppLocalizations.of(context)?.translate('title') ?? '-',
+            value: state.title,
+          ),
+          const SizedBox(height: 16),
+          InfoText(
+            text: AppLocalizations.of(context)?.translate('description') ?? '-',
+            value: state.description.isEmptyOrNull() ? null : state.description,
+          ),
+          const SizedBox(height: 16),
+          InfoText(
+            text: AppLocalizations.of(context)?.translate('wom_number') ?? '-',
+            value: state.wom?.toString(),
+          ),
+          const SizedBox(height: 16),
+          InfoText(
+            text: 'Aim',
+            value: state.aimCode,
+          ),
+          const SizedBox(height: 16),
+          InfoText(
+            text: AppLocalizations.of(context)?.translate('bounding_box') ?? '-',
+            value: state.mapPolygon != null
+                ? AppLocalizations.of(context)?.translate('offer_type') ?? '-'
+                : '-',
+          ),
+          /*   if (state.mapPolygon != null)
+            AspectRatio(
+              aspectRatio: 1,
+              child: GoogleMap(
+                polygons: {
+                  if (state.mapPolygon != null)
+                    Polygon(
+                      polygonId: PolygonId('bounding_box'),
+                      points: state.mapPolygon!.polygon,
+                      fillColor: Colors.green.withOpacity(0.3),
+                      strokeColor: Colors.green.withOpacity(0.7),
+                      strokeWidth: 2,
+                    )
+                },
+                initialCameraPosition: CameraPosition(
+                  target: state.mapPolygon!.target,
+                  zoom: state.mapPolygon!.zoom,
+                ),
               ),
-            ),
-          ),*/
-        const SizedBox(height: 16),
-        InfoText(
-          text: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
-          value: state.maxAge?.toString(),
-        ),
-      ],
+            ),*/
+          const SizedBox(height: 16),
+          InfoText(
+            text: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
+            value: state.maxAge?.toString(),
+          ),
+        ],
+      ),
     );
   }
 }

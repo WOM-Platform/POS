@@ -70,7 +70,7 @@ class SelectAim extends ConsumerWidget {
       );
     }
     return CreateOfferCard(
-      title: 'AIM',
+      title: AppLocalizations.of(context)?.translate('filter_aim') ?? '-',
       description: AppLocalizations.of(context)?.translate('aimDesc') ?? '',
       extra: state.aimCode != null
           ? TextButton(

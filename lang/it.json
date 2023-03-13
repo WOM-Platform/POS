@@ -124,5 +124,8 @@
   "tapHere": "Clicc qui",
   "anonymousAccess": "Accesso anonimo",
   "signIn": "Accedi",
-  "createOffer": "Crea offerta"
+  "createOffer": "Crea offerta",
+  "deleteAccount": "Elimina account",
+  "doYouWantDeleteAccount": "Sei sicuro di voler eliminare il tuo account e i tuoi dati?",
+  "doYouWantDeleteAccountDesc": "Confermando questa operazione perderai i tuoi dati e la gestione dei tuoi"
 }
