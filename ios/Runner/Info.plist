@@ -30,9 +30,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>I need it for select POS position</string>
+	<string>I need it to select POS position</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>I need it for select POS position</string>
+	<string>I need it to select POS position</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>I need it to select POS position</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>I need it to select image from gallery</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

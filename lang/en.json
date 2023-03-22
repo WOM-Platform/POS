@@ -122,6 +122,7 @@
   "anonymousTypeOfferSelectorMessage": "Note: anonymous users cannot create public offers.",
   "areYouNotRegistered":"Not registered? ",
   "tapHere": "Tap here",
+  "anonymousAccess": "Anonymous access",
   "signIn": "Sign In",
   "createOffer": "Create offer",
   "deleteAccount": "Delete account",

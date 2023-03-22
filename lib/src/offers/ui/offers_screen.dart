@@ -20,7 +20,8 @@ import 'package:share/share.dart';
 import '../../db/app_database/app_database.dart';
 
 final offersTabProvider = StateProvider<OfferType>((ref) {
-  return OfferType.persistent;
+  final isAnonymous = ref.watch(isAnonymousUserProvider);
+  return isAnonymous ? OfferType.ephemeral : OfferType.persistent;
 });
 
 final refreshControllerProvider =

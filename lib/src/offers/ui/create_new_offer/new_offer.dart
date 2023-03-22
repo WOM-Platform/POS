@@ -43,236 +43,241 @@ class NewOfferScreen extends HookConsumerWidget {
       },
       child: LoadingOverlay(
         isLoading: isLoading.value,
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            title: Text(
-                AppLocalizations.of(context)?.translate('new_offer') ?? '-'),
-            // bottom: PreferredSize(
-            //   preferredSize: Size.fromHeight(100),
-            //   child: AnotherStepper(
-            //     activeBarColor: Colors.yellow,
-            //     inActiveBarColor: Colors.white,
-            //     activeIndex: activeStep,
-            //     stepperList: stepperList,
-            //     stepperDirection: Axis.horizontal,
-            //     iconWidth: 40,
-            //     iconHeight: 40,
-            //   ),
-            // ),
-            // bottom: PreferredSize(
-            //   child: Column(
-            //     children: [
-            //       NumberStepper(
-            //         lineColor: Colors.white,
-            //         stepColor: Colors.grey[400],
-            //         activeStepBorderColor: Colors.white,
-            //         activeStepColor: Colors.green,
-            //         enableStepTapping: false,
-            //         enableNextPreviousButtons: false,
-            //         activeStep: activeStep,
-            //         numberStyle: TextStyle(
-            //           color: Colors.black,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //         numbers: [1, 2, 3, 4],
-            //       ),
-            //       Padding(
-            //         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            //         child: Row(
-            //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //           children: [
-            //             Expanded(
-            //               child: Text(
-            //                 'Tipo',
-            //                 style: stepperStyle,
-            //                 textAlign: TextAlign.center,
-            //               ),
-            //             ),
-            //             Expanded(
-            //               child: Text(
-            //                 'Info',
-            //                 style: stepperStyle,
-            //                 textAlign: TextAlign.center,
-            //               ),
-            //             ),
-            //             Expanded(
-            //               child: Text(
-            //                 'Filtri',
-            //                 style: stepperStyle,
-            //                 textAlign: TextAlign.center,
-            //               ),
-            //             ),
-            //             Expanded(
-            //               child: Text(
-            //                 'Sommario',
-            //                 style: stepperStyle,
-            //                 textAlign: TextAlign.center,
-            //               ),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //       const SizedBox(height: 16),
-            //     ],
-            //   ),
-            //   preferredSize: Size.fromHeight(100),
-            // ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 16),
-                AnotherStepper(
-                  activeBarColor: Colors.blue,
-                  // inActiveBarColor: Colors.white,
-                  activeIndex: activeStep,
-                  stepperList: [
-                    StepperData(
-                      title: StepperText(
-                        AppLocalizations.of(context)?.translate("type") ?? '-',
-                      ),
-                    ),
-                    StepperData(
-                      title: StepperText(
-                          AppLocalizations.of(context)?.translate("info") ??
-                              '-'),
-                    ),
-                    StepperData(
-                      title: StepperText(
-                          AppLocalizations.of(context)?.translate("filters") ??
-                              '-'),
-                    ),
-                    StepperData(
-                      title: StepperText(
-                        AppLocalizations.of(context)?.translate("summary") ??
-                            '-',
-                      ),
-                    ),
-                  ],
-                  stepperDirection: Axis.horizontal,
-                  iconWidth: 40,
-                  iconHeight: 40,
-                ),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          headerText(context, activeStep),
-                          style: TextStyle(fontSize: 24),
+        child: GestureDetector(
+          onTap: (){
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            appBar: AppBar(
+              title: Text(
+                  AppLocalizations.of(context)?.translate('new_offer') ?? '-'),
+              // bottom: PreferredSize(
+              //   preferredSize: Size.fromHeight(100),
+              //   child: AnotherStepper(
+              //     activeBarColor: Colors.yellow,
+              //     inActiveBarColor: Colors.white,
+              //     activeIndex: activeStep,
+              //     stepperList: stepperList,
+              //     stepperDirection: Axis.horizontal,
+              //     iconWidth: 40,
+              //     iconHeight: 40,
+              //   ),
+              // ),
+              // bottom: PreferredSize(
+              //   child: Column(
+              //     children: [
+              //       NumberStepper(
+              //         lineColor: Colors.white,
+              //         stepColor: Colors.grey[400],
+              //         activeStepBorderColor: Colors.white,
+              //         activeStepColor: Colors.green,
+              //         enableStepTapping: false,
+              //         enableNextPreviousButtons: false,
+              //         activeStep: activeStep,
+              //         numberStyle: TextStyle(
+              //           color: Colors.black,
+              //           fontWeight: FontWeight.bold,
+              //         ),
+              //         numbers: [1, 2, 3, 4],
+              //       ),
+              //       Padding(
+              //         padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //           children: [
+              //             Expanded(
+              //               child: Text(
+              //                 'Tipo',
+              //                 style: stepperStyle,
+              //                 textAlign: TextAlign.center,
+              //               ),
+              //             ),
+              //             Expanded(
+              //               child: Text(
+              //                 'Info',
+              //                 style: stepperStyle,
+              //                 textAlign: TextAlign.center,
+              //               ),
+              //             ),
+              //             Expanded(
+              //               child: Text(
+              //                 'Filtri',
+              //                 style: stepperStyle,
+              //                 textAlign: TextAlign.center,
+              //               ),
+              //             ),
+              //             Expanded(
+              //               child: Text(
+              //                 'Sommario',
+              //                 style: stepperStyle,
+              //                 textAlign: TextAlign.center,
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //       const SizedBox(height: 16),
+              //     ],
+              //   ),
+              //   preferredSize: Size.fromHeight(100),
+              // ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 16),
+                  AnotherStepper(
+                    activeBarColor: Colors.blue,
+                    // inActiveBarColor: Colors.white,
+                    activeIndex: activeStep,
+                    stepperList: [
+                      StepperData(
+                        title: StepperText(
+                          AppLocalizations.of(context)?.translate("type") ?? '-',
                         ),
                       ),
-                      if (activeStep == 0)
-                        SelectOfferType()
-                      else if (activeStep == 1)
-                        MandatoryInfo()
-                      else if (activeStep == 2)
-                        SimpleFilterBuilder()
-                      else if (activeStep == 3)
-                        Summary(),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          persistentFooterAlignment: AlignmentDirectional.center,
-          persistentFooterButtons: [
-            Row(
-              children: [
-                if (activeStep > 0)
-                  TextButton(
-                    onPressed: () {
-                      ref.read(createOfferNotifierProvider.notifier).backStep();
-                    },
-                    child: Text(
-                        AppLocalizations.of(context)?.translate('back') ?? '-'),
-                  ),
-                Spacer(),
-                FloatingActionButton(
-                  child:
-                      Icon(activeStep == 3 ? Icons.check : Icons.navigate_next),
-                  onPressed: () {
-                    if (activeStep == 3) {
-                      Alert(
-                          context: context,
-                          title: AppLocalizations.of(context)
-                                  ?.translate('do_you_want_create') ??
+                      StepperData(
+                        title: StepperText(
+                            AppLocalizations.of(context)?.translate("info") ??
+                                '-'),
+                      ),
+                      StepperData(
+                        title: StepperText(
+                            AppLocalizations.of(context)?.translate("filters") ??
+                                '-'),
+                      ),
+                      StepperData(
+                        title: StepperText(
+                          AppLocalizations.of(context)?.translate("summary") ??
                               '-',
-                          buttons: [
-                            DialogButton(
-                              child: Text(AppLocalizations.of(context)
-                                      ?.translate('yes') ??
-                                  '-'),
-                              onPressed: () async {
-                                try {
-                                  Navigator.of(context).pop();
-                                  isLoading.value = true;
-                                  await ref
-                                      .read(
-                                          createOfferNotifierProvider.notifier)
-                                      .createOffer();
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                } catch (ex) {
-                                  isLoading.value = false;
-                                  logger.e(ex);
-                                  Navigator.of(context).pop();
-                                  showError(context);
-                                }
-                              },
-                            )
-                          ]).show();
-                    } else {
-                      ref.read(createOfferNotifierProvider.notifier).nextStep();
-                    }
-                  },
-                ),
-              ],
+                        ),
+                      ),
+                    ],
+                    stepperDirection: Axis.horizontal,
+                    iconWidth: 40,
+                    iconHeight: 40,
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            headerText(context, activeStep),
+                            style: TextStyle(fontSize: 24),
+                          ),
+                        ),
+                        if (activeStep == 0)
+                          SelectOfferType()
+                        else if (activeStep == 1)
+                          MandatoryInfo()
+                        else if (activeStep == 2)
+                          SimpleFilterBuilder()
+                        else if (activeStep == 3)
+                          Summary(),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ],
-          // floatingActionButton: Row(
-          //   children: [
-          //     if (activeStep > 0)
-          //       Padding(
-          //         padding: const EdgeInsets.only(left: 32.0),
-          //         child: TextButton(
-          //           onPressed: () {
-          //             ref.read(createOfferNotifierProvider.notifier).backStep();
-          //           },
-          //           child: Text('Indietro'),
-          //         ),
-          //       ),
-          //     Spacer(),
-          //     FloatingActionButton(
-          //       child: Icon(activeStep == 3 ? Icons.check : Icons.navigate_next),
-          //       onPressed: () {
-          //         if (activeStep == 3) {
-          //           Alert(
-          //               context: context,
-          //               title: 'Vuoi creare l\'offerta?',
-          //               buttons: [
-          //                 DialogButton(
-          //                   child: Text('Sì'),
-          //                   onPressed: () {
-          //                     ref
-          //                         .read(createOfferNotifierProvider.notifier)
-          //                         .createOffer();
-          //                   },
-          //                 )
-          //               ]).show();
-          //         } else {
-          //           ref.read(createOfferNotifierProvider.notifier).nextStep();
-          //         }
-          //       },
-          //     ),
-          //   ],
-          // ),
+            persistentFooterAlignment: AlignmentDirectional.center,
+            persistentFooterButtons: [
+              Row(
+                children: [
+                  if (activeStep > 0)
+                    TextButton(
+                      onPressed: () {
+                        ref.read(createOfferNotifierProvider.notifier).backStep();
+                      },
+                      child: Text(
+                          AppLocalizations.of(context)?.translate('back') ?? '-'),
+                    ),
+                  Spacer(),
+                  FloatingActionButton(
+                    child:
+                        Icon(activeStep == 3 ? Icons.check : Icons.navigate_next),
+                    onPressed: () {
+                      if (activeStep == 3) {
+                        Alert(
+                            context: context,
+                            title: AppLocalizations.of(context)
+                                    ?.translate('do_you_want_create') ??
+                                '-',
+                            buttons: [
+                              DialogButton(
+                                child: Text(AppLocalizations.of(context)
+                                        ?.translate('yes') ??
+                                    '-'),
+                                onPressed: () async {
+                                  try {
+                                    Navigator.of(context).pop();
+                                    isLoading.value = true;
+                                    await ref
+                                        .read(
+                                            createOfferNotifierProvider.notifier)
+                                        .createOffer();
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                  } catch (ex) {
+                                    isLoading.value = false;
+                                    logger.e(ex);
+                                    Navigator.of(context).pop();
+                                    showError(context);
+                                  }
+                                },
+                              )
+                            ]).show();
+                      } else {
+                        ref.read(createOfferNotifierProvider.notifier).nextStep();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+            // floatingActionButton: Row(
+            //   children: [
+            //     if (activeStep > 0)
+            //       Padding(
+            //         padding: const EdgeInsets.only(left: 32.0),
+            //         child: TextButton(
+            //           onPressed: () {
+            //             ref.read(createOfferNotifierProvider.notifier).backStep();
+            //           },
+            //           child: Text('Indietro'),
+            //         ),
+            //       ),
+            //     Spacer(),
+            //     FloatingActionButton(
+            //       child: Icon(activeStep == 3 ? Icons.check : Icons.navigate_next),
+            //       onPressed: () {
+            //         if (activeStep == 3) {
+            //           Alert(
+            //               context: context,
+            //               title: 'Vuoi creare l\'offerta?',
+            //               buttons: [
+            //                 DialogButton(
+            //                   child: Text('Sì'),
+            //                   onPressed: () {
+            //                     ref
+            //                         .read(createOfferNotifierProvider.notifier)
+            //                         .createOffer();
+            //                   },
+            //                 )
+            //               ]).show();
+            //         } else {
+            //           ref.read(createOfferNotifierProvider.notifier).nextStep();
+            //         }
+            //       },
+            //     ),
+            //   ],
+            // ),
+          ),
         ),
       ),
     );
