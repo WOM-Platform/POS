@@ -127,5 +127,7 @@
   "createOffer": "Crea offerta",
   "deleteAccount": "Elimina account",
   "doYouWantDeleteAccount": "Sei sicuro di voler eliminare il tuo account e i tuoi dati?",
-  "doYouWantDeleteAccountDesc": "Confermando questa operazione perderai i tuoi dati e la gestione dei tuoi"
+  "doYouWantDeleteAccountDesc": "Confermando questa operazione perderai i tuoi dati e la gestione dei tuoi",
+  "days": "giorni",
+  "acquiringPosition": "Sto acquisendo la tua posizione"
 }

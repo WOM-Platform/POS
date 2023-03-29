@@ -43,7 +43,8 @@ class Summary extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           InfoText(
-            text: AppLocalizations.of(context)?.translate('bounding_box') ?? '-',
+            text: AppLocalizations.of(context)?.translate('bounding_box') ??
+                '-',
             value: state.mapPolygon != null
                 ? AppLocalizations.of(context)?.translate('offer_type') ?? '-'
                 : '-',
@@ -71,7 +72,9 @@ class Summary extends ConsumerWidget {
           const SizedBox(height: 16),
           InfoText(
             text: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
-            value: state.maxAge?.toString(),
+            value: state.maxAge != null && state.maxAge! > 0 ? '${state
+                .maxAge} ${AppLocalizations.of(context)?.translate('days') ??
+                ''}' : null,
           ),
         ],
       ),

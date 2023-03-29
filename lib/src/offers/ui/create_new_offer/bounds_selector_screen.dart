@@ -54,6 +54,8 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
   CameraPosition _currentCameraPosition =
       const CameraPosition(target: LatLng(0.0, 0.0), zoom: 17);
 
+  String? positionProcess;
+
   @override
   initState() {
     super.initState();
@@ -61,7 +63,6 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
   }
 
   Future<bool> initPlatformState() async {
-    locService.LocationData? location;
     try {
       bool serviceStatus = await _locationService.serviceEnabled();
       logger.i("Service status: $serviceStatus");
@@ -107,6 +108,10 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
     logger.i("_updateMyLocation");
     locService.LocationData? location;
     try {
+      setState(() {
+        positionProcess =
+            AppLocalizations.of(context)?.translate('acquiringPosition');
+      });
       logger.i("getLocation()");
       location = await _locationService.getLocation();
       logger.i(location.latitude.toString());
@@ -119,12 +124,18 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
 
       if (mounted) {
         logger.i("updateCurrentLocation()");
+        setState(() {
+          positionProcess = null;
+        });
         _updateCurrentLocation(target, sliderSteps[0].toDouble());
         controller.animateCamera(
             CameraUpdate.newCameraPosition(_currentCameraPosition));
       }
     } on PlatformException catch (e) {
       logger.i(e.toString());
+      setState(() {
+        positionProcess = null;
+      });
       if (e.code == 'PERMISSION_DENIED') {
         logger.i('Permission denied');
       }
@@ -166,7 +177,8 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                AppLocalizations.of(context)?.translate('bounding_box_help') ?? '-',
+                AppLocalizations.of(context)?.translate('bounding_box_help') ??
+                    '-',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -229,6 +241,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                     zoomControlsEnabled: false,
                     minMaxZoomPreference: _minMaxZoomPreference,
                     myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
                     onCameraMove: _updateCameraPosition,
                     polygons: {
                       if (state.mapPolygon != null &&
@@ -241,26 +254,39 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                           strokeWidth: 2,
                         )
                     },
-                    onTap: (l) => _onTapMap(l, sliderSteps[slider.value.toInt()].toDouble()),
+                    onTap: (l) => _onTapMap(
+                        l, sliderSteps[slider.value.toInt()].toDouble()),
                   ),
                   Positioned(
-                    left: 5.0,
-                    top: 5.0,
+                    left: 16.0,
+                    top: 16.0,
                     child: Card(
                       child: Container(
-                        height: 37.0,
-                        width: 37.0,
+                        height: 50.0,
+                        width: 50.0,
                         alignment: Alignment.center,
                         child: IconButton(
                           icon: const Icon(
-                            Icons.update,
-                            size: 21.0,
+                            Icons.my_location_rounded,
+                            size: 30.0,
                           ),
                           onPressed: () => _updateMyLocation(),
                         ),
                       ),
                     ),
                   ),
+                  if (positionProcess != null)
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.black54,
+                        alignment: Alignment.center,
+                        child: Text(
+                          positionProcess!,
+                          style: TextStyle(color: Colors.white, fontSize: 30),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
                 ],
               ),
             ),

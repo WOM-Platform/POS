@@ -1,14 +1,19 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/db/aim_db.dart';
+import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../constants.dart';
 import '../my_logger.dart';
 
-
 final aimRepositoryProvider = Provider<AimRepository>((ref) {
   return AimRepository();
+});
+
+final aimListFutureProvider = FutureProvider((ref) {
+  final repo = ref.watch(aimRepositoryProvider);
+  return repo.getAimList(database: AppDatabase.get().getDb());
 });
 
 class AimRepository {
@@ -95,7 +100,6 @@ class AimRepository {
           subAims.add(subAim);
           // a.children = await _aimDbHelper.getAimWithLevel(
           //     db: db, deepLevel: 3, code: a.code);
-
         }
         final output = newAim.copyWith(children: subAims);
         tmp.add(output);

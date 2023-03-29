@@ -107,6 +107,7 @@ class CreatePaymentRequestBloc {
       simpleFilter: simpleFilter,
       pocketAckUrl: null,
       nonce: CoreUtils.generateGUID(),
+      dateTime: DateTime.now()
     );
 
     if (draftRequest != null) {

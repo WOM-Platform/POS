@@ -92,7 +92,7 @@
   "aimDesc": "If set, you will accept only WOM vouchers generated with that specific aim.",
   "bounding_box_desc": "If set, you will accept only WOM vouchers generated within the specified geographical area.",
   "wom_age_desc": "If set, you will accept only more recent WOM vouchers, generated at most a set number of days in the past.",
-  "persistent_offer_desc": "This offer can be user multiple times, by different users, and will always remain valid. The WOM Pocket app will show it to nearby users and you will be able to print and display the offer in your shop.",
+  "persistent_offer_desc": "This offer can be used multiple times, by different users, and will always remain valid. The WOM Pocket app will show it to nearby users and you will be able to print and display the offer in your shop.",
   "ephemeral_offer_desc": "This offer can only be used once and it will be registered on this POS only. Use this option to create ‘disposable’ offers for single users.",
   "persistent_offer": "Public offer",
   "ephemeral_offer": "Ephemeral offer",
@@ -127,5 +127,7 @@
   "createOffer": "Create offer",
   "deleteAccount": "Delete account",
   "doYouWantDeleteAccount": "Are you sure you want to delete your account and data?",
-  "doYouWantDeleteAccountDesc": "By confirming this operation you will lose your data and the management of yours"
+  "doYouWantDeleteAccountDesc": "By confirming this operation you will lose your data and the management of yours",
+  "days": "days",
+  "acquiringPosition": "I'm acquiring your position"
 }

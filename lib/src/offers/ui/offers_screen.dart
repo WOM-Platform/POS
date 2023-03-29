@@ -1,22 +1,26 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/custom_icons.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/domain/entities/offert_type.dart';
 import 'package:pos/src/offers/ui/empty_offers.dart';
+import 'package:pos/src/screens/home/widgets/card_request.dart';
 import 'package:pos/src/screens/home/widgets/home_list.dart';
 import 'package:pos/src/screens/request_datails/request_datails.dart';
 import 'package:pos/src/services/aim_repository.dart';
 import 'package:pos/src/services/pdf_creator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
-
+import 'package:collection/collection.dart';
 import '../../db/app_database/app_database.dart';
 
 final offersTabProvider = StateProvider<OfferType>((ref) {
@@ -165,125 +169,330 @@ class OffersScreen extends HookConsumerWidget {
   }
 }
 
-class OfferTile extends ConsumerWidget {
+class OfferTile extends ConsumerStatefulWidget {
   final Offer offer;
-
   final Function() onDelete;
 
   const OfferTile({
     Key? key,
-    required this.onDelete,
     required this.offer,
+    required this.onDelete,
   }) : super(key: key);
 
+  @override
+  ConsumerState<OfferTile> createState() => _OfferTileState();
+}
+
+class _OfferTileState extends ConsumerState<OfferTile> {
   static final dateFormat = DateFormat('dd MMM yyyy');
+  GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: Slidable(
-        startActionPane: ActionPane(
-          extentRatio: 0.5,
-          motion: const BehindMotion(),
-          children: [
-            MySlidableAction(
-              icon: Icons.share,
-              onTap: () {
-                Share.share(offer.payment.link);
-              },
-              color: Colors.green,
-            ),
-            MySlidableAction(
-              icon: Icons.picture_as_pdf,
-              onTap: () async {
-                final pos = ref.read(selectedPosProvider)?.pos;
-                if (pos == null) return;
-                final aims = await ref
-                    .watch(aimRepositoryProvider)
-                    .getFlatAimList(database: AppDatabase.get().getDb());
-                final pdfCreator = PdfCreator();
-                final file = await pdfCreator.buildPersistentPdf(
-                  offer,
-                  pos,
-                  AppLocalizations.of(context)?.locale.languageCode ?? 'en',
-                  aims ?? [],
-                );
-                Share.shareFiles([file.path]);
-              },
-              color: Colors.pink,
-            ),
-          ],
-        ),
-        endActionPane: ActionPane(
-          motion: const DrawerMotion(),
-          extentRatio: 0.25,
-          children: [
-            MySlidableAction(
-              icon: Icons.delete,
-              onTap: onDelete,
-              color: Colors.red,
-            ),
-          ],
-        ),
-        child: Card(
-          // margin: const EdgeInsets.only(top: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              textBaseline: TextBaseline.alphabetic,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        offer.title,
-                        maxLines: 2,
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600),
+      child: FlipCard(
+        key: cardKey,
+        front: Slidable(
+          startActionPane: ActionPane(
+            extentRatio: 0.5,
+            motion: const BehindMotion(),
+            children: [
+              MySlidableAction(
+                icon: Icons.share,
+                onTap: () {
+                  Share.share(widget.offer.payment.link);
+                },
+                color: Colors.green,
+              ),
+              MySlidableAction(
+                icon: Icons.picture_as_pdf,
+                onTap: () async {
+                  final pos = ref.read(selectedPosProvider)?.pos;
+                  if (pos == null) return;
+                  final aims = await ref
+                      .watch(aimRepositoryProvider)
+                      .getFlatAimList(database: AppDatabase.get().getDb());
+                  final pdfCreator = PdfCreator();
+                  final file = await pdfCreator.buildPersistentPdf(
+                    widget.offer,
+                    pos,
+                    AppLocalizations.of(context)?.locale.languageCode ?? 'en',
+                    aims ?? [],
+                  );
+                  Share.shareFiles([file.path]);
+                },
+                color: Colors.pink,
+              ),
+            ],
+          ),
+          endActionPane: ActionPane(
+            motion: const DrawerMotion(),
+            extentRatio: 0.25,
+            children: [
+              MySlidableAction(
+                icon: Icons.delete,
+                onTap: widget.onDelete,
+                color: Colors.red,
+              ),
+            ],
+          ),
+          child: Card(
+            // margin: const EdgeInsets.only(top: 8),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                textBaseline: TextBaseline.alphabetic,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.offer.title,
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.w600),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 18),
-                    Text(
-                      dateFormat.format(offer.createdOn),
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-                if (offer.description != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      offer.description!,
-                      style: TextStyle(),
-                    ),
+                      const SizedBox(width: 18),
+                      // Text(
+                      //   dateFormat.format(offer.createdOn),
+                      //   style: TextStyle(fontSize: 16),
+                      // ),
+                    ],
                   ),
-                Row(
-                  children: [
-                    Spacer(),
-                    Text(
-                      offer.cost.toString(),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                  const SizedBox(height: 8),
+                  const Divider(
+                    height: 2,
+                  ),
+                  const SizedBox(height: 8),
+                  if (widget.offer.description != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        widget.offer.description!,
+                        style: TextStyle(),
                       ),
                     ),
-                    Icon(
-                      CustomIcons.wom_logo,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ],
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            ItemRow2(
+                              tooltip: 'Date',
+                              icon: MdiIcons.calendar,
+                              text: dateFormat.format(widget.offer.createdOn),
+                            ),
+                            // ItemRow2(
+                            //   tooltip: 'Pin',
+                            //   icon: MdiIcons.lockOutline,
+                            //   text: offer.payment.password,
+                            // ),
+                            Consumer(
+                              builder: (context, ref, child) {
+                                if (widget.offer.filter?.aim == null) {
+                                  return ItemRow2(
+                                    tooltip: 'Aim',
+                                    icon: MdiIcons.shapeOutline,
+                                    text: '-',
+                                  );
+                                }
+                                final languageCode =
+                                    AppLocalizations.of(context)
+                                        ?.locale
+                                        .languageCode;
+                                final aimList = ref
+                                    .watch(aimListFutureProvider)
+                                    .valueOrNull;
+
+                                var aimText = '';
+                                if (aimList != null && aimList.isNotEmpty) {
+                                  final aim = aimList.firstWhereOrNull(
+                                      (element) =>
+                                          element.code ==
+                                          widget.offer.filter?.aim);
+                                  if (aim != null) {
+                                    aimText =
+                                        aim.titles[languageCode ?? 'en'] ?? '-';
+                                  }
+                                }
+                                return ItemRow2(
+                                  tooltip: 'Aim',
+                                  icon: MdiIcons.shapeOutline,
+                                  text: aimText,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            ItemRow2(
+                              tooltip: 'Max age',
+                              icon: widget.offer.filter?.maxAge != null
+                                  ? MdiIcons.timerSand
+                                  : MdiIcons.timerSandEmpty,
+                              text: widget.offer.filter?.maxAge != null
+                                  ? '${widget.offer.filter?.maxAge} ${AppLocalizations.of(context)?.translate('days') ?? ''}'
+                                  : '-',
+                            ),
+                            ItemRow2(
+                              tooltip: 'Bounding Box',
+                              onPressed: widget.offer.filter?.bounds != null
+                                  ? () {
+                                      cardKey.currentState?.toggleCard();
+                                    }
+                                  : null,
+                              icon: widget.offer.filter?.bounds != null
+                                  ? MdiIcons.mapCheckOutline
+                                  : MdiIcons.mapOutline,
+                              text: widget.offer.filter?.bounds != null
+                                  ? 'Configurato'
+                                  : '-',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Spacer(),
+                      Text(
+                        widget.offer.cost.toString(),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      Icon(
+                        CustomIcons.wom_logo,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
+        back: (widget.offer.filter?.bounds != null)
+            ? Container(
+                height: 250,
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  elevation: 8.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: GoogleMap(
+                    onTap: (lat) => cardKey.currentState?.toggleCard(),
+                    onMapCreated: (controller) {
+                      controller.moveCamera(
+                        CameraUpdate.newLatLngBounds(
+                          LatLngBounds(
+                            southwest: LatLng(
+                              widget.offer.filter!.bounds!.rightBottom[0],
+                              widget.offer.filter!.bounds!.leftTop[1],
+                            ),
+                            northeast: LatLng(
+                              widget.offer.filter!.bounds!.leftTop[0],
+                              widget.offer.filter!.bounds!.rightBottom[1],
+                            ),
+                          ),
+                          72.0,
+                        ),
+                      );
+                    },
+                    cameraTargetBounds: CameraTargetBounds(
+                      LatLngBounds(
+                        southwest: LatLng(
+                          widget.offer.filter!.bounds!.rightBottom[0],
+                          widget.offer.filter!.bounds!.leftTop[1],
+                        ),
+                        northeast: LatLng(
+                          widget.offer.filter!.bounds!.leftTop[0],
+                          widget.offer.filter!.bounds!.rightBottom[1],
+                        ),
+                      ),
+                    ),
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                        widget.offer.filter!.bounds!.center.latitude,
+                        widget.offer.filter!.bounds!.center.longitude,
+                      ),
+                      zoom: 14,
+                    ),
+                    rotateGesturesEnabled: false,
+                    scrollGesturesEnabled: false,
+                    zoomGesturesEnabled: false,
+                    tiltGesturesEnabled: false,
+                    compassEnabled: false,
+                    myLocationButtonEnabled: false,
+                    myLocationEnabled: false,
+                    mapToolbarEnabled: false,
+//                    circles: {
+//                      Circle(
+//                        circleId: CircleId('bb'),
+//                        radius: getRadiusFromBoundingBox(
+//                            request.simpleFilter.bounds.leftTop,
+//                            request.simpleFilter.bounds.rightBottom),
+//                        strokeColor: Colors.green,
+//                        strokeWidth: 1,
+//                        center: request.location,
+//                        fillColor: Colors.green.withOpacity(0.3),
+//                      )
+//                    },
+                    markers: {
+                      Marker(
+                        markerId: MarkerId(widget.offer.id.toString()),
+                        position: LatLng(
+                          widget.offer.filter!.bounds!.center.latitude,
+                          widget.offer.filter!.bounds!.center.longitude,
+                        ),
+                      ),
+                    },
+                    polygons: {
+                      Polygon(
+                        polygonId: PolygonId('bounding_box'),
+                        points: bbPoints,
+                        fillColor: Colors.green.withOpacity(0.3),
+                        strokeColor: Colors.green.withOpacity(0.7),
+                        strokeWidth: 2,
+                      )
+                    },
+                  ),
+                ),
+              )
+            : Container(),
       ),
     );
   }
+
+  List<LatLng> get bbPoints => widget.offer.filter?.bounds != null
+      ? [
+          LatLng(widget.offer.filter!.bounds!.leftTop[0],
+              widget.offer.filter!.bounds!.leftTop[1]),
+          LatLng(widget.offer.filter!.bounds!.rightBottom[0],
+              widget.offer.filter!.bounds!.leftTop[1]),
+          LatLng(widget.offer.filter!.bounds!.rightBottom[0],
+              widget.offer.filter!.bounds!.rightBottom[1]),
+          LatLng(widget.offer.filter!.bounds!.leftTop[0],
+              widget.offer.filter!.bounds!.rightBottom[1]),
+          LatLng(widget.offer.filter!.bounds!.leftTop[0],
+              widget.offer.filter!.bounds!.leftTop[1]),
+        ]
+      : [];
 }
 
 class MySlidableAction extends StatelessWidget {

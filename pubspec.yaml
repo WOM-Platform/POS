@@ -11,11 +11,11 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.2+29
+version: 1.0.4+31
 publish_to: none
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.16.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -53,7 +53,7 @@ dependencies:
   barcode_widget: ^2.0.2
   hive:
   hive_flutter:
-  modal_bottom_sheet: ^2.1.2
+  modal_bottom_sheet: ^3.0.0-pre
   pull_to_refresh: ^2.0.0
   another_stepper: ^1.1.6
   loading_overlay:

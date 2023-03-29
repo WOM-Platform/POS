@@ -1,19 +1,12 @@
-import 'package:dart_wom_connector/dart_wom_connector.dart'
-    show POSUser, PosClient;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:pos/src/blocs/authentication/bloc.dart';
-import 'package:pos/src/blocs/home/bloc.dart';
-import 'package:pos/src/constants.dart';
 
 import 'package:pos/src/screens/root/root.dart';
-import 'package:pos/src/services/auth_local_data_sources.dart';
 import 'localization/app_localizations.dart';
 import 'src/screens/intro/intro.dart';
 
-import 'src/services/user_repository.dart';
 
 class App extends StatelessWidget {
   final bool isFirstOpen;

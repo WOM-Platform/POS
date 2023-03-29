@@ -193,6 +193,7 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => PositionSelectionPage()));
           },
+          myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
           polygons: {
             if (mapPolygon != null)
@@ -236,6 +237,7 @@ class SelectMaxAge extends ConsumerWidget {
         keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
         decoration: InputDecoration(
+          suffixText: AppLocalizations.of(context)?.translate('days') ?? '',
             hintText:
                 AppLocalizations.of(context)?.translate('write_here') ?? '-'),
       ),

@@ -1,23 +1,18 @@
-import 'package:clippy_flutter/arc.dart';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as md;
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
-import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/offers/ui/offers_screen.dart';
 import 'package:pos/src/screens/create_payment/create_payment.dart';
-import 'package:pos/src/screens/home/widgets/home_list.dart';
 import 'package:pos/src/screens/home/widgets/select_pos_modal.dart';
-import 'package:pos/src/screens/pos_selection/pos_selection_page.dart';
 import 'package:pos/src/screens/settings/settings.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../main_common.dart';
@@ -48,6 +43,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
+        centerTitle: false,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Theme.of(context).primaryColor,
           statusBarBrightness: Brightness.light,
@@ -65,7 +61,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           textColor: Theme.of(context).primaryColor,
           child: GestureDetector(
             onTap: () async {
-              showMaterialModalBottomSheet(
+              md.showMaterialModalBottomSheet(
                 context: context,
                 useRootNavigator: true,
                 builder: (context) => PosSelectorWidget(),

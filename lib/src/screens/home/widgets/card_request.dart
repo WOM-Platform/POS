@@ -1,6 +1,7 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/payment_request.dart';
@@ -40,6 +41,8 @@ class CardRequest extends StatelessWidget {
   final Function onEdit;
   final Function onDuplicate;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+
+  static final dateFormat = DateFormat('dd MMM yyyy');
 
   CardRequest({
     Key? key,
@@ -96,26 +99,29 @@ class CardRequest extends StatelessWidget {
                     // const SizedBox(
                     //   width: 8.0,
                     // ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Tooltip(
-                        message: request.status == RequestStatus.COMPLETE
-                            ? 'Completa'
-                            : 'Bozza',
-                        child: CircleAvatar(
-                          radius: 10,
-                          backgroundColor:
-                              request.status == RequestStatus.COMPLETE
-                                  ? Colors.green
-                                  : Colors.orange,
+                    if (request.status == RequestStatus.DRAFT)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Tooltip(
+                          message: request.status == RequestStatus.COMPLETE
+                              ? 'Completa'
+                              : 'Bozza',
+                          child: CircleAvatar(
+                            radius: 10,
+                            backgroundColor:
+                                request.status == RequestStatus.COMPLETE
+                                    ? Colors.green
+                                    : Colors.orange,
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
+                const SizedBox(height: 8),
                 const Divider(
                   height: 2,
                 ),
+                const SizedBox(height: 8),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
@@ -124,19 +130,33 @@ class CardRequest extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           ItemRow2(
-                            tooltip: 'Request ID',
-                            icon: MdiIcons.identifier,
-                            text: request.id.toString(),
+                            tooltip: 'Date',
+                            icon: MdiIcons.calendar,
+                            text: request.dateTime != null
+                                ? dateFormat.format(request.dateTime!)
+                                : '-',
                           ),
-                          ItemRow2(
-                            tooltip: 'Persistent',
-                            icon: MdiIcons.infinity,
-                            text: request.persistent
-                                ? AppLocalizations.of(context)
-                                        ?.translate('yes') ??
-                                    ''
-                                : 'No',
-                          ),
+                          // ItemRow2(
+                          //   tooltip: 'Pin',
+                          //   icon: request.password != null
+                          //       ? MdiIcons.lockOutline
+                          //       : MdiIcons.lockOpenOutline,
+                          //   text: request.password ?? '-',
+                          // ),
+                          // ItemRow2(
+                          //   tooltip: 'Request ID',
+                          //   icon: MdiIcons.identifier,
+                          //   text: request.id.toString(),
+                          // ),
+                          // ItemRow2(
+                          //   tooltip: 'Persistent',
+                          //   icon: MdiIcons.infinity,
+                          //   text: request.persistent
+                          //       ? AppLocalizations.of(context)
+                          //               ?.translate('yes') ??
+                          //           ''
+                          //       : 'No',
+                          // ),
                           ItemRow2(
                             tooltip: 'Aim',
                             icon: MdiIcons.shapeOutline,
@@ -151,13 +171,6 @@ class CardRequest extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          ItemRow2(
-                            tooltip: 'Pin',
-                            icon: request.password != null
-                                ? MdiIcons.lockOutline
-                                : MdiIcons.lockOpenOutline,
-                            text: request.password ?? '-',
-                          ),
                           ItemRow2(
                             tooltip: 'Max age',
                             icon: request.simpleFilter?.maxAge != null
@@ -242,7 +255,23 @@ class CardRequest extends StatelessWidget {
                   ),
                   child: GoogleMap(
                     onTap: (lat) => cardKey.currentState?.toggleCard(),
-                    onMapCreated: (controller) {},
+                    onMapCreated: (controller) {
+                      controller.moveCamera(
+                        CameraUpdate.newLatLngBounds(
+                          LatLngBounds(
+                            southwest: LatLng(
+                              request.simpleFilter!.bounds!.rightBottom[0],
+                              request.simpleFilter!.bounds!.leftTop[1],
+                            ),
+                            northeast: LatLng(
+                              request.simpleFilter!.bounds!.leftTop[0],
+                              request.simpleFilter!.bounds!.rightBottom[1],
+                            ),
+                          ),
+                          72.0,
+                        ),
+                      );
+                    },
                     cameraTargetBounds: CameraTargetBounds(
                       LatLngBounds(
                         southwest: LatLng(
