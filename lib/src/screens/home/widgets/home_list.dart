@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
-import 'package:pos/src/blocs/home/bloc.dart';
+
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/model/request_status_enum.dart';
@@ -21,6 +21,7 @@ import 'package:pos/src/services/pdf_creator.dart';
 
 import 'package:share/share.dart';
 
+import '../../../db/payment_database/payment_database.dart';
 import '../../../my_logger.dart';
 
 class HomeList extends ConsumerStatefulWidget {
@@ -211,9 +212,17 @@ class _HomeListState extends ConsumerState<HomeList> {
   goToDetails(PaymentRequest request) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => RequestDetails.fromPaymentRequest(
-          request,
-        ),
+        builder: (ctx) => RequestDetails.fromPaymentRequest(request, () async {
+          final pos = ref.read(selectedPosProvider)?.pos;
+          if (pos == null) return;
+          final pdfCreator = PdfCreator();
+          final file = await pdfCreator.buildPdf(
+            request,
+            pos,
+            AppLocalizations.of(context)?.locale.languageCode ?? 'en',
+          );
+          Share.shareFiles([file.path]);
+        }),
       ),
     );
   }
@@ -261,9 +270,7 @@ class _HomeListState extends ConsumerState<HomeList> {
   onDelete(PaymentRequest request) async {
     logger.i("onDelete");
     if (request.id == null) return;
-    final result = await ref
-        .read(homeNotifierProvider.notifier)
-        .deleteRequest(request.id!);
+    final result = await PaymentDatabase.get().deleteRequest(request.id!);
     logger.i("onDelete from DB complete: $result");
     if (result > 0) {
       ref.invalidate(requestNotifierProvider);

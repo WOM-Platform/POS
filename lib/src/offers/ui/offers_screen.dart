@@ -40,20 +40,6 @@ final refreshControllerProvider =
 class OffersScreen extends HookConsumerWidget {
   const OffersScreen({Key? key}) : super(key: key);
 
-  // void _onRefresh() async {
-  //   // monitor network fetch
-  //   await Future.delayed(Duration(milliseconds: 1000));
-  //   // if failed,use refreshFailed()
-  //   _refreshController.refreshCompleted();
-  // }
-  //
-  // void _onLoading() async {
-  //   // monitor network fetch
-  //   await Future.delayed(Duration(milliseconds: 1000));
-  //   // if failed,use loadFailed(),if no data return,use LoadNodata()
-  //   _refreshController.loadComplete();
-  // }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     print('offerscreen build');
@@ -75,97 +61,117 @@ class OffersScreen extends HookConsumerWidget {
       }
     });
     return Scaffold(
-        body: Column(
-      children: [
-        if (!isAnonymous)
-          Container(
-            color: Theme.of(context).primaryColor,
-            child: TabBar(
-              indicatorColor: Colors.white,
+      body: Column(
+        children: [
+          if (!isAnonymous)
+            Container(
+              color: Theme.of(context).primaryColor,
+              child: TabBar(
+                indicatorColor: Colors.white,
+                controller: tabController,
+                tabs: [
+                  Tab(
+                    text: AppLocalizations.of(context)
+                            ?.translate('persistentTabBar') ??
+                        '-',
+                    // icon: Icon(Icons.directions_car),
+                  ),
+                  Tab(
+                    text: AppLocalizations.of(context)
+                            ?.translate('ephemeralTabBar') ??
+                        '-',
+                    // icon: Icon(Icons.directions_transit),
+                  ),
+                ],
+              ),
+            ),
+          Expanded(
+            child: TabBarView(
               controller: tabController,
-              tabs: [
-                Tab(
-                  text: AppLocalizations.of(context)
-                          ?.translate('persistentTabBar') ??
-                      '-',
-                  // icon: Icon(Icons.directions_car),
-                ),
-                Tab(
-                  text: AppLocalizations.of(context)
-                          ?.translate('ephemeralTabBar') ??
-                      '-',
-                  // icon: Icon(Icons.directions_transit),
-                ),
+              children: [
+                if (!isAnonymous)
+                  SmartRefresher(
+                    controller: controller,
+                    onRefresh: () async {
+                      await ref.refresh(
+                          cloudOffersNotifierProvider(selectedPosId).future);
+                      controller.refreshCompleted();
+                    },
+                    child: offersAsync.when(
+                      data: (list) {
+                        if (list.isEmpty) {
+                          return EmptyOffers();
+                        }
+                        return ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: list.length,
+                          itemBuilder: (c, index) {
+                            final offer = list[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => RequestDetails(
+                                      id: '',
+                                      cost: offer.cost,
+                                      password: offer.payment.password,
+                                      link: offer.payment.link,
+                                      name: offer.title,
+                                      onCreatePdf: () async {
+                                        final pos =
+                                            ref.read(selectedPosProvider)?.pos;
+                                        if (pos == null) return;
+                                        final aims = await ref.read(
+                                            aimFlatListFutureProvider.future);
+                                        final pdfCreator = PdfCreator();
+                                        final file =
+                                            await pdfCreator.buildPersistentPdf(
+                                          offer,
+                                          pos,
+                                          AppLocalizations.of(context)
+                                                  ?.locale
+                                                  .languageCode ??
+                                              'en',
+                                          aims,
+                                        );
+                                        Share.shareFiles([file.path]);
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: OfferTile(
+                                offer: offer,
+                                onDelete: () async {
+                                  if (selectedPosId == null) return;
+                                  await ref
+                                      .read(cloudOffersNotifierProvider(
+                                              selectedPosId)
+                                          .notifier)
+                                      .deleteOffer(list[index].id);
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      error: (ex, st) {
+                        return Center(child: Text(ex.toString()));
+                      },
+                      loading: () {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    ),
+                  ),
+                HomeList(),
               ],
             ),
           ),
-        Expanded(
-          child: TabBarView(
-            controller: tabController,
-            children: [
-              if (!isAnonymous)
-                SmartRefresher(
-                  controller: controller,
-                  onRefresh: () async {
-                    await ref.refresh(
-                        cloudOffersNotifierProvider(selectedPosId).future);
-                    controller.refreshCompleted();
-                  },
-                  child: offersAsync.when(
-                    data: (list) {
-                      if (list.isEmpty) {
-                        return EmptyOffers();
-                      }
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: list.length,
-                        itemBuilder: (c, index) {
-                          final offer = list[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (ctx) => RequestDetails(
-                                    id: '',
-                                    cost: offer.cost,
-                                    password: offer.payment.password,
-                                    link: offer.payment.link,
-                                    name: offer.title,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: OfferTile(
-                              offer: offer,
-                              onDelete: () async {
-                                if (selectedPosId == null) return;
-                                await ref
-                                    .read(cloudOffersNotifierProvider(
-                                            selectedPosId)
-                                        .notifier)
-                                    .deleteOffer(list[index].id);
-                              },
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    error: (ex, st) {
-                      return Center(child: Text(ex.toString()));
-                    },
-                    loading: () {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  ),
-                ),
-              HomeList(),
-            ],
-          ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }
 
@@ -193,6 +199,7 @@ class _OfferTileState extends ConsumerState<OfferTile> {
       padding: const EdgeInsets.only(top: 8.0),
       child: FlipCard(
         key: cardKey,
+        flipOnTouch: false,
         front: Slidable(
           startActionPane: ActionPane(
             extentRatio: 0.5,
@@ -210,15 +217,13 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                 onTap: () async {
                   final pos = ref.read(selectedPosProvider)?.pos;
                   if (pos == null) return;
-                  final aims = await ref
-                      .watch(aimRepositoryProvider)
-                      .getFlatAimList(database: AppDatabase.get().getDb());
+                  final aims = await ref.read(aimFlatListFutureProvider.future);
                   final pdfCreator = PdfCreator();
                   final file = await pdfCreator.buildPersistentPdf(
                     widget.offer,
                     pos,
                     AppLocalizations.of(context)?.locale.languageCode ?? 'en',
-                    aims ?? [],
+                    aims,
                   );
                   Share.shareFiles([file.path]);
                 },
@@ -267,8 +272,9 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                   const Divider(
                     height: 2,
                   ),
-                  const SizedBox(height: 8),
-                  if (widget.offer.description != null)
+                  if (widget.offer.description != null &&
+                      widget.offer.description!.isNotEmpty) ...[
+                    const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
@@ -276,6 +282,7 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                         style: TextStyle(),
                       ),
                     ),
+                  ],
                   const SizedBox(height: 8),
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -285,20 +292,19 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             ItemRow2(
-                              tooltip: 'Date',
+                              tooltip: AppLocalizations.of(context)
+                                      ?.translate('creation_date') ??
+                                  '-',
                               icon: MdiIcons.calendar,
                               text: dateFormat.format(widget.offer.createdOn),
                             ),
-                            // ItemRow2(
-                            //   tooltip: 'Pin',
-                            //   icon: MdiIcons.lockOutline,
-                            //   text: offer.payment.password,
-                            // ),
                             Consumer(
                               builder: (context, ref, child) {
                                 if (widget.offer.filter?.aim == null) {
                                   return ItemRow2(
-                                    tooltip: 'Aim',
+                                    tooltip: AppLocalizations.of(context)
+                                            ?.translate('filter_aim') ??
+                                        '-',
                                     icon: MdiIcons.shapeOutline,
                                     text: '-',
                                   );
@@ -323,7 +329,9 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                                   }
                                 }
                                 return ItemRow2(
-                                  tooltip: 'Aim',
+                                  tooltip: AppLocalizations.of(context)
+                                          ?.translate('filter_aim') ??
+                                      '-',
                                   icon: MdiIcons.shapeOutline,
                                   text: aimText,
                                 );
@@ -337,7 +345,9 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             ItemRow2(
-                              tooltip: 'Max age',
+                              tooltip: AppLocalizations.of(context)
+                                      ?.translate('wom_age') ??
+                                  '-',
                               icon: widget.offer.filter?.maxAge != null
                                   ? MdiIcons.timerSand
                                   : MdiIcons.timerSandEmpty,
@@ -346,7 +356,9 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                                   : '-',
                             ),
                             ItemRow2(
-                              tooltip: 'Bounding Box',
+                              tooltip: AppLocalizations.of(context)
+                                      ?.translate('bounding_box') ??
+                                  '-',
                               onPressed: widget.offer.filter?.bounds != null
                                   ? () {
                                       cardKey.currentState?.toggleCard();
@@ -356,7 +368,9 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                                   ? MdiIcons.mapCheckOutline
                                   : MdiIcons.mapOutline,
                               text: widget.offer.filter?.bounds != null
-                                  ? 'Configurato'
+                                  ? AppLocalizations.of(context)
+                                          ?.translate('geo_filter') ??
+                                      ''
                                   : '-',
                             ),
                           ],

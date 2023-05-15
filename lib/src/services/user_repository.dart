@@ -1,8 +1,9 @@
-import 'dart:convert';
+import 'dart:io';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pos/src/offers/application/offers.dart';
 
 import 'package:pos/src/services/auth_local_data_sources.dart';
@@ -18,13 +19,28 @@ class UserRepository {
 
   UserRepository(this.pos, this.authLocalDataSources);
 
-  Future<POSUser> authenticate({
+  Future<String> authenticate({
     required String username,
     required String password,
   }) async {
-    final user = await pos.authenticate(username, password);
-    await persistToken(user, username, password);
+    final token = await pos.authenticateWihJWT(
+      username,
+      password,
+      '${Platform.localeName}Pos/1',
+    );
+    await persistJWTToken(token);
+    return token;
+  }
+
+  Future<POSUser> getUser(String token) async {
+    await persistJWTToken(token);
+    final user = await pos.authenticateV2(token);
     return user;
+  }
+
+  Future<String?> getToken() async {
+    final email = await secureStorage.read(key: 'token');
+    return email;
   }
 
   Future<String?> getSavedEmail() async {
@@ -49,6 +65,10 @@ class UserRepository {
     await secureStorage.write(key: 'password', value: password);
   }
 
+  Future<void> persistJWTToken(String token) async {
+    await secureStorage.write(key: 'token', value: token);
+  }
+
   /* Future<POSUser?> readUser() async {
     final mmkv = Hive.box('settings');
     final name = await mmkv.get(User.dbName);
@@ -70,12 +90,14 @@ class UserRepository {
   }*/
 
   Future<POSUser?> autoLogin() async {
-    final email = await secureStorage.read(key: 'email');
-    final password = await secureStorage.read(key: 'password');
-    if (email == null || password == null) {
+    final token = await secureStorage.read(key: 'token');
+    if (token == null) {
       return null;
     }
-    return authenticate(username: email, password: password);
+    if (JwtDecoder.isExpired(token)) {
+      return null;
+    }
+    return pos.authenticateV2(token);
   }
 
   Future<void> saveMerchantAndPosIdUsed(String posId, String merchantId) async {

@@ -20,18 +20,25 @@ class LoggedIn extends AuthenticationEvent {
   final POSUser user;
   final String email;
   final String password;
+  final String token;
 
   LoggedIn({
     required this.user,
     required this.email,
     required this.password,
+    required this.token,
   }) : super([user]);
 
   @override
   String toString() => 'LoggedIn { name : ${user.name} }';
 
   @override
-  List<Object> get props => [user, email, password];
+  List<Object> get props => [
+        user,
+        email,
+        password,
+        token,
+      ];
 }
 
 class LoggedOut extends AuthenticationEvent {

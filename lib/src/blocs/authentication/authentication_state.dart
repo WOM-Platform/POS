@@ -13,19 +13,23 @@ class AuthenticationUninitialized extends AuthenticationState {
 
 class AuthenticationAuthenticated extends AuthenticationState {
   final POSUser user;
-  final String email;
-  final String password;
+  final String token;
 
-  AuthenticationAuthenticated(this.user, this.email, this.password);
+  // final String password;
+
+  AuthenticationAuthenticated(this.user, this.token);
+
   @override
   String toString() => 'AuthenticationAuthenticated';
+
   @override
-  List<Object> get props => [user, email, password];
+  List<Object> get props => [user, token];
 }
 
 class AuthenticationUnauthenticated extends AuthenticationState {
   @override
   String toString() => 'AuthenticationUnauthenticated';
+
   @override
   List<Object> get props => [];
 }
@@ -33,6 +37,7 @@ class AuthenticationUnauthenticated extends AuthenticationState {
 class AuthenticationLoading extends AuthenticationState {
   @override
   String toString() => 'AuthenticationLoading';
+
   @override
   List<Object> get props => [];
 }

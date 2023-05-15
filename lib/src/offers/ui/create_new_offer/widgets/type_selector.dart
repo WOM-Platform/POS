@@ -1,9 +1,11 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
+import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/styles.dart';
 
 import '../../../domain/entities/offert_type.dart';
@@ -16,40 +18,43 @@ class SelectOfferType extends ConsumerWidget {
     final isAnonymous = ref.watch(isAnonymousUserProvider);
     final type =
         ref.watch(createOfferNotifierProvider.select((value) => value.type));
+    final merchant = ref.watch(selectedPosProvider);
+    final canCreateOffer = merchant?.merchant.access == MerchantAccess.admin;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Card(
-            child: ListTile(
-              enabled: !isAnonymous,
-              onTap: () {
-                ref
-                    .read(createOfferNotifierProvider.notifier)
-                    .setOfferType(OfferType.persistent);
-              },
-              title: Text(
-                AppLocalizations.of(context)?.translate('persistent_offer') ??
-                    '-',
-                style: titleStyle,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(context)
-                        ?.translate('persistent_offer_desc') ??
-                    '-',
-                style: descStyle,
-              ),
-              leading: IgnorePointer(
-                child: Radio<OfferType>(
-                  value: OfferType.persistent,
-                  groupValue: type,
-                  onChanged: isAnonymous ? null : (value) {},
+          if (canCreateOffer)
+            Card(
+              child: ListTile(
+                enabled: !isAnonymous && canCreateOffer,
+                onTap: () {
+                  ref
+                      .read(createOfferNotifierProvider.notifier)
+                      .setOfferType(OfferType.persistent);
+                },
+                title: Text(
+                  AppLocalizations.of(context)?.translate('persistent_offer') ??
+                      '-',
+                  style: titleStyle,
+                ),
+                subtitle: Text(
+                  AppLocalizations.of(context)
+                          ?.translate('persistent_offer_desc') ??
+                      '-',
+                  style: descStyle,
+                ),
+                leading: IgnorePointer(
+                  child: Radio<OfferType>(
+                    value: OfferType.persistent,
+                    groupValue: type,
+                    onChanged: isAnonymous ? null : (value) {},
+                  ),
                 ),
               ),
             ),
-          ),
           Card(
             child: ListTile(
               onTap: () {
@@ -84,6 +89,17 @@ class SelectOfferType extends ConsumerWidget {
                 AppLocalizations.of(context)
                         ?.translate('anonymousTypeOfferSelectorMessage') ??
                     '',
+                style: TextStyle(color: Colors.grey),
+              ),
+            )
+          else if (!canCreateOffer)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                AppLocalizations.of(context)
+                        ?.translate('no_permission_to_create') ??
+                    '',
+                style: TextStyle(color: Colors.grey),
               ),
             ),
         ],

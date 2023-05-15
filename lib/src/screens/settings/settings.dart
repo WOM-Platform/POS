@@ -40,7 +40,7 @@ class SettingsScreen extends ConsumerWidget {
         children: <Widget>[
           if (posUser != null && !posUser.isAnonymous) ...[
             ListTile(
-              leading: Icon(Icons.account_circle),
+              leading: Icon(Icons.account_circle_outlined),
               title: Text('${posUser.name} ${posUser.surname}'),
               subtitle: Text(posUser.email),
               contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
@@ -78,7 +78,7 @@ class SettingsScreen extends ConsumerWidget {
             title: Text('Tutorial'),
             subtitle: Text(
                 AppLocalizations.of(context)?.translate('tutorial_desc') ?? ''),
-            leading: Icon(Icons.info),
+            leading: Icon(Icons.info_outline),
             contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
             trailing: Icon(Icons.arrow_forward_ios_sharp),
             onTap: () => Navigator.push(
@@ -88,6 +88,15 @@ class SettingsScreen extends ConsumerWidget {
                         fromSettings: true,
                       )),
             ),
+          ),
+          ListTile(
+            title: Text('Privacy Policy'),
+            subtitle: Text(
+                AppLocalizations.of(context)?.translate('read_privacy') ?? ''),
+            leading: Icon(Icons.privacy_tip_outlined),
+            trailing: Icon(Icons.arrow_forward_ios_sharp),
+            contentPadding: EdgeInsets.only(left: 16.0, right: 24.0),
+            onTap: () => launchUrl('https://wom.social/privacy/pos'),
           ),
           const VersionInfo(),
           Divider(),
@@ -109,39 +118,22 @@ class SettingsScreen extends ConsumerWidget {
           if (posUser != null && !posUser.isAnonymous) ...[
             const SizedBox(height: 24),
             TextButton(
-                onPressed: () {
+                onPressed: () async {
                   final merchants = posUser.merchants.where(
                       (element) => element.access == MerchantAccess.admin);
                   final count = merchants.length;
-                  Alert(
-                    context: context,
-                    title: AppLocalizations.of(context)
+                  final res = await askChoice(
+                    context,
+                    AppLocalizations.of(context)
                             ?.translate('doYouWantDeleteAccount') ??
                         '',
-                    desc:
-                        '${AppLocalizations.of(context)?.translate('doYouWantDeleteAccountDesc')}${count > 0 ? ' $count ' : ' '}merchant',
-                    buttons: [
-                      DialogButton(
-                        child: Text('No'),
-                        color: Colors.white,
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      DialogButton(
-                        child: Text(
-                            AppLocalizations.of(context)?.translate('yes') ??
-                                ''),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).pop();
-                          ref
-                              .read(authNotifierProvider.notifier)
-                              .deleteAccount();
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ).show();
+                  );
+
+                  if (res) {
+                    Navigator.of(context, rootNavigator: true).pop();
+                    ref.read(authNotifierProvider.notifier).deleteAccount();
+                    Navigator.of(context).pop();
+                  }
                 },
                 child: Text(
                   AppLocalizations.of(context)?.translate('deleteAccount') ??

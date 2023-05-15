@@ -50,14 +50,14 @@ class AppDatabase extends AppDatabaseBase {
     logger.i("AppDatabase: init database");
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "pos.db");
-    _database = await openDatabase(path, version: 1,
+    _database = await openDatabase(path, version: 2,
         onCreate: (Database db, int version) async {
       await AimDatabase.createAimTable(db);
       await _createRequestTable(db);
     }, onUpgrade: (Database db, int oldVersion, int newVersion) async {
       await db.execute("DROP TABLE ${AimDbKeys.TABLE_NAME}");
       await AimDatabase.createAimTable(db);
-      await _createRequestTable(db);
+      // await _createRequestTable(db);
     });
   }
 

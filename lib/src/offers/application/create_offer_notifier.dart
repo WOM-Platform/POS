@@ -77,20 +77,18 @@ final womControllerProvider =
   return c;
 });
 
-final maxAgeControllerProvider =
-    Provider.autoDispose<TextEditingController>((ref) {
-  final c = TextEditingController();
-  ref.onDispose(() {
-    c.dispose();
-  });
-  return c;
-});
+// final maxAgeControllerProvider =
+//     Provider.autoDispose<TextEditingController>((ref) {
+//   final c = TextEditingController();
+//   ref.onDispose(() {
+//     c.dispose();
+//   });
+//   return c;
+// });
 
-
-final offerTypeProvider = Provider<OfferType>((ref){
+final offerTypeProvider = Provider<OfferType>((ref) {
   throw UnimplementedError();
 });
-
 
 @riverpod
 class CreateOfferNotifier extends _$CreateOfferNotifier {
@@ -98,11 +96,12 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
     ref.listen(titleControllerProvider, (_, __) {});
     ref.listen(descControllerProvider, (_, __) {});
     ref.listen(womControllerProvider, (_, __) {});
-    ref.listen(maxAgeControllerProvider, (_, __) {});
+    // ref.listen(maxAgeControllerProvider, (_, __) {});
     ref.listen(aimSelectionNotifierProvider, (_, next) {});
     final offerType = ref.watch(offersTabProvider);
+    final canCreateOffer = ref.watch(selectedPosProvider)?.merchant.access == MerchantAccess.admin;
     return CreateOfferState.initial(
-      offerType: offerType,
+      offerType: canCreateOffer ? offerType : OfferType.ephemeral,
     );
   }
 
@@ -120,10 +119,11 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
         description: desc,
         wom: wom,
       );
-    } else if (state.activeStep == 2) {
-      final maxAge = int.tryParse(ref.read(maxAgeControllerProvider).text);
-      tmp = tmp.copyWith(maxAge: maxAge);
     }
+    // else if (state.activeStep == 2) {
+      // final maxAge = int.tryParse(ref.read(maxAgeControllerProvider).text);
+      // tmp = tmp.copyWith(maxAge: maxAge);
+    // }
     state = tmp;
   }
 
@@ -163,8 +163,8 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
         // }
         return canGo;
       case 2:
-        final maxAge =
-            int.tryParse(ref.read(maxAgeControllerProvider).text.trim());
+        // final maxAge =
+        //     int.tryParse(ref.read(maxAgeControllerProvider).text.trim());
         return true;
       default:
         return false;
@@ -401,11 +401,29 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
     state = state.copyWith(mapPolygon: null);
   }
 
-  void resetMaxAge() {
-    state = state.copyWith(maxAge: null);
+  changeMaxAge(int value) {
+    if (value == 0) {
+      state = state.copyWith(maxAge: null);
+    } else {
+      state = state.copyWith(maxAge: age[value]);
+    }
   }
+
+  // void resetMaxAge() {
+  //   state = state.copyWith(maxAge: null);
+  // }
 
   void resetAim() {
     state = state.copyWith(aimCode: null);
   }
 }
+
+final age = [
+  0,
+  7,
+  14,
+  31,
+  90,
+  180,
+  365,
+];

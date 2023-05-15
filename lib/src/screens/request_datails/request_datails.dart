@@ -1,37 +1,51 @@
 import 'package:clippy_flutter/arc.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pos/localization/app_localizations.dart';
+import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/screens/request_confirm/summary_request.dart';
+import 'package:pos/src/services/aim_repository.dart';
+import 'package:pos/src/services/pdf_creator.dart';
+import 'package:share/share.dart';
 
-class RequestDetails extends StatelessWidget {
+import '../../offers/application/offers.dart';
+
+class RequestDetails extends ConsumerWidget {
   // final PaymentRequest paymentRequest;
   final int cost;
   final String id;
   final String password;
   final String name;
   final String link;
+  final Function()? onCreatePdf;
 
   const RequestDetails(
       {Key? key,
       required this.id,
       required this.cost,
+      this.onCreatePdf,
       required this.password,
       required this.link,
       required this.name})
       : super(key: key);
 
-  factory RequestDetails.fromPaymentRequest(PaymentRequest request) {
+  factory RequestDetails.fromPaymentRequest(
+    PaymentRequest request,
+    Function()? onCreatePdf,
+  ) {
     return RequestDetails(
       id: request.id.toString(),
       cost: request.amount,
       password: request.password ?? '-',
       name: request.name,
       link: request.deepLink ?? '-',
+      onCreatePdf: onCreatePdf,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -39,11 +53,11 @@ class RequestDetails extends StatelessWidget {
         centerTitle: true,
         elevation: 0.0,
         actions: <Widget>[
-          if(id.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(child: Text("ID ${id}")),
-          ),
+          if (id.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: Text("ID ${id}")),
+            ),
         ],
       ),
       body: Stack(
@@ -116,6 +130,73 @@ class RequestDetails extends StatelessWidget {
               SizedBox(
                 height: 80.0,
               ),
+              if (onCreatePdf != null) ...[
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                    ),
+                    onPressed: onCreatePdf,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.picture_as_pdf),
+                        const SizedBox(width: 16),
+                        Text('Scarica PDF'),
+                      ],
+                    ),
+                  ),
+                ),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                    ),
+                    onPressed: () => Share.share(link),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.share),
+                        const SizedBox(width: 16),
+                        Text('Condividi link'),
+                      ],
+                    ),
+                  ),
+                ),
+                /* Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink,
+                      ),
+                      onPressed: onCreatePdf,
+                      child: Row(
+                        children: [
+                          Icon(Icons.picture_as_pdf),
+                          const SizedBox(width: 16),
+                          Text('Scarica PDF'),
+                        ],
+                      ),
+                    ),
+                    // IconButton(
+                    //   icon: Icon(Icons.picture_as_pdf),
+                    //   color: Colors.pink,
+                    //   iconSize: 50,
+                    //   onPressed: onCreatePdf,
+                    // ),
+                    const SizedBox(width: 24),
+                    IconButton(
+                      icon: Icon(Icons.share),
+                      color: Colors.green,
+                      iconSize: 50,
+                      onPressed: () {
+                        Share.share(link);
+                      },
+                    ),
+                  ],
+                ),*/
+              ]
             ],
           ),
         ],

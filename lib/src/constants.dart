@@ -12,6 +12,7 @@ class AimDbKeys {
   static const TABLE_NAME = 'aims';
   static const ID = 'id';
   static const CODE = 'code';
+  static const hidden = 'hidden';
   static const ICON_URL = 'iconFile';
   static const CHILDREN = 'children';
   static const TITLES = 'titles';

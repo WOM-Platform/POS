@@ -84,8 +84,7 @@ class AimSelectorNotifier extends StateNotifier<AimSelectionState> {
   Future<void> getAimListFromDb() async {
     try {
       final aimList = await ref
-          .read(aimRepositoryProvider)
-          .getAimList(database: AppDatabase.get().getDb());
+          .read(aimListFutureProvider.future);
       state = AimSelectionState(
         aimList: aimList,
         subSubAimList: [],
@@ -98,9 +97,7 @@ class AimSelectorNotifier extends StateNotifier<AimSelectionState> {
   }
 
   updateAims() async {
-    final aimList = await ref
-        .read(aimRepositoryProvider)
-        .updateAim(database: AppDatabase.get().getDb());
+    final aimList = await ref.refresh(aimFlatListFutureProvider.future);
     state = AimSelectionState(
       aimList: aimList,
       subSubAimList: [],

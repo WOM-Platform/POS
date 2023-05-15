@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dart_wom_connector/dart_wom_connector.dart';
-import 'package:meta/meta.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../constants.dart';
@@ -21,6 +20,7 @@ class AimDatabase {
     return db.execute("CREATE TABLE ${AimDbKeys.TABLE_NAME} ("
         "${AimDbKeys.ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
         "${AimDbKeys.CODE} TEXT,"
+        "${AimDbKeys.hidden} INTEGER,"
         "${AimDbKeys.ICON_URL} TEXT,"
         "${AimDbKeys.TITLES} TEXT);");
   }
@@ -33,8 +33,8 @@ class AimDatabase {
     try {
       logger.i("AimDatabase: getAimWithLevel()");
       final String whereClause = code != null
-          ? "LENGTH(${AimDbKeys.CODE}) = ? AND ${AimDbKeys.CODE} LIKE '$code%'"
-          : "LENGTH(${AimDbKeys.CODE}) = ?";
+          ? "LENGTH(${AimDbKeys.CODE}) = ? AND ${AimDbKeys.CODE} LIKE '$code%' AND ${AimDbKeys.hidden} == 0"
+          : "LENGTH(${AimDbKeys.CODE}) = ? AND ${AimDbKeys.hidden} == 0";
       List<Map> maps = await db.query(
         AimDbKeys.TABLE_NAME,
         columns: null,
@@ -59,6 +59,7 @@ class AimDatabase {
     try {
       List<Map> maps = await db.query(
         AimDbKeys.TABLE_NAME,
+        where: "${AimDbKeys.hidden} == 0"
       );
       return maps.map((a) {
         return Aim(
@@ -112,7 +113,7 @@ extension AimExtension on Aim {
   Map<String, dynamic> toDBMap() {
     final data = <String, dynamic>{};
     data[AimDbKeys.CODE] = code;
-    // data[AimDbKeys.ICON_URL] = iconUrl;
+    data[AimDbKeys.hidden] = hidden ? 1 : 0;
     data[AimDbKeys.TITLES] = json.encode(titles);
     return data;
   }

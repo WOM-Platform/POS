@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/localization/app_localizations.dart';
-import 'package:pos/src/blocs/home/bloc.dart';
+
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/offers/application/offers.dart';

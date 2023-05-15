@@ -191,7 +191,7 @@ class CardRequest extends StatelessWidget {
                                 ? MdiIcons.mapCheckOutline
                                 : MdiIcons.mapOutline,
                             text: request.simpleFilter?.bounds != null
-                                ? 'Configurato'
+                                ? AppLocalizations.of(context)?.translate('geo_filter') ?? ''
                                 : '-',
                           ),
                         ],

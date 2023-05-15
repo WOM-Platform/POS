@@ -1,8 +1,11 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/model/flavor_enum.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 
@@ -106,4 +109,23 @@ Future<POSUser> getAnonymousUser(PosClient pos) async {
       )
     ],
   );
+}
+
+Future<bool> askChoice(BuildContext context, String title) async {
+  final res = await Alert(
+    context: context,
+    title: title,
+    buttons: [
+      DialogButton(
+        child: Text('No'),
+        color: Colors.white,
+        onPressed:() => Navigator.of(context).pop(false),
+      ),
+      DialogButton(
+        child: Text(AppLocalizations.of(context)?.translate('yes') ?? '-'),
+        onPressed: () => Navigator.of(context).pop(true),
+      ),
+    ],
+  ).show();
+  return res ?? false;
 }

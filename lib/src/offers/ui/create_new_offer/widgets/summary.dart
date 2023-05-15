@@ -4,6 +4,7 @@ import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/extensions.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/domain/entities/offert_type.dart';
+import 'package:pos/src/services/aim_repository.dart';
 
 class Summary extends ConsumerWidget {
   const Summary({Key? key}) : super(key: key);
@@ -17,6 +18,8 @@ class Summary extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Text(AppLocalizations.of(context)?.translate('summary_tip') ?? '-'),
+          const SizedBox(height: 16),
           InfoText(
             text: AppLocalizations.of(context)?.translate('offer_type') ?? '-',
             value: state.type?.translate(context),
@@ -37,45 +40,61 @@ class Summary extends ConsumerWidget {
             value: state.wom?.toString(),
           ),
           const SizedBox(height: 16),
-          InfoText(
-            text: 'Aim',
-            value: state.aimCode,
-          ),
-          const SizedBox(height: 16),
-          InfoText(
-            text: AppLocalizations.of(context)?.translate('bounding_box') ??
-                '-',
-            value: state.mapPolygon != null
-                ? AppLocalizations.of(context)?.translate('offer_type') ?? '-'
-                : '-',
-          ),
-          /*   if (state.mapPolygon != null)
-            AspectRatio(
-              aspectRatio: 1,
-              child: GoogleMap(
-                polygons: {
-                  if (state.mapPolygon != null)
-                    Polygon(
-                      polygonId: PolygonId('bounding_box'),
-                      points: state.mapPolygon!.polygon,
-                      fillColor: Colors.green.withOpacity(0.3),
-                      strokeColor: Colors.green.withOpacity(0.7),
-                      strokeWidth: 2,
-                    )
-                },
-                initialCameraPosition: CameraPosition(
-                  target: state.mapPolygon!.target,
-                  zoom: state.mapPolygon!.zoom,
-                ),
+          if (state.aimCode != null ||
+              state.mapPolygon != null ||
+              state.maxAge != null) ...[
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(),
               ),
-            ),*/
-          const SizedBox(height: 16),
-          InfoText(
-            text: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
-            value: state.maxAge != null && state.maxAge! > 0 ? '${state
-                .maxAge} ${AppLocalizations.of(context)?.translate('days') ??
-                ''}' : null,
-          ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)?.translate('filters') ?? '-',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 8),
+                  InfoText(
+                      text: AppLocalizations.of(context)
+                              ?.translate('filter_aim') ??
+                          '-',
+                      value: ref.watch(aimNameProvider(state.aimCode))?[
+                              AppLocalizations.of(context)
+                                      ?.locale
+                                      .languageCode ??
+                                  'en'] ??
+                          state.aimCode),
+                  const SizedBox(height: 16),
+                  InfoText(
+                    text: AppLocalizations.of(context)
+                            ?.translate('bounding_box') ??
+                        '-',
+                    value: state.mapPolygon != null
+                        ? AppLocalizations.of(context)?.translate('bb_set') ??
+                            '-'
+                        : '-',
+                  ),
+                  const SizedBox(height: 16),
+                  InfoText(
+                    text: AppLocalizations.of(context)?.translate('wom_age') ??
+                        '-',
+                    value: state.maxAge != null && state.maxAge! > 0
+                        ? '${state.maxAge} ${AppLocalizations.of(context)?.translate('days') ?? ''}'
+                        : null,
+                  ),
+                ],
+              ),
+            )
+          ] else
+            InfoText(
+              text: AppLocalizations.of(context)?.translate('filters') ?? '-',
+              value:
+                  AppLocalizations.of(context)?.translate('no_filters') ?? '-',
+            ),
         ],
       ),
     );

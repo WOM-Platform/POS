@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,6 +12,7 @@ import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/common_card.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/common_dropdown.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
+import 'package:pos/src/services/aim_repository.dart';
 
 class SimpleFilterBuilder extends ConsumerWidget {
   const SimpleFilterBuilder({Key? key}) : super(key: key);
@@ -18,10 +20,11 @@ class SimpleFilterBuilder extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
-      children: [
+      children: const [
         SelectAim(),
         SelectBounds(),
         SelectMaxAge(),
+        SizedBox(height: 100),
       ],
     );
   }
@@ -183,64 +186,113 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
               child: Text('Reset'),
             )
           : null,
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: GoogleMap(
-          onMapCreated: (controller) {
-            _controller.complete(controller);
-          },
-          onTap: (_) {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => PositionSelectionPage()));
-          },
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
-          polygons: {
-            if (mapPolygon != null)
-              Polygon(
-                polygonId: PolygonId('bounding_box'),
-                points: mapPolygon.polygon,
-                fillColor: Colors.green.withOpacity(0.3),
-                strokeColor: Colors.green.withOpacity(0.7),
-                strokeWidth: 2,
-              )
-          },
-          initialCameraPosition: CameraPosition(target: LatLng(0, 0)),
-        ),
-      ),
+      child: mapPolygon == null
+          ? ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => PositionSelectionPage()));
+              },
+              child: Text('Imposta'),
+            )
+          : AspectRatio(
+              aspectRatio: 1,
+              child: GoogleMap(
+                onMapCreated: (controller) {
+                  _controller.complete(controller);
+                },
+                onTap: (_) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => PositionSelectionPage()));
+                },
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                polygons: {
+                  if (mapPolygon != null)
+                    Polygon(
+                      polygonId: PolygonId('bounding_box'),
+                      points: mapPolygon.polygon,
+                      fillColor: Colors.green.withOpacity(0.3),
+                      strokeColor: Colors.green.withOpacity(0.7),
+                      strokeWidth: 2,
+                    )
+                },
+                initialCameraPosition: CameraPosition(target: LatLng(0, 0)),
+              ),
+            ),
     );
   }
 }
 
-class SelectMaxAge extends ConsumerWidget {
+class SelectMaxAge extends HookConsumerWidget {
   const SelectMaxAge({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final maxAge =
-        ref.watch(createOfferNotifierProvider.select((value) => value.maxAge));
+    final selectedAge = useState<int>(0);
+    // final maxAge =
+    //     ref.watch(createOfferNotifierProvider.select((value) => value.maxAge));
     return CreateOfferCard(
-      title: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
-      description:
-          AppLocalizations.of(context)?.translate('wom_age_desc') ?? '-',
-      extra: maxAge != null
-          ? TextButton(
-              onPressed: () {
-                ref.read(createOfferNotifierProvider.notifier).resetMaxAge();
-              },
-              child: Text('Reset'),
-            )
-          : null,
-      child: TextFormField(
-        textInputAction: TextInputAction.done,
-        controller: ref.watch(maxAgeControllerProvider),
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-        decoration: InputDecoration(
-          suffixText: AppLocalizations.of(context)?.translate('days') ?? '',
-            hintText:
-                AppLocalizations.of(context)?.translate('write_here') ?? '-'),
-      ),
-    );
+        title: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
+        description:
+            AppLocalizations.of(context)?.translate('wom_age_desc') ?? '-',
+        // extra: maxAge != null
+        //     ? TextButton(
+        //         onPressed: () {
+        //           ref.read(createOfferNotifierProvider.notifier).resetMaxAge();
+        //         },
+        //         child: Text('Reset'),
+        //       )
+        //     : null,
+        child: Slider(
+          divisions: maxAgeIta.length,
+          max: (maxAgeIta.length - 1).toDouble(),
+          value: selectedAge.value.toDouble(),
+          label: getMaxAgeText(selectedAge.value,
+              AppLocalizations.of(context)?.locale.languageCode ?? 'en'),
+          onChanged: (double value) {
+            selectedAge.value = value.toInt();
+            ref
+                .watch(createOfferNotifierProvider.notifier)
+                .changeMaxAge(value.toInt());
+          },
+        )
+        // child: TextFormField(
+        //   textInputAction: TextInputAction.done,
+        //   controller: ref.watch(maxAgeControllerProvider),
+        //   keyboardType: TextInputType.number,
+        //   inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+        //   decoration: InputDecoration(
+        //     suffixText: AppLocalizations.of(context)?.translate('days') ?? '',
+        //       hintText:
+        //           AppLocalizations.of(context)?.translate('write_here') ?? '-'),
+        // ),
+        );
   }
 }
+
+getMaxAgeText(int value, String language) {
+  if (language == 'it') {
+    return maxAgeIta[value];
+  }
+  return maxAgeEng[value];
+}
+
+final maxAgeIta = [
+  'Accetta tutti',
+  'Al più una settimana',
+  'Al più due settimane',
+  'Al più un mese',
+  'Al più tre mesi',
+  'Al più sei mesi',
+  'Al più un anno'
+];
+
+final maxAgeEng = [
+  'Accept all',
+  'At most one week old',
+  'At most two weeks old',
+  'At most one month old',
+  'At most three months old',
+  'At most six months old',
+  'At most one year old',
+];

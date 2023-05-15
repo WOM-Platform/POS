@@ -1,4 +1,3 @@
-import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,14 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as md;
 import 'package:pos/localization/app_localizations.dart';
-import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/offers/ui/offers_screen.dart';
-import 'package:pos/src/screens/create_payment/create_payment.dart';
 import 'package:pos/src/screens/home/widgets/select_pos_modal.dart';
 import 'package:pos/src/screens/settings/settings.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../main_common.dart';
 
 class HomeScreen extends StatefulHookConsumerWidget {
@@ -31,14 +27,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (isFirstOpen) {
         _showTutorial(context);
       }
+      // else {
+      //   showSelector(context);
+      // }
     });
     super.initState();
+  }
+
+  showSelector(BuildContext context) {
+    md.showMaterialModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) => PosSelectorWidget(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final selectedPos = ref.watch(selectedPosProvider);
-    // final index = useState(0);
 
     return Scaffold(
       extendBody: true,
@@ -66,15 +72,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 useRootNavigator: true,
                 builder: (context) => PosSelectorWidget(),
               );
-
-              // if (ref.read(homeNotifierProvider.notifier).posSelectionEnabled) {
-              // await Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => PosSelectionPage(),
-              //   ),
-              // );
-
-              // }
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -99,13 +96,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         elevation: 0.0,
         actions: <Widget>[
-          // IconButton(
-          //   icon: Icon(Icons.info),
-          //   onPressed: () async {
-          //     await _clearTutorial(context);
-          //     _showTutorial(context);
-          //   },
-          // ),
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () async {
@@ -115,26 +105,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      // body: IndexedStack(
-      //   index: index.value,
-      //   children: [
-      //     OffersScreen(),
-      //     SettingsScreen(),
-      //   ],
-      // ),
       body: OffersScreen(),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: index.value,
-      //   onTap: (page) {
-      //     index.value = page;
-      //   },
-      //   items: [
-      //     BottomNavigationBarItem(
-      //         icon: Icon(Icons.local_offer), label: 'Offerte'),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(Icons.settings), label: 'Impostazioni'),
-      //   ],
-      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: selectedPos != null
           ? FloatingActionButton.extended(
@@ -165,7 +136,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Future _goToCreatePaymentScreen(
+/*  Future _goToCreatePaymentScreen(
       BuildContext context, PointOfSale? pos) async {
     final posId = pos?.id;
     if (posId == null) return;
@@ -186,7 +157,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         .push(MaterialPageRoute(builder: (ctx) => provider));
   }
 
-  void _goToSettingsScreen() {
+   void _goToSettingsScreen() {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (BuildContext context) => SettingsScreen()));
   }
@@ -222,7 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         'show_logout_info',
       },
     );
-  }
+  }*/
 
   void _showTutorial(BuildContext context) {
     FeatureDiscovery.discoverFeatures(

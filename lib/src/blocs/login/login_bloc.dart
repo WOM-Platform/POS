@@ -31,8 +31,14 @@ class LoginBloc extends StateNotifier<LoginState> {
   Future anonymousLogin() async {
     logger.i('anonimo');
     user = await getAnonymousUser(ref.read(getPosProvider));
-    await ref.read(authNotifierProvider.notifier).logIn(LoggedIn(
-        user: user!, email: anonymousEmail, password: anonymousPassword));
+    await ref.read(authNotifierProvider.notifier).logIn(
+          LoggedIn(
+            user: user!,
+            email: anonymousEmail,
+            password: anonymousPassword,
+            token:anonymousToken,
+          ),
+        );
     state = LoginSuccessfull();
   }
 
@@ -40,11 +46,12 @@ class LoginBloc extends StateNotifier<LoginState> {
     logger.i('login');
     state = LoginLoading();
     try {
-      user = await ref.read(userRepositoryProvider).authenticate(
+      final token = await ref.read(userRepositoryProvider).authenticate(
             username: event.username,
             password: event.password,
           );
 
+      user = await ref.read(userRepositoryProvider).getUser(token);
       if (user == null) return;
 
       logger.i(user?.name);
@@ -57,8 +64,14 @@ class LoginBloc extends StateNotifier<LoginState> {
               0) {
         state = InsufficientPos();
       } else {
-        await ref.read(authNotifierProvider.notifier).logIn(LoggedIn(
-            user: user!, email: event.username, password: event.password));
+        await ref.read(authNotifierProvider.notifier).logIn(
+              LoggedIn(
+                user: user!,
+                email: event.username,
+                password: event.password,
+                token: token
+              ),
+            );
         state = LoginSuccessfull();
       }
     } catch (ex, stack) {

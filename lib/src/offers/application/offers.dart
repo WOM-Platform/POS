@@ -4,7 +4,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
-import 'package:pos/src/blocs/home/bloc.dart';
+import 'package:pos/src/blocs/home/home_state.dart';
+
 import 'package:pos/src/constants.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/services/aim_repository.dart';
@@ -119,28 +120,25 @@ class RequestNotifier extends _$RequestNotifier {
     final selectedPos = ref.watch(selectedPosProvider);
     if (selectedPos?.pos == null) return NoPosState();
 
-    var aims = await ref
-        .watch(aimRepositoryProvider)
-        .getFlatAimList(database: AppDatabase.get().getDb());
-
     try {
-      final lastCheck = await getLastAimCheckDateTime();
-      final aimsAreOld = DateTime.now().difference(lastCheck).inHours > 5;
+      // final lastCheck = await getLastAimCheckDateTime();
+      // final aimsAreOld = DateTime.now().difference(lastCheck).inMinutes > 1;
+      //
+      // //Se non ho gli aim salvati nel db o sono vecchi li scarico da internet
+      // if (aims == null || aims.isEmpty || aimsAreOld) {
+      //   if (await InternetConnectionChecker().hasConnection) {
+      //     logger.i("HomeBloc: trying to update Aim from internet");
+      //     aims = await ref
+      //         .watch(aimRepositoryProvider)
+      //         .updateAim(database: AppDatabase.get().getDb());
+      //     await setAimCheckDateTime(DateTime.now());
+      //   } else {
+      //     logger.i("Aims null or empty and No internet connection");
+      //     return NoDataConnectionState();
+      //   }
+      // }
 
-      //Se non ho gli aim salvati nel db o sono vecchi li scarico da internet
-      if (aims == null || aims.isEmpty || aimsAreOld) {
-        if (await InternetConnectionChecker().hasConnection) {
-          logger.i("HomeBloc: trying to update Aim from internet");
-          aims = await ref
-              .watch(aimRepositoryProvider)
-              .updateAim(database: AppDatabase.get().getDb());
-          await setAimCheckDateTime(DateTime.now());
-        } else {
-          logger.i("Aims null or empty and No internet connection");
-          return NoDataConnectionState();
-        }
-      }
-
+      final aims = await ref.read(aimFlatListFutureProvider.future);
       logger.i('aim letti : ${aims.length}');
 
       final List<PaymentRequest> requests =

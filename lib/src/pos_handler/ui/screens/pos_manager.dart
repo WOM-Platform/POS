@@ -23,7 +23,7 @@ class POSManagerScreen extends HookConsumerWidget {
     final tabController = useTabController(initialLength: size);
     final posUser = ref.watch(posUserProvider);
     final merchants = posUser?.merchants ?? [];
-    final List<PointOfSale> list = merchants.expand((e) => e.posList).toList();
+    // final List<PointOfSale> list = merchants.expand((e) => e.posList).toList();
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -33,17 +33,25 @@ class POSManagerScreen extends HookConsumerWidget {
           isScrollable: true,
           controller: tabController,
           tabs: [
-            for (var pos in list)
-              Tab(
-                text: pos.name,
-                // icon: Icon(Icons.directions_car),
-              ),
+            for (var m in merchants)
+              for (var pos in m.posList)
+                Tab(
+                  text: pos.name,
+                  // icon: Icon(Icons.directions_car),
+                ),
           ],
         ),
       ),
       body: TabBarView(
         controller: tabController,
-        children: [for (var pos in list) POSHandler(pos)],
+        children: [
+          for (var m in merchants)
+            for (var pos in m.posList)
+              POSHandler(
+                pos,
+                m.access == MerchantAccess.admin,
+              ),
+        ],
       ),
     );
   }
@@ -51,8 +59,9 @@ class POSManagerScreen extends HookConsumerWidget {
 
 class POSHandler extends ConsumerWidget {
   final PointOfSale pos;
+  final bool canEdit;
 
-  const POSHandler(this.pos, {Key? key}) : super(key: key);
+  const POSHandler(this.pos, this.canEdit, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,31 +90,34 @@ class POSHandler extends ConsumerWidget {
                     ),
                   ),
                 ),
-              Positioned(
-                bottom: 16,
-                right: 16,
-                child: CircleButton(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => AddImageScreen(
-                          aspectRatio: 16 / 9,
-                          onSave: (bytes) async {
-                            final userRepo = ref.read(userRepositoryProvider);
-                            final email = await userRepo.getSavedEmail();
-                            final password = await userRepo.getSavedPassword();
-                            await ref
-                                .read(getPosProvider)
-                                .updateCover(pos.id, bytes, email!, password!);
-                            ref.read(authNotifierProvider.notifier).refresh();
-                          },
+              if (canEdit)
+                Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: CircleButton(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => AddImageScreen(
+                            aspectRatio: 16 / 9,
+                            onSave: (bytes) async {
+                              final userRepo = ref.read(userRepositoryProvider);
+                              final token = await userRepo.getToken();
+                              if (token == null) {
+                                return;
+                              }
+                              await ref
+                                  .read(getPosProvider)
+                                  .updateCover(pos.id, bytes, token);
+                              ref.read(authNotifierProvider.notifier).refresh();
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  icon: Icons.edit,
-                ),
-              )
+                      );
+                    },
+                    icon: Icons.edit,
+                  ),
+                )
             ],
           ),
         ),
@@ -118,30 +130,29 @@ class POSHandler extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    AppLocalizations.of(context)
-                        ?.translate('name') ??
-                        '-',
+                    AppLocalizations.of(context)?.translate('name') ?? '-',
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
-                  CircleButton(
-                    radius: 10,
-                    icon: Icons.edit,
-                    onTap: () {
-                      edit(
-                        ref: ref,
-                        initialText: pos.name,
-                        title: AppLocalizations.of(context)
-                            ?.translate('posName') ??
-                            '-',
-                        maxLength: 28,
-                        minLength: 4,
-                        maxLines: 1,
-                        onSave: (title) =>
-                            updateFields(ref, title, pos.description, pos.url),
-                      );
-                    },
-                  ),
+                  if (canEdit)
+                    CircleButton(
+                      radius: 10,
+                      icon: Icons.edit,
+                      onTap: () {
+                        edit(
+                          ref: ref,
+                          initialText: pos.name,
+                          title: AppLocalizations.of(context)
+                                  ?.translate('posName') ??
+                              '-',
+                          maxLength: 28,
+                          minLength: 4,
+                          maxLines: 1,
+                          onSave: (title) => updateFields(
+                              ref, title, pos.description, pos.url),
+                        );
+                      },
+                    ),
                 ],
               ),
               const SizedBox(height: 4),
@@ -186,23 +197,24 @@ class POSHandler extends ConsumerWidget {
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
-                  CircleButton(
-                    radius: 10,
-                    icon: Icons.edit,
-                    onTap: () {
-                      edit(
-                        ref: ref,
-                        initialText: pos.description,
-                        title: AppLocalizations.of(context)
-                                ?.translate('posDescription') ??
-                            '-',
-                        maxLength: 4096,
-                        maxLines: 3,
-                        onSave: (description) =>
-                            updateFields(ref, pos.name, description, pos.url),
-                      );
-                    },
-                  ),
+                  if (canEdit)
+                    CircleButton(
+                      radius: 10,
+                      icon: Icons.edit,
+                      onTap: () {
+                        edit(
+                          ref: ref,
+                          initialText: pos.description,
+                          title: AppLocalizations.of(context)
+                                  ?.translate('posDescription') ??
+                              '-',
+                          maxLength: 4096,
+                          maxLines: 3,
+                          onSave: (description) =>
+                              updateFields(ref, pos.name, description, pos.url),
+                        );
+                      },
+                    ),
                 ],
               ),
               Text(
@@ -217,22 +229,23 @@ class POSHandler extends ConsumerWidget {
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
-                  CircleButton(
-                    radius: 10,
-                    icon: Icons.edit,
-                    onTap: () {
-                      edit(
-                        ref: ref,
-                        initialText: pos.url,
-                        title: AppLocalizations.of(context)
-                                ?.translate('edit_url') ??
-                            '-',
-                        maxLines: 1,
-                        onSave: (url) =>
-                            updateFields(ref, pos.name, pos.description, url),
-                      );
-                    },
-                  ),
+                  if (canEdit)
+                    CircleButton(
+                      radius: 10,
+                      icon: Icons.edit,
+                      onTap: () {
+                        edit(
+                          ref: ref,
+                          initialText: pos.url,
+                          title: AppLocalizations.of(context)
+                                  ?.translate('edit_url') ??
+                              '-',
+                          maxLines: 1,
+                          onSave: (url) =>
+                              updateFields(ref, pos.name, pos.description, url),
+                        );
+                      },
+                    ),
                 ],
               ),
               Text(
@@ -308,11 +321,7 @@ class POSHandler extends ConsumerWidget {
     final newPos =
         pos.copyWith(name: title, description: description, url: url);
     if (pos == newPos) return;
-    await ref.read(getPosProvider).updatePos(
-          newPos,
-          authState.email,
-          authState.password,
-        );
+    await ref.read(getPosProvider).updatePos(newPos, authState.token);
     await ref.read(authNotifierProvider.notifier).refresh();
   }
 }
