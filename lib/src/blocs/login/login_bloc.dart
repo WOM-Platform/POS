@@ -1,26 +1,20 @@
-import 'dart:async';
 
-import 'package:dart_wom_connector/dart_wom_connector.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
-import 'package:pos/src/offers/application/offers.dart';
-import 'package:pos/src/services/user_repository.dart';
-import '../../my_logger.dart';
-import '../../utils.dart';
-import 'login_event.dart';
 import 'login_state.dart';
 
-final loginProvider =
-    StateNotifierProvider.autoDispose<LoginBloc, LoginState>((ref) {
-  return LoginBloc(ref: ref);
-});
+// final loginProvider =
+//     StateNotifierProvider.autoDispose<LoginBloc, LoginState>((ref) {
+//   return LoginBloc(ref: ref);
+// });
+
+final loginErrorProvider =
+    StateProvider.autoDispose<LoginFailure?>((ref) => null);
 
 const anonymousEmail = 'anonymous@email.com';
 const anonymousPassword = 'password';
 
-class LoginBloc extends StateNotifier<LoginState> {
+/*class LoginBloc extends StateNotifier<LoginState> {
   final Ref ref;
   POSUser? user;
 
@@ -31,27 +25,34 @@ class LoginBloc extends StateNotifier<LoginState> {
   Future anonymousLogin() async {
     logger.i('anonimo');
     user = await getAnonymousUser(ref.read(getPosProvider));
-    await ref.read(authNotifierProvider.notifier).logIn(
+    await ref.read(authNotifierProvider.notifier).anonymousLogin(
           LoggedIn(
             user: user!,
             email: anonymousEmail,
             password: anonymousPassword,
-            token:anonymousToken,
+            token: anonymousToken,
           ),
         );
     state = LoginSuccessfull();
   }
 
-  Future login(LoginButtonPressed event) async {
+*//*  Future login(LoginButtonPressed event) async {
     logger.i('login');
     state = LoginLoading();
     try {
-      final token = await ref.read(userRepositoryProvider).authenticate(
+      final authResponse = await ref.read(userRepositoryProvider).authenticate(
             username: event.username,
             password: event.password,
           );
 
-      user = await ref.read(userRepositoryProvider).getUser(token);
+      if(!authResponse.verified){
+        state = EmailNotVerified();
+        return;
+      }
+
+      await ref.read(userRepositoryProvider).persistJWTToken(authResponse.token);
+
+      user = await ref.read(userRepositoryProvider).getUser(authResponse.token);
       if (user == null) return;
 
       logger.i(user?.name);
@@ -69,7 +70,7 @@ class LoginBloc extends StateNotifier<LoginState> {
                 user: user!,
                 email: event.username,
                 password: event.password,
-                token: token
+                token: authResponse.token
               ),
             );
         state = LoginSuccessfull();
@@ -79,5 +80,5 @@ class LoginBloc extends StateNotifier<LoginState> {
       logger.e(stack);
       state = LoginFailure(error: "Username e/o password non validi!");
     }
-  }
-}
+  }*//*
+}*/

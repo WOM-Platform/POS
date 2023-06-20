@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/custom_icons.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/domain/entities/offert_type.dart';
@@ -21,7 +21,7 @@ import 'package:pos/src/services/pdf_creator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
 import 'package:collection/collection.dart';
-import '../../db/app_database/app_database.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 final offersTabProvider = StateProvider<OfferType>((ref) {
   final isAnonymous = ref.watch(isAnonymousUserProvider);
@@ -71,15 +71,11 @@ class OffersScreen extends HookConsumerWidget {
                 controller: tabController,
                 tabs: [
                   Tab(
-                    text: AppLocalizations.of(context)
-                            ?.translate('persistentTabBar') ??
-                        '-',
+                    text: 'persistentTabBar'.tr(),
                     // icon: Icon(Icons.directions_car),
                   ),
                   Tab(
-                    text: AppLocalizations.of(context)
-                            ?.translate('ephemeralTabBar') ??
-                        '-',
+                    text: 'ephemeralTabBar'.tr(),
                     // icon: Icon(Icons.directions_transit),
                   ),
                 ],
@@ -93,7 +89,7 @@ class OffersScreen extends HookConsumerWidget {
                   SmartRefresher(
                     controller: controller,
                     onRefresh: () async {
-                      await ref.refresh(
+                      final res = await ref.refresh(
                           cloudOffersNotifierProvider(selectedPosId).future);
                       controller.refreshCompleted();
                     },
@@ -128,10 +124,7 @@ class OffersScreen extends HookConsumerWidget {
                                             await pdfCreator.buildPersistentPdf(
                                           offer,
                                           pos,
-                                          AppLocalizations.of(context)
-                                                  ?.locale
-                                                  .languageCode ??
-                                              'en',
+                                          context.locale.languageCode ?? 'en',
                                           aims,
                                         );
                                         Share.shareFiles([file.path]);
@@ -222,7 +215,7 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                   final file = await pdfCreator.buildPersistentPdf(
                     widget.offer,
                     pos,
-                    AppLocalizations.of(context)?.locale.languageCode ?? 'en',
+                    context.locale.languageCode ?? 'en',
                     aims,
                   );
                   Share.shareFiles([file.path]);
@@ -292,9 +285,7 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             ItemRow2(
-                              tooltip: AppLocalizations.of(context)
-                                      ?.translate('creation_date') ??
-                                  '-',
+                              tooltip: 'creation_date'.tr(),
                               icon: MdiIcons.calendar,
                               text: dateFormat.format(widget.offer.createdOn),
                             ),
@@ -302,17 +293,13 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                               builder: (context, ref, child) {
                                 if (widget.offer.filter?.aim == null) {
                                   return ItemRow2(
-                                    tooltip: AppLocalizations.of(context)
-                                            ?.translate('filter_aim') ??
-                                        '-',
+                                    tooltip: 'filter_aim'.tr(),
                                     icon: MdiIcons.shapeOutline,
                                     text: '-',
                                   );
                                 }
                                 final languageCode =
-                                    AppLocalizations.of(context)
-                                        ?.locale
-                                        .languageCode;
+                                    context.locale.languageCode;
                                 final aimList = ref
                                     .watch(aimListFutureProvider)
                                     .valueOrNull;
@@ -329,9 +316,7 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                                   }
                                 }
                                 return ItemRow2(
-                                  tooltip: AppLocalizations.of(context)
-                                          ?.translate('filter_aim') ??
-                                      '-',
+                                  tooltip: 'filter_aim'.tr(),
                                   icon: MdiIcons.shapeOutline,
                                   text: aimText,
                                 );
@@ -345,20 +330,16 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             ItemRow2(
-                              tooltip: AppLocalizations.of(context)
-                                      ?.translate('wom_age') ??
-                                  '-',
+                              tooltip: 'wom_age'.tr(),
                               icon: widget.offer.filter?.maxAge != null
                                   ? MdiIcons.timerSand
                                   : MdiIcons.timerSandEmpty,
                               text: widget.offer.filter?.maxAge != null
-                                  ? '${widget.offer.filter?.maxAge} ${AppLocalizations.of(context)?.translate('days') ?? ''}'
+                                  ? '${widget.offer.filter?.maxAge} ${'days'.tr()}'
                                   : '-',
                             ),
                             ItemRow2(
-                              tooltip: AppLocalizations.of(context)
-                                      ?.translate('bounding_box') ??
-                                  '-',
+                              tooltip: 'bounding_box'.tr(),
                               onPressed: widget.offer.filter?.bounds != null
                                   ? () {
                                       cardKey.currentState?.toggleCard();
@@ -368,9 +349,7 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                                   ? MdiIcons.mapCheckOutline
                                   : MdiIcons.mapOutline,
                               text: widget.offer.filter?.bounds != null
-                                  ? AppLocalizations.of(context)
-                                          ?.translate('geo_filter') ??
-                                      ''
+                                  ? 'geo_filter'.tr()
                                   : '-',
                             ),
                           ],

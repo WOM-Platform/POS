@@ -1,9 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 class NameSelectionPage extends ConsumerStatefulWidget {
@@ -37,7 +38,7 @@ class _NameSelectionPageState extends ConsumerState<NameSelectionPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  AppLocalizations.of(context)?.translate('request_name') ?? '',
+                  'request_name'.tr(),
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white,
@@ -80,14 +81,10 @@ class _NameSelectionPageState extends ConsumerState<NameSelectionPage> {
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
-                      hintText: AppLocalizations.of(context)
-                              ?.translate('What is the request name?') ??
-                          '',
+                      hintText:'What is the request name?'.tr(),
                       errorText: isValid
                           ? null
-                          : AppLocalizations.of(context)
-                                  ?.translate('name_short') ??
-                              '',
+                          : 'name_short'.tr(),
                     ),
                   )),
               SizedBox(
@@ -95,10 +92,7 @@ class _NameSelectionPageState extends ConsumerState<NameSelectionPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: AutoSizeText(
-                  AppLocalizations.of(context)
-                          ?.translate('example_name_request') ??
-                      '',
+                child: AutoSizeText('example_name_request'.tr(),
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,

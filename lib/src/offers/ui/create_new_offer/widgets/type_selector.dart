@@ -1,8 +1,9 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/application/offers.dart';
@@ -36,14 +37,11 @@ class SelectOfferType extends ConsumerWidget {
                       .setOfferType(OfferType.persistent);
                 },
                 title: Text(
-                  AppLocalizations.of(context)?.translate('persistent_offer') ??
-                      '-',
+                  'persistent_offer'.tr(),
                   style: titleStyle,
                 ),
                 subtitle: Text(
-                  AppLocalizations.of(context)
-                          ?.translate('persistent_offer_desc') ??
-                      '-',
+                  'persistent_offer_desc'.tr(),
                   style: descStyle,
                 ),
                 leading: IgnorePointer(
@@ -63,14 +61,11 @@ class SelectOfferType extends ConsumerWidget {
                     .setOfferType(OfferType.ephemeral);
               },
               title: Text(
-                AppLocalizations.of(context)?.translate('ephemeral_offer') ??
-                    '-',
+                'ephemeral_offer'.tr(),
                 style: titleStyle,
               ),
               subtitle: Text(
-                AppLocalizations.of(context)
-                        ?.translate('ephemeral_offer_desc') ??
-                    '-',
+                'ephemeral_offer_desc'.tr(),
                 style: descStyle,
               ),
               leading: IgnorePointer(
@@ -86,9 +81,7 @@ class SelectOfferType extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
-                AppLocalizations.of(context)
-                        ?.translate('anonymousTypeOfferSelectorMessage') ??
-                    '',
+                'anonymousTypeOfferSelectorMessage'.tr(),
                 style: TextStyle(color: Colors.grey),
               ),
             )
@@ -96,9 +89,7 @@ class SelectOfferType extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
-                AppLocalizations.of(context)
-                        ?.translate('no_permission_to_create') ??
-                    '',
+                'no_permission_to_create'.tr(),
                 style: TextStyle(color: Colors.grey),
               ),
             ),

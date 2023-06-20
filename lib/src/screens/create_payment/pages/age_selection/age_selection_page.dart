@@ -1,8 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 import '../../back_button_text.dart';
@@ -42,8 +43,7 @@ class _MaxAgeSelectionPageState extends ConsumerState<MaxAgeSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)?.translate('how_recent_wom') ??
-                        '',
+                    'how_recent_wom'.tr(),
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -55,9 +55,7 @@ class _MaxAgeSelectionPageState extends ConsumerState<MaxAgeSelectionPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      AppLocalizations.of(context)
-                              ?.translate('enable_disable_filter') ??
-                          '',
+                      'enable_disable_filter'.tr(),
                       style: TextStyle(color: Colors.white),
                     ),
                     Switch(
@@ -105,14 +103,10 @@ class _MaxAgeSelectionPageState extends ConsumerState<MaxAgeSelectionPage> {
                       labelStyle: TextStyle(color: Colors.white),
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
-                      hintText: AppLocalizations.of(context)
-                              ?.translate('how_many_days') ??
-                          '',
+                      hintText:'how_many_days'.tr(),
                       errorText: isValid
                           ? null
-                          : AppLocalizations.of(context)
-                                  ?.translate('insert_value_grather') ??
-                              '',
+                          : 'insert_value_grather'.tr(),
                     ),
                   ),
                 ),

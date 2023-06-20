@@ -1,8 +1,8 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
 
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
@@ -72,9 +72,7 @@ class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
           builder: (c) {
             if (state is WomCreationRequestEmpty) {
               return Center(
-                child: Text(AppLocalizations.of(context)
-                        ?.translate('starting_creation_request') ??
-                    ''),
+                child: Text('starting_creation_request' 'try_again'.tr()),
               );
             } else if (state is WomCreationRequestLoading) {
               isWrong = false;
@@ -93,10 +91,7 @@ class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      state.error ??
-                          AppLocalizations.of(context)
-                              ?.translate('somethings_wrong') ??
-                          '',
+                      state.error ?? 'somethings_wrong'.tr(),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -106,8 +101,7 @@ class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
                           .read(requestConfirmNotifierProvider.notifier)
                           .createWomRequest(CreateWomRequest()),
                       label: Text(
-                        AppLocalizations.of(context)?.translate('try_again') ??
-                            '',
+                        'try_again'.tr(),
                       ),
                     ),
                   ),
@@ -123,26 +117,20 @@ class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        AppLocalizations.of(context)
-                                ?.translate('no_connection_title') ??
-                            '',
+                        'no_connection_title'.tr(),
                         textAlign: TextAlign.center,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                     Text(
-                      AppLocalizations.of(context)
-                              ?.translate('no_connection_transaction_desc') ??
-                          '',
+                      'no_connection_transaction_desc'.tr(),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     FloatingActionButton.extended(
-                        label: Text(AppLocalizations.of(context)
-                                ?.translate('try_again') ??
-                            ''),
+                        label: Text('try_again'.tr()),
                         onPressed: () {
                           ref
                               .read(requestConfirmNotifierProvider.notifier)
@@ -158,10 +146,7 @@ class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
               );
             }
 
-            return Center(
-                child: Text(AppLocalizations.of(context)
-                        ?.translate('error_screen_state') ??
-                    ''));
+            return Center(child: Text('error_screen_state'.tr()));
           },
         ),
       ),

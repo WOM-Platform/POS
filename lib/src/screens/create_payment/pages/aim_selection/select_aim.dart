@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/my_dropdown.dart';
 
@@ -22,8 +23,7 @@ class SelectAim extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              AppLocalizations.of(context)?.translate('no_connection_title') ??
-                  '',
+              'no_connection_title'.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -31,17 +31,14 @@ class SelectAim extends ConsumerWidget {
               height: 10,
             ),
             Text(
-              AppLocalizations.of(context)
-                      ?.translate('no_connection_aim_desc') ??
-                  '',
+              'no_connection_aim_desc'.tr(),
               textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 20,
             ),
             ElevatedButton(
-              child: Text(
-                  AppLocalizations.of(context)?.translate('try_again') ?? ''),
+              child: Text('try_again'.tr()),
               onPressed: () {
                 ref.read(aimSelectionNotifierProvider.notifier).updateAims();
               },
@@ -55,8 +52,7 @@ class SelectAim extends ConsumerWidget {
         MyDropdown(
           list: state.aimList,
           value: state.aimEnabled ? state.aimCode : null,
-          labelText:
-              AppLocalizations.of(context)?.translate('primary_aim') ?? '',
+          labelText: 'primary_aim'.tr(),
           onChanged: state.aimEnabled
               ? (aim) {
                   if (aim == null) return;
@@ -71,9 +67,7 @@ class SelectAim extends ConsumerWidget {
             ? MyDropdown(
                 list: state.subAimList,
                 value: state.subAimCode,
-                labelText:
-                    AppLocalizations.of(context)?.translate('secondary_aim') ??
-                        '',
+                labelText: 'secondary_aim'.tr(),
                 onChanged: (String? aimCode) {
                   if (aimCode == null) return;
                   ref
@@ -89,9 +83,7 @@ class SelectAim extends ConsumerWidget {
             ? MyDropdown(
                 list: state.subSubAimList,
                 value: state.subSubAimCode,
-                labelText:
-                    AppLocalizations.of(context)?.translate('tiertiary_aim') ??
-                        '',
+                labelText: 'tiertiary_aim'.tr(),
                 onChanged: (aim) {
                   if (aim == null) return;
                   ref
@@ -111,8 +103,7 @@ class SelectAim extends ConsumerWidget {
           ref
                   .read(aimSelectionNotifierProvider.notifier)
                   .getStringOfAimSelected() ??
-              AppLocalizations.of(context)?.translate('error') ??
-              '',
+              'error'.tr(),
           style: TextStyle(color: Colors.white),
         ),
       ],

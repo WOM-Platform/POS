@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/extensions.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/domain/entities/offert_type.dart';
@@ -18,25 +19,25 @@ class Summary extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(AppLocalizations.of(context)?.translate('summary_tip') ?? '-'),
+          Text('summary_tip').tr(),
           const SizedBox(height: 16),
           InfoText(
-            text: AppLocalizations.of(context)?.translate('offer_type') ?? '-',
+            text: 'offer_type'.tr(),
             value: state.type?.translate(context),
           ),
           const SizedBox(height: 16),
           InfoText(
-            text: AppLocalizations.of(context)?.translate('title') ?? '-',
+            text: 'title'.tr(),
             value: state.title,
           ),
           const SizedBox(height: 16),
           InfoText(
-            text: AppLocalizations.of(context)?.translate('description') ?? '-',
+            text: 'description'.tr(),
             value: state.description.isEmptyOrNull() ? null : state.description,
           ),
           const SizedBox(height: 16),
           InfoText(
-            text: AppLocalizations.of(context)?.translate('wom_number') ?? '-',
+            text: 'wom_number',
             value: state.wom?.toString(),
           ),
           const SizedBox(height: 16),
@@ -54,36 +55,25 @@ class Summary extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    AppLocalizations.of(context)?.translate('filters') ?? '-',
+                    'filters'.tr(),
                     style: TextStyle(fontSize: 20),
-                  ),
+                  ).tr(),
                   const SizedBox(height: 8),
                   InfoText(
-                      text: AppLocalizations.of(context)
-                              ?.translate('filter_aim') ??
-                          '-',
+                      text: 'filter_aim'.tr(),
                       value: ref.watch(aimNameProvider(state.aimCode))?[
-                              AppLocalizations.of(context)
-                                      ?.locale
-                                      .languageCode ??
-                                  'en'] ??
+                              context.locale.languageCode] ??
                           state.aimCode),
                   const SizedBox(height: 16),
                   InfoText(
-                    text: AppLocalizations.of(context)
-                            ?.translate('bounding_box') ??
-                        '-',
-                    value: state.mapPolygon != null
-                        ? AppLocalizations.of(context)?.translate('bb_set') ??
-                            '-'
-                        : '-',
+                    text: 'bounding_box'.tr(),
+                    value: state.mapPolygon != null ? 'bb_set'.tr() : '-',
                   ),
                   const SizedBox(height: 16),
                   InfoText(
-                    text: AppLocalizations.of(context)?.translate('wom_age') ??
-                        '-',
+                    text: 'wom_age'.tr(),
                     value: state.maxAge != null && state.maxAge! > 0
-                        ? '${state.maxAge} ${AppLocalizations.of(context)?.translate('days') ?? ''}'
+                        ? '${state.maxAge} ${'days'}'
                         : null,
                   ),
                 ],
@@ -91,9 +81,8 @@ class Summary extends ConsumerWidget {
             )
           ] else
             InfoText(
-              text: AppLocalizations.of(context)?.translate('filters') ?? '-',
-              value:
-                  AppLocalizations.of(context)?.translate('no_filters') ?? '-',
+              text: 'filters',
+              value: 'no_filters'.tr(),
             ),
         ],
       ),

@@ -1,9 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/model/payment_request.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -54,7 +55,7 @@ class CardRequest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final languageCode = AppLocalizations.of(context)?.locale.languageCode;
+    final languageCode = context.locale.languageCode;
     return Container(
 //      height: 275,
       padding: const EdgeInsets.all(4.0),
@@ -191,7 +192,7 @@ class CardRequest extends StatelessWidget {
                                 ? MdiIcons.mapCheckOutline
                                 : MdiIcons.mapOutline,
                             text: request.simpleFilter?.bounds != null
-                                ? AppLocalizations.of(context)?.translate('geo_filter') ?? ''
+                                ? 'geo_filter'.tr()
                                 : '-',
                           ),
                         ],

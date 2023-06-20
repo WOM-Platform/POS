@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:another_stepper/another_stepper.dart';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/application/offers.dart';
@@ -19,12 +20,14 @@ import 'package:pos/src/utils.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class NewOfferScreen extends HookConsumerWidget {
+  static const String path = 'newOffer';
+
   NewOfferScreen({Key? key}) : super(key: key);
 
   showError(BuildContext context, {String? desc}) {
     Alert(
       context: context,
-      title: AppLocalizations.of(context)?.translate("somethings_wrong") ?? '-',
+      title: "somethings_wrong",
       desc: desc,
       buttons: [],
     ).show();
@@ -54,7 +57,8 @@ class NewOfferScreen extends HookConsumerWidget {
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Text(
-                  AppLocalizations.of(context)?.translate('new_offer') ?? '-'),
+                'new_offer'.tr(),
+              ),
               // bottom: PreferredSize(
               //   preferredSize: Size.fromHeight(100),
               //   child: AnotherStepper(
@@ -150,7 +154,8 @@ class NewOfferScreen extends HookConsumerWidget {
                       Summary(),
                     Padding(
                       padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
                     ),
                   ],
                 ),
@@ -168,7 +173,7 @@ class NewOfferScreen extends HookConsumerWidget {
             //                 .backStep();
             //           },
             //           child: Text(
-            //               AppLocalizations.of(context)?.translate('back') ??
+            //               'back') ??
             //                   '-'),
             //         ),
             //       Flexible(
@@ -181,7 +186,7 @@ class NewOfferScreen extends HookConsumerWidget {
             //             stepperList: [
             //               StepperData(
             //                 // title: StepperText(
-            //                 //   AppLocalizations.of(context)?.translate("type") ??
+            //                 //   "type") ??
             //                 //       '-',
             //                 // ),
             //               ),
@@ -274,9 +279,7 @@ class NewOfferScreen extends HookConsumerWidget {
                             .read(createOfferNotifierProvider.notifier)
                             .backStep();
                       },
-                      child: Text(
-                          AppLocalizations.of(context)?.translate('back') ??
-                              '-'),
+                      child: Text('back'.tr()),
                     ),
                   ),
                   Flexible(
@@ -292,7 +295,7 @@ class NewOfferScreen extends HookConsumerWidget {
                         stepperList: [
                           StepperData(
                               // title: StepperText(
-                              //   AppLocalizations.of(context)?.translate("type") ??
+                              //   "type") ??
                               //       '-',
                               // ),
                               ),
@@ -324,9 +327,7 @@ class NewOfferScreen extends HookConsumerWidget {
                       if (activeStep == 3) {
                         final res = await askChoice(
                           context,
-                          AppLocalizations.of(context)
-                                  ?.translate('do_you_want_create') ??
-                              '-',
+                          'do_you_want_create'.tr(),
                         );
 
                         if (res) {
@@ -372,15 +373,15 @@ class NewOfferScreen extends HookConsumerWidget {
   String headerText(BuildContext context, int activeStep) {
     switch (activeStep) {
       case 0:
-        return AppLocalizations.of(context)?.translate('offer_type') ?? '-';
+        return 'offer_type'.tr();
       case 1:
-        return AppLocalizations.of(context)?.translate('mandatory_info') ?? '-';
+        return 'mandatory_info'.tr();
       case 2:
-        return AppLocalizations.of(context)?.translate('filters') ?? '-';
+        return 'filters'.tr();
       case 3:
-        return AppLocalizations.of(context)?.translate('summary') ?? '-';
+        return 'summary'.tr();
       default:
-        return AppLocalizations.of(context)?.translate('offer') ?? '-';
+        return 'offer'.tr();
     }
   }
 }
@@ -401,10 +402,8 @@ class MandatoryInfo extends HookConsumerWidget {
       child: Column(
         children: [
           CreateOfferCard(
-            title: AppLocalizations.of(context)?.translate('title') ?? '-',
-            description:
-                AppLocalizations.of(context)?.translate('titleOfferDesc') ??
-                    '-',
+            title: 'title'.tr(),
+            description: 'titleOfferDesc'.tr(),
             mandatory: true,
             child: TextFormField(
               focusNode: titleFocus,
@@ -414,18 +413,14 @@ class MandatoryInfo extends HookConsumerWidget {
               },
               onChanged: (value) {
                 if (value.trim().length < 6) {
-                  errorTitleText.value = AppLocalizations.of(context)
-                          ?.translate('titleMinLengthWarning') ??
-                      '-';
+                  errorTitleText.value = 'titleMinLengthWarning'.tr();
                 } else {
                   errorTitleText.value = null;
                 }
               },
               controller: ref.watch(titleControllerProvider),
               decoration: InputDecoration(
-                hintText:
-                    AppLocalizations.of(context)?.translate('write_here') ??
-                        '-',
+                hintText: 'write_here'.tr(),
                 errorText: errorTitleText.value,
               ),
             ),
@@ -433,11 +428,8 @@ class MandatoryInfo extends HookConsumerWidget {
           if (ref.watch(createOfferNotifierProvider).type ==
               OfferType.persistent)
             CreateOfferCard(
-              title:
-                  AppLocalizations.of(context)?.translate('description') ?? '-',
-              description: AppLocalizations.of(context)
-                      ?.translate('descriptionOfferDesc') ??
-                  '-',
+              title: 'description'.tr(),
+              description: 'descriptionOfferDesc'.tr(),
               child: TextFormField(
                 focusNode: descFocus,
                 maxLines: 4,
@@ -448,16 +440,13 @@ class MandatoryInfo extends HookConsumerWidget {
                 },
                 controller: ref.watch(descControllerProvider),
                 decoration: InputDecoration(
-                  hintText:
-                      AppLocalizations.of(context)?.translate('write_here') ??
-                          '-',
+                  hintText: 'write_here'.tr(),
                 ),
               ),
             ),
           CreateOfferCard(
-            title: AppLocalizations.of(context)?.translate('wom_number') ?? '-',
-            description:
-                AppLocalizations.of(context)?.translate('womNumberDesc') ?? '-',
+            title: 'wom_number'.tr(),
+            description: 'womNumberDesc'.tr(),
             mandatory: true,
             child: TextFormField(
               focusNode: womFocus,
@@ -469,17 +458,13 @@ class MandatoryInfo extends HookConsumerWidget {
               ],
               onChanged: (value) {
                 if (int.parse(value) == 0) {
-                  errorWomText.value = AppLocalizations.of(context)
-                          ?.translate('noZeroWomWarning') ??
-                      '-';
+                  errorWomText.value = 'noZeroWomWarning'.tr();
                 } else {
                   errorWomText.value = null;
                 }
               },
               decoration: InputDecoration(
-                hintText:
-                    AppLocalizations.of(context)?.translate('writeWomNumber') ??
-                        '-',
+                hintText: 'writeWomNumber'.tr(),
                 errorText: errorWomText.value,
               ),
             ),

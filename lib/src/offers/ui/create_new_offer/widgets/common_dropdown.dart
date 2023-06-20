@@ -3,8 +3,9 @@
 
 
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 
 class AimDropdown extends StatelessWidget {
   final List<Aim> list;
@@ -23,7 +24,7 @@ class AimDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final languageCode = AppLocalizations.of(context)?.locale.languageCode;
+    final languageCode =context.locale.languageCode;
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: InputDecorator(
@@ -47,7 +48,7 @@ class AimDropdown extends StatelessWidget {
           child: DropdownButton(
             value: value,
             hint: Text(
-              AppLocalizations.of(context)?.translate('choose') ?? '',
+              'choose'.tr(),
               style: const TextStyle(),
             ),
             onChanged: onChanged,

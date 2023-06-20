@@ -41,6 +41,11 @@ class AppLocalizations {
     }
     return '';
   }
+
+  List<Locale> get supportedLocales => [
+    Locale('en', 'US'),
+    Locale('it', 'IT'),
+  ];
 }
 
 class _AppLocalizationsDelegate
@@ -58,5 +63,5 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool shouldReload(_AppLocalizationsDelegate old) => false;
+  bool shouldReload(_AppLocalizationsDelegate old) => true;
 }

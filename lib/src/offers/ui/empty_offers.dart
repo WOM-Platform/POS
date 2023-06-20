@@ -1,5 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 
 class EmptyOffers extends StatelessWidget {
   const EmptyOffers({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class EmptyOffers extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            AppLocalizations.of(context)?.translate('no_request') ?? '',
+            'no_request'.tr(),
             style: const TextStyle(fontSize: 20),
             textAlign: TextAlign.center,
           ),

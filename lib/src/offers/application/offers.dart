@@ -2,19 +2,15 @@ import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/blocs/home/home_state.dart';
 
 import 'package:pos/src/constants.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/services/aim_repository.dart';
 import 'package:pos/src/services/user_repository.dart';
-import 'package:pos/src/utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:collection/collection.dart';
-import '../../db/app_database/app_database.dart';
 import '../../db/payment_database/payment_database.dart';
 import '../../model/payment_request.dart';
 
@@ -33,33 +29,37 @@ FlutterSecureStorage getSecureStorage(GetSecureStorageRef ref) {
 @riverpod
 class CloudOffersNotifier extends _$CloudOffersNotifier {
   String? posId;
-  String? email;
-  String? password;
+  // String? email;
+  String? token;
 
   Future<List<Offer>> build(String? posId) async {
-    final mmkv = Hive.box('settings');
-    final posId = await mmkv.get('lastPosId');
-    await mmkv.get('lastMerchantId');
+    final selectedPos = ref.watch(selectedPosProvider);
+    // final mmkv = Hive.box('settings');
+    // final posId = await mmkv.get('lastPosId');
+    // await mmkv.get('lastMerchantId');
 
+    posId = selectedPos?.pos?.id;
     if (posId == null) {
-      throw Exception();
+      throw Exception('posId is null');
     }
     final repo = ref.watch(userRepositoryProvider);
-    email = await repo.getSavedEmail();
-    password = await repo.getSavedPassword();
+    // email = await repo.getSavedEmail();
+    token = await repo.getToken();
     final pos = ref.watch(getPosProvider);
-    if (email == null || password == null) {
-      throw Exception();
+    if (token == null) {
+      throw Exception('Token is null');
     }
-    return pos.getOffers(posId, email!, password!);
+    return pos.getOffers(posId, token!);
   }
 
   refreshList() async {
     try {
-      if (posId == null || email == null || password == null) return;
+      if (posId == null) return;
       state = AsyncLoading();
-      final list =
-          await ref.read(getPosProvider).getOffers(posId!, email!, password!);
+      final list = await ref.read(getPosProvider).getOffers(
+            posId!,
+            token!,
+          );
       state = AsyncData(list);
     } catch (ex, st) {
       logger.e(ex);
@@ -69,10 +69,8 @@ class CloudOffersNotifier extends _$CloudOffersNotifier {
   }
 
   deleteOffer(String offerId) async {
-    if (posId == null || email == null || password == null) return;
-    await ref
-        .read(getPosProvider)
-        .deleteOffer(posId!, offerId, email!, password!);
+    if (posId == null || token == null) return;
+    await ref.read(getPosProvider).deleteOffer(posId!, offerId, token!);
     refreshList();
   }
 }

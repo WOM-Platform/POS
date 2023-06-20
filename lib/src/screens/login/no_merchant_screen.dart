@@ -1,5 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 class NoMerchantScreen extends StatelessWidget {
@@ -23,12 +24,12 @@ class NoMerchantScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                AppLocalizations.of(context)?.translate('noMerchant') ?? '-',
+                'noMerchant'.tr(),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-              Text(AppLocalizations.of(context)?.translate('createYourMerchant') ?? '-',
+              Text('createYourMerchant'.tr(),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center),
               const SizedBox(height: 8),
@@ -46,7 +47,7 @@ class NoMerchantScreen extends StatelessWidget {
                     textAlign: TextAlign.center),
               ),
               const SizedBox(height: 16),
-              Text(AppLocalizations.of(context)?.translate('backHereAndLogin') ?? '-',
+              Text('backHereAndLogin'.tr(),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center),
               const Spacer(),
@@ -54,7 +55,7 @@ class NoMerchantScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text(AppLocalizations.of(context)?.translate('backToLogin') ?? '-')),
+                  child: Text('backToLogin'.tr())),
             ],
           ),
         ),

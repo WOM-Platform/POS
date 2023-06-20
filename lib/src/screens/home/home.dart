@@ -1,11 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as md;
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/offers/ui/offers_screen.dart';
@@ -59,10 +61,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: DescribedFeatureOverlay(
           featureId: 'show_pos_selection_info',
           tapTarget: Text('POS'),
-          title: Text(AppLocalizations.of(context)
-                  ?.translate('selection_pos_suggestion') ??
-              ''),
-          backgroundColor: Theme.of(context).accentColor,
+          title: Text('selection_pos_suggestion' 'try_again'.tr()),
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           targetColor: Colors.white,
           textColor: Theme.of(context).primaryColor,
           child: GestureDetector(
@@ -99,8 +99,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () async {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => SettingsScreen()));
+              context.push('/${SettingsScreen.path}');
             },
           ),
         ],
@@ -112,11 +111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               backgroundColor: Colors.blue,
               heroTag: Key("HomeFab"),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => NewOfferScreen(),
-                  ),
-                );
+                context.go('/${NewOfferScreen.path}');
               },
               label: Row(
                 children: [
@@ -125,8 +120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     color: Colors.white,
                   ),
                   Text(
-                    AppLocalizations.of(context)?.translate('createOffer') ??
-                        '',
+                    'createOffer'.tr(),
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
@@ -150,7 +144,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 posId: posId,
                 draftRequest: null,
                 languageCode:
-                    AppLocalizations.of(context)?.locale.languageCode))
+                   context.locale.languageCode))
       ],
     );
     await Navigator.of(context)
@@ -165,7 +159,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _showLogoutDialog(Function logout) {
     Alert(
       context: context,
-      title: AppLocalizations.of(context)?.translate('logout_message'),
+      title: 'logout_message'),
       buttons: [
         DialogButton(
           child: Text('No'),
@@ -174,7 +168,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           },
         ),
         DialogButton(
-          child: Text(AppLocalizations.of(context)?.translate('yes') ?? ''),
+          child: Text('yes').tr()),
           onPressed: () {
             Navigator.of(context, rootNavigator: true).pop();
             logout();

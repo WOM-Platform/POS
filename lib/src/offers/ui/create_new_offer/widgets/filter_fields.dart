@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
@@ -44,26 +46,22 @@ class SelectAim extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              AppLocalizations.of(context)?.translate('no_connection_title') ??
-                  '',
+              'no_connection_title',
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            ).tr(),
             SizedBox(
               height: 10,
             ),
             Text(
-              AppLocalizations.of(context)
-                      ?.translate('no_connection_aim_desc') ??
-                  '',
+              'no_connection_aim_desc',
               textAlign: TextAlign.center,
-            ),
+            ).tr(),
             SizedBox(
               height: 20,
             ),
             ElevatedButton(
-              child: Text(
-                  AppLocalizations.of(context)?.translate('try_again') ?? ''),
+              child: Text('try_again').tr(),
               onPressed: () {
                 ref.read(aimSelectionNotifierProvider.notifier).updateAims();
               },
@@ -73,8 +71,8 @@ class SelectAim extends ConsumerWidget {
       );
     }
     return CreateOfferCard(
-      title: AppLocalizations.of(context)?.translate('filter_aim') ?? '-',
-      description: AppLocalizations.of(context)?.translate('aimDesc') ?? '',
+      title: 'filter_aim',
+      description: 'aimDesc',
       extra: state.aimCode != null
           ? TextButton(
               onPressed: () {
@@ -89,8 +87,7 @@ class SelectAim extends ConsumerWidget {
           AimDropdown(
             list: state.aimList,
             value: state.aimCode,
-            labelText:
-                AppLocalizations.of(context)?.translate('primary_aim') ?? '',
+            labelText: 'primary_aim',
             onChanged: (aim) {
               if (aim == null) return;
               ref
@@ -103,9 +100,7 @@ class SelectAim extends ConsumerWidget {
               ? AimDropdown(
                   list: state.subAimList,
                   value: state.subAimCode,
-                  labelText: AppLocalizations.of(context)
-                          ?.translate('secondary_aim') ??
-                      '',
+                  labelText:'secondary_aim'.tr(),
                   onChanged: (String? aimCode) {
                     if (aimCode == null) return;
                     ref
@@ -123,9 +118,7 @@ class SelectAim extends ConsumerWidget {
               ? AimDropdown(
                   list: state.subSubAimList,
                   value: state.subSubAimCode,
-                  labelText: AppLocalizations.of(context)
-                          ?.translate('tiertiary_aim') ??
-                      '',
+                  labelText: 'tiertiary_aim'.tr(),
                   onChanged: (aim) {
                     if (aim == null) return;
                     ref
@@ -175,9 +168,8 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
       }
     });
     return CreateOfferCard(
-      title: AppLocalizations.of(context)?.translate('bounding_box') ?? '-',
-      description:
-          AppLocalizations.of(context)?.translate('bounding_box_desc') ?? '-',
+      title: 'bounding_box',
+      description: 'bounding_box_desc',
       extra: mapPolygon != null
           ? TextButton(
               onPressed: () {
@@ -189,8 +181,7 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
       child: mapPolygon == null
           ? ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => PositionSelectionPage()));
+                context.go(PositionSelectionPage.path);
               },
               child: Text('Imposta'),
             )
@@ -201,8 +192,7 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
                   _controller.complete(controller);
                 },
                 onTap: (_) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => PositionSelectionPage()));
+                  context.go(PositionSelectionPage.path);
                 },
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,
@@ -232,9 +222,8 @@ class SelectMaxAge extends HookConsumerWidget {
     // final maxAge =
     //     ref.watch(createOfferNotifierProvider.select((value) => value.maxAge));
     return CreateOfferCard(
-        title: AppLocalizations.of(context)?.translate('wom_age') ?? '-',
-        description:
-            AppLocalizations.of(context)?.translate('wom_age_desc') ?? '-',
+        title: 'wom_age',
+        description: 'wom_age_desc',
         // extra: maxAge != null
         //     ? TextButton(
         //         onPressed: () {
@@ -248,7 +237,7 @@ class SelectMaxAge extends HookConsumerWidget {
           max: (maxAgeIta.length - 1).toDouble(),
           value: selectedAge.value.toDouble(),
           label: getMaxAgeText(selectedAge.value,
-              AppLocalizations.of(context)?.locale.languageCode ?? 'en'),
+             context.locale.languageCode ?? 'en'),
           onChanged: (double value) {
             selectedAge.value = value.toInt();
             ref
@@ -262,9 +251,9 @@ class SelectMaxAge extends HookConsumerWidget {
         //   keyboardType: TextInputType.number,
         //   inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
         //   decoration: InputDecoration(
-        //     suffixText: AppLocalizations.of(context)?.translate('days') ?? '',
+        //     suffixText: 'days').tr(),
         //       hintText:
-        //           AppLocalizations.of(context)?.translate('write_here') ?? '-'),
+        //           'write_here') ?? '-'),
         // ),
         );
   }

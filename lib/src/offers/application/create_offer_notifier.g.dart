@@ -6,46 +6,21 @@ part of 'create_offer_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-String _$CreateOfferNotifierHash() =>
-    r'58c18742f8505aaf72bd965ff13b706d7ac43bc6';
+String _$createOfferNotifierHash() =>
+    r'f8d441b55db6d1979a16650efb94d028bbfce6e6';
 
 /// See also [CreateOfferNotifier].
+@ProviderFor(CreateOfferNotifier)
 final createOfferNotifierProvider =
-    AutoDisposeNotifierProvider<CreateOfferNotifier, CreateOfferState>(
+    AutoDisposeNotifierProvider<CreateOfferNotifier, CreateOfferState>.internal(
   CreateOfferNotifier.new,
   name: r'createOfferNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$CreateOfferNotifierHash,
+      : _$createOfferNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
-typedef CreateOfferNotifierRef
-    = AutoDisposeNotifierProviderRef<CreateOfferState>;
 
-abstract class _$CreateOfferNotifier
-    extends AutoDisposeNotifier<CreateOfferState> {
-  @override
-  CreateOfferState build();
-}
+typedef _$CreateOfferNotifier = AutoDisposeNotifier<CreateOfferState>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

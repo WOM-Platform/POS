@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
@@ -25,7 +26,8 @@ class _GenerateWomScreenState extends ConsumerState<GenerateWomScreen> {
   int page = 0;
 
   Future<bool> onWillPop() {
-    if (ref.read(createPaymentNotifierProvider).pageController.page?.round() == ref.read(createPaymentNotifierProvider).pageController.initialPage) {
+    if (ref.read(createPaymentNotifierProvider).pageController.page?.round() ==
+        ref.read(createPaymentNotifierProvider).pageController.initialPage) {
       return Future.value(true);
     }
     ref.read(createPaymentNotifierProvider).goToPreviousPage();
@@ -34,7 +36,7 @@ class _GenerateWomScreenState extends ConsumerState<GenerateWomScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(aimSelectionNotifierProvider, (previous, next) { });
+    ref.listen(aimSelectionNotifierProvider, (previous, next) {});
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
@@ -44,7 +46,8 @@ class _GenerateWomScreenState extends ConsumerState<GenerateWomScreen> {
           child: Stack(
             children: <Widget>[
               PageView(
-                controller: ref.watch(createPaymentNotifierProvider).pageController,
+                controller:
+                    ref.watch(createPaymentNotifierProvider).pageController,
                 physics: new NeverScrollableScrollPhysics(),
                 children: <Widget>[
                   NameSelectionPage(),
@@ -64,7 +67,12 @@ class _GenerateWomScreenState extends ConsumerState<GenerateWomScreen> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    if (ref.read(createPaymentNotifierProvider).pageController.page?.round() != 0) {
+                    if (ref
+                            .read(createPaymentNotifierProvider)
+                            .pageController
+                            .page
+                            ?.round() !=
+                        0) {
                       showAlert(context);
                     } else {
                       Navigator.of(context).pop();
@@ -79,13 +87,14 @@ class _GenerateWomScreenState extends ConsumerState<GenerateWomScreen> {
     );
   }
 
-  showAlert(BuildContext context, ) async {
+  showAlert(
+    BuildContext context,
+  ) async {
     bool result = await showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context)
-              ?.translate('save_draft_request_title_popup') ?? ''),
+          title: Text('save_draft_request_title_popup'.tr()),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             ElevatedButton(
@@ -95,7 +104,7 @@ class _GenerateWomScreenState extends ConsumerState<GenerateWomScreen> {
               },
             ),
             ElevatedButton(
-              child: Text(AppLocalizations.of(context)?.translate('yes') ?? ''),
+              child: Text('yes').tr(),
               onPressed: () {
                 Navigator.of(ctx).pop(true);
               },

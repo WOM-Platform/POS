@@ -6,7 +6,38 @@ part of 'offers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$getPosHash() => r'ee9b5c43f694fa78393491316cdcb6faf9b315c1';
+
+/// See also [getPos].
+@ProviderFor(getPos)
+final getPosProvider = Provider<PosClient>.internal(
+  getPos,
+  name: r'getPosProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$getPosHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef GetPosRef = ProviderRef<PosClient>;
+String _$getSecureStorageHash() => r'6332fa91e7aff685b1ed579146881c124696d744';
+
+/// See also [getSecureStorage].
+@ProviderFor(getSecureStorage)
+final getSecureStorageProvider =
+    AutoDisposeProvider<FlutterSecureStorage>.internal(
+  getSecureStorage,
+  name: r'getSecureStorageProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$getSecureStorageHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef GetSecureStorageRef = AutoDisposeProviderRef<FlutterSecureStorage>;
+String _$cloudOffersNotifierHash() =>
+    r'f9764fdb230652c6456f2820b1d1e1caeb1603a3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,22 +60,74 @@ class _SystemHash {
   }
 }
 
-String _$CloudOffersNotifierHash() =>
-    r'1a45b8f474b0aa672a72867321489ad72af69be1';
+abstract class _$CloudOffersNotifier
+    extends BuildlessAutoDisposeAsyncNotifier<List<Offer>> {
+  late final String? posId;
+
+  Future<List<Offer>> build(
+    String? posId,
+  );
+}
+
+/// See also [CloudOffersNotifier].
+@ProviderFor(CloudOffersNotifier)
+const cloudOffersNotifierProvider = CloudOffersNotifierFamily();
+
+/// See also [CloudOffersNotifier].
+class CloudOffersNotifierFamily extends Family<AsyncValue<List<Offer>>> {
+  /// See also [CloudOffersNotifier].
+  const CloudOffersNotifierFamily();
+
+  /// See also [CloudOffersNotifier].
+  CloudOffersNotifierProvider call(
+    String? posId,
+  ) {
+    return CloudOffersNotifierProvider(
+      posId,
+    );
+  }
+
+  @override
+  CloudOffersNotifierProvider getProviderOverride(
+    covariant CloudOffersNotifierProvider provider,
+  ) {
+    return call(
+      provider.posId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'cloudOffersNotifierProvider';
+}
 
 /// See also [CloudOffersNotifier].
 class CloudOffersNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
     CloudOffersNotifier, List<Offer>> {
+  /// See also [CloudOffersNotifier].
   CloudOffersNotifierProvider(
     this.posId,
-  ) : super(
+  ) : super.internal(
           () => CloudOffersNotifier()..posId = posId,
           from: cloudOffersNotifierProvider,
           name: r'cloudOffersNotifierProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$CloudOffersNotifierHash,
+                  : _$cloudOffersNotifierHash,
+          dependencies: CloudOffersNotifierFamily._dependencies,
+          allTransitiveDependencies:
+              CloudOffersNotifierFamily._allTransitiveDependencies,
         );
 
   final String? posId;
@@ -63,8 +146,8 @@ class CloudOffersNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  FutureOr<List<Offer>> runNotifierBuild(
-    covariant _$CloudOffersNotifier notifier,
+  Future<List<Offer>> runNotifierBuild(
+    covariant CloudOffersNotifier notifier,
   ) {
     return notifier.build(
       posId,
@@ -72,88 +155,20 @@ class CloudOffersNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 }
 
-typedef CloudOffersNotifierRef
-    = AutoDisposeAsyncNotifierProviderRef<List<Offer>>;
-
-/// See also [CloudOffersNotifier].
-final cloudOffersNotifierProvider = CloudOffersNotifierFamily();
-
-class CloudOffersNotifierFamily extends Family<AsyncValue<List<Offer>>> {
-  CloudOffersNotifierFamily();
-
-  CloudOffersNotifierProvider call(
-    String? posId,
-  ) {
-    return CloudOffersNotifierProvider(
-      posId,
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderImpl<CloudOffersNotifier, List<Offer>>
-      getProviderOverride(
-    covariant CloudOffersNotifierProvider provider,
-  ) {
-    return call(
-      provider.posId,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'cloudOffersNotifierProvider';
-}
-
-abstract class _$CloudOffersNotifier
-    extends BuildlessAutoDisposeAsyncNotifier<List<Offer>> {
-  late final String? posId;
-
-  FutureOr<List<Offer>> build(
-    String? posId,
-  );
-}
-
-String _$RequestNotifierHash() => r'b7df7569071e39b99c75c4ea9e994b95df50afd7';
+String _$requestNotifierHash() => r'78996f82d45eb5f6639a066dee2ec22f0ba8f9ed';
 
 /// See also [RequestNotifier].
+@ProviderFor(RequestNotifier)
 final requestNotifierProvider =
-    AsyncNotifierProvider<RequestNotifier, HomeState>(
+    AsyncNotifierProvider<RequestNotifier, HomeState>.internal(
   RequestNotifier.new,
   name: r'requestNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$RequestNotifierHash,
+      : _$requestNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
-typedef RequestNotifierRef = AsyncNotifierProviderRef<HomeState>;
 
-abstract class _$RequestNotifier extends AsyncNotifier<HomeState> {
-  @override
-  FutureOr<HomeState> build();
-}
-
-String _$getPosHash() => r'ee9b5c43f694fa78393491316cdcb6faf9b315c1';
-
-/// See also [getPos].
-final getPosProvider = Provider<PosClient>(
-  getPos,
-  name: r'getPosProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$getPosHash,
-);
-typedef GetPosRef = ProviderRef<PosClient>;
-String _$getSecureStorageHash() => r'6332fa91e7aff685b1ed579146881c124696d744';
-
-/// See also [getSecureStorage].
-final getSecureStorageProvider = AutoDisposeProvider<FlutterSecureStorage>(
-  getSecureStorage,
-  name: r'getSecureStorageProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$getSecureStorageHash,
-);
-typedef GetSecureStorageRef = AutoDisposeProviderRef<FlutterSecureStorage>;
+typedef _$RequestNotifier = AsyncNotifier<HomeState>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

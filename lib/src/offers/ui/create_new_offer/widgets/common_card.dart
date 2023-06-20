@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/styles.dart';
 
 class CreateOfferCard extends StatelessWidget {
@@ -37,7 +37,7 @@ class CreateOfferCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 if (mandatory)
                   Text(
-                   AppLocalizations.of(context)?.translate('mandatory') ?? '-',
+                   'mandatory'.tr(),
                     style: TextStyle(color: Colors.red),
                   ),
                 if (extra != null) extra!

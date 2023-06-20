@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart' as locService;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 
@@ -43,6 +43,7 @@ const cameraZoom = <double>[
 ];
 
 class PositionSelectionPage extends StatefulHookConsumerWidget {
+  static const String path = '/positionSelection';
   @override
   _PositionSelectionPageState createState() => _PositionSelectionPageState();
 }
@@ -109,8 +110,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
     locService.LocationData? location;
     try {
       setState(() {
-        positionProcess =
-            AppLocalizations.of(context)?.translate('acquiringPosition');
+        positionProcess = 'acquiringPosition'.tr();
       });
       logger.i("getLocation()");
       location = await _locationService.getLocation();
@@ -167,8 +167,8 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
         appBar: AppBar(
           elevation: 0,
           title: Text(
-              AppLocalizations.of(context)?.translate('what_are_interest') ??
-                  ''),
+            'what_are_interest'.tr(),
+          ),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,8 +177,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                AppLocalizations.of(context)?.translate('bounding_box_help') ??
-                    '-',
+                'bounding_box_help'.tr(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -188,12 +187,12 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
             SliderTheme(
               data: Theme.of(context).sliderTheme.copyWith(
                     activeTrackColor: Colors.grey[100],
-                    inactiveTrackColor: Theme.of(context).accentColor,
+                    inactiveTrackColor: Theme.of(context).colorScheme.secondary,
                     activeTickMarkColor: Colors.grey,
                     inactiveTickMarkColor: Colors.white,
                     overlayColor: Colors.black12,
-                    thumbColor: Theme.of(context).accentColor,
-                    valueIndicatorColor: Theme.of(context).accentColor,
+                    thumbColor: Theme.of(context).colorScheme.secondary,
+                    valueIndicatorColor: Theme.of(context).colorScheme.secondary,
                     valueIndicatorTextStyle: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold),
@@ -205,7 +204,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                 divisions: sliderSteps.length - 1,
                 label:
                     '${radius > 500 ? radius ~/ 1000 : radius.toInt()}${radius > 500 ? 'km' : 'm'}',
-                activeColor: Theme.of(context).accentColor,
+                activeColor: Theme.of(context).colorScheme.secondary,
                 inactiveColor: Colors.white,
                 onChanged: (value) {
                   slider.value = value;

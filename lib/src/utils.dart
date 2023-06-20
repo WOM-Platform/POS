@@ -1,9 +1,10 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/model/flavor_enum.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -86,6 +87,7 @@ Future<POSUser> getAnonymousUser(PosClient pos) async {
     name: 'Anonymous',
     surname: 'User',
     email: '',
+    verified: true,
     merchants: [
       Merchant(
         id: 'anonymousId',
@@ -119,10 +121,12 @@ Future<bool> askChoice(BuildContext context, String title) async {
       DialogButton(
         child: Text('No'),
         color: Colors.white,
-        onPressed:() => Navigator.of(context).pop(false),
+        onPressed: () => Navigator.of(context).pop(false),
       ),
       DialogButton(
-        child: Text(AppLocalizations.of(context)?.translate('yes') ?? '-'),
+        child: Text(
+          'yes'.tr(),
+        ),
         onPressed: () => Navigator.of(context).pop(true),
       ),
     ],

@@ -3,7 +3,6 @@ import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pos/src/offers/application/offers.dart';
 
 import 'package:pos/src/services/auth_local_data_sources.dart';
@@ -19,22 +18,20 @@ class UserRepository {
 
   UserRepository(this.pos, this.authLocalDataSources);
 
-  Future<String> authenticate({
+  Future<AuthResponse> authenticate({
     required String username,
     required String password,
   }) async {
-    final token = await pos.authenticateWihJWT(
+    final authResponse = await pos.authenticate(
       username,
       password,
       '${Platform.localeName}Pos/1',
     );
-    await persistJWTToken(token);
-    return token;
+    return authResponse;
   }
 
   Future<POSUser> getUser(String token) async {
-    await persistJWTToken(token);
-    final user = await pos.authenticateV2(token);
+    final user = await pos.getUser(token);
     return user;
   }
 
@@ -48,25 +45,28 @@ class UserRepository {
     return email;
   }
 
-  Future<String?> getSavedPassword() async {
-    final email = await secureStorage.read(key: 'password');
-    return email;
-  }
+  // Future<String?> getSavedPassword() async {
+  //   final email = await secureStorage.read(key: 'password');
+  //   return email;
+  // }
 
   Future<void> deleteToken() async {
-    final mmkv = Hive.box('settings');
-    await mmkv.clear();
-    await secureStorage.delete(key: 'email');
-    await secureStorage.delete(key: 'password');
+    final box = Hive.box('settings');
+    await box.clear();
+    await secureStorage.delete(key: 'token');
   }
 
-  Future<void> persistToken(POSUser user, String email, String password) async {
-    await secureStorage.write(key: 'email', value: email);
-    await secureStorage.write(key: 'password', value: password);
-  }
+  // Future<void> persistToken(POSUser user, String email, String password) async {
+  //   await secureStorage.write(key: 'email', value: email);
+  //   await secureStorage.write(key: 'password', value: password);
+  // }
 
   Future<void> persistJWTToken(String token) async {
     await secureStorage.write(key: 'token', value: token);
+  }
+
+  Future<void> sendEmailVerification(String userId, String token) async {
+    await pos.sendVerificationEmail(userId, token);
   }
 
   /* Future<POSUser?> readUser() async {
@@ -89,16 +89,16 @@ class UserRepository {
     return readPosUser(name, surname, email);
   }*/
 
-  Future<POSUser?> autoLogin() async {
-    final token = await secureStorage.read(key: 'token');
-    if (token == null) {
-      return null;
-    }
-    if (JwtDecoder.isExpired(token)) {
-      return null;
-    }
-    return pos.authenticateV2(token);
-  }
+  // Future<POSUser?> autoLogin() async {
+  //   final token = await secureStorage.read(key: 'token');
+  //   if (token == null) {
+  //     return null;
+  //   }
+  //   if (JwtDecoder.isExpired(token)) {
+  //     return null;
+  //   }
+  //   return pos.authenticateV2(token);
+  // }
 
   Future<void> saveMerchantAndPosIdUsed(String posId, String merchantId) async {
     final mmkv = Hive.box('settings');
@@ -128,10 +128,10 @@ class UserRepository {
         name: name, surname: surname, email: email, merchants: merchants);
   }*/
 
-  Future<bool> hasToken() async {
-    final mmkv = Hive.box('settings');
-    final name = await mmkv.get(User.dbName);
-    final surname = await mmkv.get(User.dbSurname);
-    return name != null && surname != null;
-  }
+// Future<bool> hasToken() async {
+//   final box = Hive.box('settings');
+//   final name = await box.get(User.dbName);
+//   final surname = await box.get(User.dbSurname);
+//   return name != null && surname != null;
+// }
 }

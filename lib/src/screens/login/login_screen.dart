@@ -1,11 +1,16 @@
-import 'dart:math';
-
+import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:pos/src/services/user_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_animations/multi_tween/multi_tween.dart';
-import 'login_box.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+
+import 'package:pos/src/blocs/authentication/bloc.dart';
+import 'package:pos/src/blocs/login/bloc.dart';
+import 'package:pos/src/my_logger.dart';
+import 'package:pos/src/signup/ui/screens/sign_up.dart';
+
 
 final loginLoadingProvider = StateProvider.autoDispose<bool>((ref) {
   return false;
@@ -27,127 +32,192 @@ class LoginScreen extends ConsumerWidget {
   }
 }
 
-/*
-class AnimatedBackground extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final tween = MultiTween([
-      TweenTrack("color1").add(Duration(seconds: 3),
-          ColorTween(begin: Color(0xff8a113a), end: Colors.lightBlue.shade900)),
-      TweenTrack("color2").add(Duration(seconds: 3),
-          ColorTween(begin: Color(0xff440216), end: Colors.blue.shade600))
-    ]);
 
-    return ControlledAnimation(
-      playback: Playback.MIRROR,
-      tween: tween,
-      duration: tween.duration,
-      builder: (context, animation) {
-        return Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [animation["color1"], animation["color2"]])),
-        );
-      },
-    );
-  }
+class LoginBox extends StatefulHookConsumerWidget {
+  const LoginBox({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _LoginBoxState createState() => _LoginBoxState();
 }
 
-class Particles extends StatefulWidget {
-  final int numberOfParticles;
+class _LoginBoxState extends ConsumerState<LoginBox> {
+  FocusNode _focusNode = FocusNode();
 
-  Particles(this.numberOfParticles);
-
-  @override
-  _ParticlesState createState() => _ParticlesState();
-}
-
-class _ParticlesState extends State<Particles> {
-  final Random random = Random();
-
-  final List<ParticleModel> particles = [];
+  bool obscureText = true;
 
   @override
-  void initState() {
-    List.generate(widget.numberOfParticles, (index) {
-      particles.add(ParticleModel(random));
-    });
-    super.initState();
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Rendering(
-      startTime: Duration(seconds: 30),
-      onTick: _simulateParticles,
-      builder: (context, time) {
-        return CustomPaint(
-          painter: ParticlePainter(particles, time),
-        );
+    ref.listen<LoginFailure?>(
+      loginErrorProvider,
+          (LoginFailure? previous, LoginFailure? next) {
+        if (next != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(next.error),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       },
+    );
+
+    final usernameController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    return Center(
+      child: ListView(
+        children: <Widget>[
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 6,
+          ),
+          AspectRatio(
+            aspectRatio: 1,
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Spacer(),
+                      Image.asset(
+                        'assets/logo_wom.png',
+                        height: 60.0,
+                      ),
+                      const Spacer(),
+                      TextField(
+                        controller: usernameController,
+                        decoration: const InputDecoration(
+                          hintText: "Email",
+                          prefixIcon: Icon(Icons.email),
+                        ),
+                      ),
+                      const Spacer(),
+                      TextField(
+                        obscureText: obscureText,
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                              icon: Icon(obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
+                              color: Colors.blue,
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              }),
+                        ),
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () => _onLoginButtonPressed(
+                            usernameController.text.trim(),
+                            passwordController.text.trim()),
+                        child: Text(
+                            'signIn'.tr()),
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 50,
+            margin: const EdgeInsets.all(4),
+            child: Material(
+              color: Colors.transparent,
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: InkWell(
+                  splashColor: Colors.green,
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () async {
+                    try {
+                      ref.read(loginLoadingProvider.notifier).state = true;
+                      await ref
+                          .read(authNotifierProvider.notifier)
+                          .anonymousLogin();
+                      ref.read(loginLoadingProvider.notifier).state = false;
+                    } catch (ex) {
+                      logger.e(ex);
+                      ref.read(loginLoadingProvider.notifier).state = false;
+                    }
+                  },
+                  child: Center(
+                    child: Text('anonymousAccess'.tr(),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 16.0,
+          ),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              context.go('/${SignUpScreen.path}');
+            },
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: 'areYouNotRegistered'.tr(),
+                children: [
+                  TextSpan(
+                    text: 'tapHere'.tr(),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 8.0,
+          ),
+        ],
+      ),
     );
   }
 
-  _simulateParticles(Duration time) {
-    particles.forEach((particle) => particle.maintainRestart(time));
-  }
-}
-
-class ParticleModel {
-  Animatable tween;
-  double size;
-  AnimationProgress animationProgress;
-  Random random;
-
-  ParticleModel(this.random) {
-    restart();
-  }
-
-  restart({Duration time = Duration.zero}) {
-    final startPosition = Offset(-0.2 + 1.4 * random.nextDouble(), 1.2);
-    final endPosition = Offset(-0.2 + 1.4 * random.nextDouble(), -0.2);
-    final duration = Duration(milliseconds: 3000 + random.nextInt(6000));
-
-    tween = MultiTrackTween([
-      Track("x").add(
-          duration, Tween(begin: startPosition.dx, end: endPosition.dx),
-          curve: Curves.easeInOutSine),
-      Track("y").add(
-          duration, Tween(begin: startPosition.dy, end: endPosition.dy),
-          curve: Curves.easeIn),
-    ]);
-    animationProgress = AnimationProgress(duration: duration, startTime: time);
-    size = 0.2 + random.nextDouble() * 0.4;
-  }
-
-  maintainRestart(Duration time) {
-    if (animationProgress.progress(time) == 1.0) {
-      restart(time: time);
+  _onLoginButtonPressed(String email, String password) async {
+    print('_onLoginButtonPressed');
+    if (password.length > 5) {
+      try {
+        FocusScope.of(context).requestFocus(FocusNode());
+        ref.read(loginLoadingProvider.notifier).state = true;
+        await ref.read(authNotifierProvider.notifier).login(
+          email,
+          password,
+        );
+        ref.read(loginLoadingProvider.notifier).state = false;
+      } catch (ex) {
+        logger.e(ex);
+        ref.read(loginLoadingProvider.notifier).state = false;
+      }
+    } else {
+      FocusScope.of(context).requestFocus(_focusNode);
     }
   }
 }
-
-class ParticlePainter extends CustomPainter {
-  List<ParticleModel> particles;
-  Duration time;
-
-  ParticlePainter(this.particles, this.time);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.white.withAlpha(50);
-
-    particles.forEach((particle) {
-      var progress = particle.animationProgress.progress(time);
-      final animation = particle.tween.transform(progress);
-      final position =
-      Offset(animation["x"] * size.width, animation["y"] * size.height);
-      canvas.drawCircle(position, size.width * 0.2 * particle.size, paint);
-    });
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
-}*/

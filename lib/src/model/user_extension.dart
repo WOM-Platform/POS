@@ -15,6 +15,7 @@ extension UserExt on POSUser {
       name: name ?? this.name,
       surname: surname ?? this.surname,
       email: email ?? this.email,
+      verified: verified,
     );
   }
 }

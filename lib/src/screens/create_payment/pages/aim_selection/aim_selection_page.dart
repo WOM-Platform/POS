@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 
@@ -41,7 +42,7 @@ class _AimSelectionPageState extends ConsumerState<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)?.translate('what_aim') ?? '',
+                    'what_aim'.tr(),
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -53,9 +54,7 @@ class _AimSelectionPageState extends ConsumerState<AimSelectionPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      AppLocalizations.of(context)
-                              ?.translate('enable_disable_filter') ??
-                          '',
+                     'enable_disable_filter'.tr(),
                       style: TextStyle(color: Colors.white),
                     ),
                     Switch(
@@ -80,8 +79,7 @@ class _AimSelectionPageState extends ConsumerState<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    AppLocalizations.of(context)?.translate('aim_suggestion') ??
-                        '',
+                    'aim_suggestion'.tr(),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -91,8 +89,7 @@ class _AimSelectionPageState extends ConsumerState<AimSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    AppLocalizations.of(context)?.translate('aim_warning') ??
-                        '',
+                    'aim_warning'.tr(),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,

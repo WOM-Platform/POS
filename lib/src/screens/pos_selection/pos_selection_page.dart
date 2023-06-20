@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -21,7 +21,7 @@ class PosSelectionPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text(AppLocalizations.of(context)?.translate('select_pos') ?? ''),
+            Text('select_pos').tr()),
         elevation: 0,
       ),
       bottomSheet: Container(

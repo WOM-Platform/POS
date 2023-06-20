@@ -1,8 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 import '../../../../my_logger.dart';
@@ -40,7 +41,7 @@ class _AmountSelectionPageState extends ConsumerState<AmountSelectionPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    AppLocalizations.of(context)?.translate('how_wom') ?? '',
+                    'how_wom'.tr(),
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
@@ -84,13 +85,10 @@ class _AmountSelectionPageState extends ConsumerState<AmountSelectionPage> {
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(),
                       hintText:
-                          AppLocalizations.of(context)?.translate('how_wom') ??
-                              '',
+                          'how_wom'.tr(),
                       errorText: isValid
                           ? null
-                          : AppLocalizations.of(context)
-                                  ?.translate('error_text_amount') ??
-                              '',
+                          : 'error_text_amount'.tr(),
                     ),
                   ),
                 ),
@@ -99,10 +97,7 @@ class _AmountSelectionPageState extends ConsumerState<AmountSelectionPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    AppLocalizations.of(context)
-                            ?.translate('insert_service_price') ??
-                        '',
+                  child: Text('insert_service_price'.tr(),
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,

@@ -1,6 +1,7 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:pos/src/blocs/login/bloc.dart';
 
 import 'package:pos/src/extensions.dart';
 import 'package:pos/src/offers/application/offers.dart';
@@ -70,7 +71,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
             user.merchants.firstWhere((element) => element.posList.isNotEmpty);
         ref.read(selectedPosProvider.notifier).state =
             SelectedPos(merchant, merchant.posList.first);
-        state = AuthenticationAuthenticated(user, token);
+        state = AuthenticationAuthenticated(user, token, true);
         return;
       }
 
@@ -94,25 +95,96 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
           ref.read(selectedPosProvider.notifier).state =
               SelectedPos(merchant, pos ?? merchant.posList.first);
         }
+      } else {
+        if (!(user.merchants.isEmpty ||
+            user.merchants.fold<int>(
+                    0,
+                    (int previousValue, Merchant element) =>
+                        previousValue + (element.posList.length)) ==
+                0)) {
+          final m = user.merchants.firstWhere((m) => m.posList.isNotEmpty);
+          final p = m.posList.first;
+          ref.read(selectedPosProvider.notifier).state = SelectedPos(m, p);
+        }
       }
-      state = AuthenticationAuthenticated(user, token);
-    } catch (ex) {
-      logger.i(ex.toString());
+      state = AuthenticationAuthenticated(user, token, user.verified);
+    } catch (ex, st) {
+      logger.e(ex.toString());
+      logger.e(st.toString());
       state = AuthenticationUnauthenticated();
     }
   }
 
-  logIn(LoggedIn event) async {
-    await ref
-        .read(userRepositoryProvider)
-        .persistToken(event.user, event.email, event.password);
+  Future<AuthResponse?> login(String username, String password) async {
+    logger.i('login');
+    try {
+      final authResponse = await ref.read(userRepositoryProvider).authenticate(
+            username: username,
+            password: password,
+          );
 
-    final user = event.user;
+      if (!authResponse.verified) {
+        state = AuthenticationEmailNotVerified(
+            username, password, authResponse.id, authResponse.token);
+        return authResponse;
+      }
+
+      await ref
+          .read(userRepositoryProvider)
+          .persistJWTToken(authResponse.token);
+
+      final user =
+          await ref.read(userRepositoryProvider).getUser(authResponse.token);
+
+      logger.i(user.name);
+      logger.i(user.merchants.length);
+      if (!(user.merchants.isEmpty ||
+          user.merchants.fold<int>(
+                  0,
+                  (int previousValue, Merchant element) =>
+                      previousValue + (element.posList.length)) ==
+              0)) {
+        final m = user.merchants.firstWhere((m) => m.posList.isNotEmpty);
+        final p = m.posList.first;
+        ref.read(selectedPosProvider.notifier).state = SelectedPos(m, p);
+      }
+      state =
+          AuthenticationAuthenticated(user, authResponse.token, user.verified);
+      return authResponse;
+    } catch (ex, stack) {
+      logger.e(ex);
+      logger.e(stack);
+      ref.read(loginErrorProvider.notifier).state =
+          LoginFailure(error: "Username e/o password non validi!");
+      return null;
+    }
+  }
+
+  checkEmailVerification() async {
+    if (state is AuthenticationEmailNotVerified) {
+      await login(
+        (state as AuthenticationEmailNotVerified).email,
+        (state as AuthenticationEmailNotVerified).password,
+      );
+    }
+  }
+
+  sendEmailVerification() async {
+    if (state is AuthenticationEmailNotVerified) {
+      await ref.read(userRepositoryProvider).sendEmailVerification(
+            (state as AuthenticationEmailNotVerified).userId,
+            (state as AuthenticationEmailNotVerified).token,
+          );
+    }
+  }
+
+  anonymousLogin() async {
+    final user = await getAnonymousUser(ref.read(getPosProvider));
     final m = user.merchants.firstWhere((m) => m.posList.isNotEmpty);
     final p = m.posList.first;
     ref.read(selectedPosProvider.notifier).state = SelectedPos(m, p);
 
-    state = AuthenticationAuthenticated(user, event.token);
+    state = AuthenticationAuthenticated(user, anonymousToken, user.verified);
   }
 
   logOut() async {
@@ -129,7 +201,18 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     final user = await ref.read(userRepositoryProvider).getUser(
           currentState.token,
         );
-    state = AuthenticationAuthenticated(user, currentState.token);
+    if (!(user.merchants.isEmpty ||
+        user.merchants.fold<int>(
+                0,
+                (int previousValue, Merchant element) =>
+                    previousValue + (element.posList.length)) ==
+            0)) {
+      final m = user.merchants.firstWhere((m) => m.posList.isNotEmpty);
+      final p = m.posList.first;
+      ref.read(selectedPosProvider.notifier).state = SelectedPos(m, p);
+    }
+    state =
+        AuthenticationAuthenticated(user, currentState.token, user.verified);
   }
 
   void deleteAccount() async {
@@ -137,12 +220,11 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     if (currentState is AuthenticationAuthenticated) {
       final userId = currentState.user.id;
       final repo = ref.watch(userRepositoryProvider);
-      final email = await repo.getSavedEmail();
-      final password = await repo.getSavedPassword();
-      if (email == null || password == null || userId == null) {
+      final token = await repo.getToken();
+      if (token == null) {
         throw Exception();
       }
-      await ref.read(getPosProvider).deleteAccount(userId, email, password);
+      await ref.read(getPosProvider).deleteAccount(userId, token);
       logOut();
     }
   }

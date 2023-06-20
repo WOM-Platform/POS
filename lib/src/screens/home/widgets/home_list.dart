@@ -1,9 +1,10 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
@@ -53,9 +54,7 @@ class _HomeListState extends ConsumerState<HomeList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    AppLocalizations.of(context)
-                            ?.translate('no_connection_title') ??
-                        '',
+                    'no_connection_title'.tr(),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -63,18 +62,14 @@ class _HomeListState extends ConsumerState<HomeList> {
                     height: 10,
                   ),
                   Text(
-                    AppLocalizations.of(context)
-                            ?.translate('no_connection_aim_desc') ??
-                        '',
+                    'no_connection_aim_desc'.tr(),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   FloatingActionButton.extended(
-                      label: Text(AppLocalizations.of(context)
-                              ?.translate('try_again') ??
-                          ''),
+                      label: Text('try_again'.tr()),
                       onPressed: () {
                         ref.invalidate(requestNotifierProvider);
                       }),
@@ -85,15 +80,14 @@ class _HomeListState extends ConsumerState<HomeList> {
           noPosState: () {
             return Center(
               child: WarningWidget(
-                text: AppLocalizations.of(context)?.translate('no_pos') ?? '',
+                text: 'no_pos'.tr(),
               ),
             );
           },
           noMerchantState: () {
             return Center(
               child: WarningWidget(
-                text: AppLocalizations.of(context)?.translate('no_merchants') ??
-                    '',
+                text: 'no_merchants'.tr(),
               ),
             );
           },
@@ -138,8 +132,7 @@ class _HomeListState extends ConsumerState<HomeList> {
                                 final file = await pdfCreator.buildPdf(
                                     requests[index],
                                     pos,
-                                    AppLocalizations.of(context)
-                                            ?.locale
+                                   context.locale
                                             .languageCode ??
                                         'en');
                                 Share.shareFiles([file.path]);
@@ -180,16 +173,14 @@ class _HomeListState extends ConsumerState<HomeList> {
           requestsLoadingErrorState: (error) {
             return Center(
               child: Text(
-                AppLocalizations.of(context)?.translate(error) ?? '',
+                error.tr(),
                 textAlign: TextAlign.center,
               ),
             );
           },
           error: (ex, st) {
             return Center(
-              child: Text(AppLocalizations.of(context)
-                      ?.translate('error_screen_state') ??
-                  ''),
+              child: Text('error_screen_state'.tr()),
             );
           },
         );
@@ -197,8 +188,8 @@ class _HomeListState extends ConsumerState<HomeList> {
       error: (ex, st) {
         return Center(
           child: Text(
-              AppLocalizations.of(context)?.translate('error_screen_state') ??
-                  ''),
+            'error_screen_state'.tr(),
+          ),
         );
       },
       loading: () {
@@ -219,7 +210,7 @@ class _HomeListState extends ConsumerState<HomeList> {
           final file = await pdfCreator.buildPdf(
             request,
             pos,
-            AppLocalizations.of(context)?.locale.languageCode ?? 'en',
+           context.locale.languageCode ?? 'en',
           );
           Share.shareFiles([file.path]);
         }),
@@ -261,7 +252,7 @@ class _HomeListState extends ConsumerState<HomeList> {
                 posId: id,
                 draftRequest: request,
                 languageCode:
-                    AppLocalizations.of(context)?.locale.languageCode))
+                   context.locale.languageCode))
       ],
     );
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => provider));

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
@@ -17,6 +18,7 @@ import '../../../../my_logger.dart';
 import '../../back_button_text.dart';
 
 class PositionSelectionPage extends ConsumerStatefulWidget {
+  static const String path = 'positionSelection';
   @override
   _PositionSelectionPageState createState() => _PositionSelectionPageState();
 }
@@ -47,7 +49,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
   ];
 
   Future<bool> initPlatformState(CreatePaymentRequestBloc bloc) async {
-    locService.LocationData? location;
+    // locService.LocationData? location;
     try {
       bool serviceStatus = await _locationService.serviceEnabled();
       logger.i("Service status: $serviceStatus");
@@ -160,8 +162,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
             Padding(
               padding: const EdgeInsets.only(left: 8.0, top: 8.0),
               child: Text(
-                AppLocalizations.of(context)?.translate('what_are_interest') ??
-                    '',
+                'what_are_interest'.tr(),
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                     color: Colors.white,
@@ -173,9 +174,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  AppLocalizations.of(context)
-                          ?.translate('enable_disable_filter') ??
-                      '',
+                  'enable_disable_filter'.tr(),
                   style: const TextStyle(color: Colors.white),
                 ),
                 Switch(
@@ -196,12 +195,12 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
             SliderTheme(
               data: Theme.of(context).sliderTheme.copyWith(
                     activeTrackColor: Colors.grey[100],
-                    inactiveTrackColor: Theme.of(context).accentColor,
+                    inactiveTrackColor: Theme.of(context).colorScheme.secondary,
                     activeTickMarkColor: Colors.grey,
                     inactiveTickMarkColor: Colors.white,
                     overlayColor: Colors.black12,
-                    thumbColor: Theme.of(context).accentColor,
-                    valueIndicatorColor: Theme.of(context).accentColor,
+                    thumbColor: Theme.of(context).colorScheme.secondary,
+                    valueIndicatorColor:Theme.of(context).colorScheme.secondary,
                     valueIndicatorTextStyle: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold),
@@ -213,7 +212,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                 divisions: sliderSteps.length - 1,
                 label:
                     '${bloc.radius > 500 ? bloc.radius ~/ 1000 : bloc.radius.toInt()}${bloc.radius > 500 ? 'km' : 'm'}',
-                activeColor: Theme.of(context).accentColor,
+                activeColor: Theme.of(context).colorScheme.secondary,
                 inactiveColor: Colors.white,
                 onChanged: bloc.boundingBoxEnabled
                     ? (value) {
@@ -249,9 +248,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                       child: !bloc.boundingBoxEnabled
                           ? Center(
                               child: Text(
-                                AppLocalizations.of(context)?.translate(
-                                        'touch_to_enable_filter_map') ??
-                                    '',
+                                'touch_to_enable_filter_map'.tr(),
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 30.0,

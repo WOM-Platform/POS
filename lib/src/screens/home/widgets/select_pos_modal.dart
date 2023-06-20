@@ -1,8 +1,13 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/offers/application/offers.dart';
+import 'package:pos/src/screens/home/widgets/delete_merchant_dialog.dart';
+import 'package:pos/src/services/user_repository.dart';
+import 'package:pos/src/utils.dart';
 
 class PosSelectorWidget extends ConsumerWidget {
   const PosSelectorWidget({Key? key}) : super(key: key);
@@ -21,8 +26,7 @@ class PosSelectorWidget extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                AppLocalizations.of(context)?.translate('selectPosToHandle') ??
-                    '-',
+                'selectPosToHandle'.tr(),
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -36,19 +40,43 @@ class PosSelectorWidget extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          merchants[i].name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                merchants[i].name,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            // if (merchants[i].access ==
+                            //     MerchantAccess.admin) ...[
+                            //   const SizedBox(width: 16),
+                            //   ElevatedButton(
+                            //     onPressed: () async {
+                            //       showDialog(
+                            //         context: context,
+                            //         builder: (c) => Dialog(
+                            //           child: DeleteMerchantDialog(
+                            //             merchantId: merchants[i].id,
+                            //           ),
+                            //         ),
+                            //       );
+                            //     },
+                            //     child: Text(
+                            //       'delete'.tr(),
+                            //     ),
+                            //   ),
+                            // ],
+                          ],
                         ),
                         if (merchants[i].posList.isEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(AppLocalizations.of(context)
-                                    ?.translate('noPosForThisMerchant') ??
-                                '-'),
+                            child:
+                                Text('noPosForThisMerchant' 'try_again'.tr()),
                           ),
                         for (int index = 0;
                             index < merchants[i].posList.length;
@@ -210,7 +238,7 @@ class PosSelectorWidget extends ConsumerWidget {
     /*return Scaffold(
       appBar: AppBar(
         title:
-        Text(AppLocalizations.of(context)?.translate('select_pos') ?? ''),
+        Text('select_pos').tr()),
         elevation: 0,
       ),
       bottomSheet: Container(

@@ -1,34 +1,48 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/add_image/ui/add_image.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pos/src/blocs/authentication/authentication_state.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/offers.dart';
+import 'package:pos/src/screens/settings/settings.dart';
 import 'package:pos/src/services/user_repository.dart';
+import 'package:pos/src/signup/ui/screens/create_merchant.dart';
 
 class POSManagerScreen extends HookConsumerWidget {
-  final int size;
-
-  const POSManagerScreen(this.size, {Key? key}) : super(key: key);
+  static const String path = 'posManager';
+  const POSManagerScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tabController = useTabController(initialLength: size);
+
     final posUser = ref.watch(posUserProvider);
+    final posCount = posUser?.merchants.fold<int>(
+        0, (previousValue, element) => previousValue + element.posList.length) ?? 0;
+    final tabController = useTabController(initialLength: posCount);
     final merchants = posUser?.merchants ?? [];
     // final List<PointOfSale> list = merchants.expand((e) => e.posList).toList();
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
-        title:
-            Text(AppLocalizations.of(context)?.translate('handlePos') ?? '-'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            color: Colors.white,
+            onPressed: () {
+              context.go('/${SettingsScreen.path}/${POSManagerScreen.path}/${CreateMerchantScreen.path}');
+            },
+          ),
+        ],
+        title: Text('handlePos'.tr()),
         bottom: TabBar(
           isScrollable: true,
           controller: tabController,
@@ -130,7 +144,7 @@ class POSHandler extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    AppLocalizations.of(context)?.translate('name') ?? '-',
+                    'name'.tr(),
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
@@ -142,9 +156,7 @@ class POSHandler extends ConsumerWidget {
                         edit(
                           ref: ref,
                           initialText: pos.name,
-                          title: AppLocalizations.of(context)
-                                  ?.translate('posName') ??
-                              '-',
+                          title: 'posName' 'try_again'.tr(),
                           maxLength: 28,
                           minLength: 4,
                           maxLines: 1,
@@ -174,12 +186,7 @@ class POSHandler extends ConsumerWidget {
                     padding:
                         const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     child: Text(
-                      pos.isActive
-                          ? AppLocalizations.of(context)?.translate('active') ??
-                              '-'
-                          : AppLocalizations.of(context)
-                                  ?.translate('inactive') ??
-                              '-',
+                      pos.isActive ? 'active'.tr() : 'inactive'.tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -192,8 +199,7 @@ class POSHandler extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    AppLocalizations.of(context)?.translate('description') ??
-                        '-',
+                    'description'.tr(),
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
@@ -205,9 +211,7 @@ class POSHandler extends ConsumerWidget {
                         edit(
                           ref: ref,
                           initialText: pos.description,
-                          title: AppLocalizations.of(context)
-                                  ?.translate('posDescription') ??
-                              '-',
+                          title: 'posDescription'.tr(),
                           maxLength: 4096,
                           maxLines: 3,
                           onSave: (description) =>
@@ -218,14 +222,14 @@ class POSHandler extends ConsumerWidget {
                 ],
               ),
               Text(
-                pos.description ?? '-',
+                pos.description ?? '',
                 style: TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 24),
               Row(
                 children: [
                   Text(
-                    AppLocalizations.of(context)?.translate('website') ?? '-',
+                    'website'.tr(),
                     style: keyStyle,
                   ),
                   const SizedBox(width: 8),
@@ -237,9 +241,7 @@ class POSHandler extends ConsumerWidget {
                         edit(
                           ref: ref,
                           initialText: pos.url,
-                          title: AppLocalizations.of(context)
-                                  ?.translate('edit_url') ??
-                              '-',
+                          title: 'edit_url'.tr(),
                           maxLines: 1,
                           onSave: (url) =>
                               updateFields(ref, pos.name, pos.description, url),
@@ -399,8 +401,7 @@ class EditTextDialog extends HookConsumerWidget {
                 maxLength: maxLength,
                 onChanged: (v) {
                   if (v.length < (minLength ?? 0)) {
-                    errorText.value =
-                        '${AppLocalizations.of(context)?.translate('minLengthWarn2') ?? '-'} $minLength';
+                    errorText.value = '${'minLengthWarn2'.tr()} $minLength';
                   } else {
                     errorText.value = null;
                   }
@@ -426,7 +427,7 @@ class EditTextDialog extends HookConsumerWidget {
                       }
                     : null,
                 child: Text(
-                  AppLocalizations.of(context)?.translate('update') ?? '-',
+                  'update'.tr(),
                 ),
               )
             ],

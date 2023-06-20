@@ -1,15 +1,10 @@
 import 'package:clippy_flutter/arc.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
-import 'package:pos/src/db/app_database/app_database.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/screens/request_confirm/summary_request.dart';
-import 'package:pos/src/services/aim_repository.dart';
-import 'package:pos/src/services/pdf_creator.dart';
 import 'package:share/share.dart';
 
-import '../../offers/application/offers.dart';
 
 class RequestDetails extends ConsumerWidget {
   // final PaymentRequest paymentRequest;
@@ -228,7 +223,7 @@ class RequestDetails extends ConsumerWidget {
       //     );
       //   },
       //   label: Text(
-      //       AppLocalizations.of(context)?.translate('duplicate') ?? ''),
+      //       'duplicate').tr()),
       // ),
     );
   }

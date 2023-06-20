@@ -2,13 +2,14 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crop_your_image/crop_your_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/my_logger.dart';
 
 final selectedImageProvider = StateProvider.autoDispose<Uint8List?>((ref) {
@@ -75,51 +76,44 @@ class AddImageScreen extends HookConsumerWidget {
       appBar: AppBar(
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right:8.0),
+            padding: const EdgeInsets.only(right: 8.0),
             child: ActionChip(
               backgroundColor: Colors.green,
-              onPressed:
-                isProcessing.value
-                    ? null
-                    : () async {
-                  if (croppedData != null) {
-                    try {
-                      isProcessing.value = true;
-                      final result =
-                      await FlutterImageCompress.compressWithList(
-                        croppedData,
-                        minHeight: minHeight,
-                        minWidth: minWidth,
-                        quality: 80,
-                      );
-                      print(croppedData.length);
-                      print(result.length);
+              onPressed: isProcessing.value
+                  ? null
+                  : () async {
+                      if (croppedData != null) {
+                        try {
+                          isProcessing.value = true;
+                          final result =
+                              await FlutterImageCompress.compressWithList(
+                            croppedData,
+                            minHeight: minHeight,
+                            minWidth: minWidth,
+                            quality: 80,
+                          );
+                          print(croppedData.length);
+                          print(result.length);
 
-                      await onSave?.call(result);
-                      Navigator.of(context).pop();
-                    } catch (ex) {
-                      logger.e(ex);
-                      isProcessing.value = false;
-                    }
-                  } else {
-                    isProcessing.value = true;
-                    cropController.crop();
-                  }
-              },
+                          await onSave?.call(result);
+                          Navigator.of(context).pop();
+                        } catch (ex) {
+                          logger.e(ex);
+                          isProcessing.value = false;
+                        }
+                      } else {
+                        isProcessing.value = true;
+                        cropController.crop();
+                      }
+                    },
               label: Text(
-                croppedData != null
-                    ? AppLocalizations.of(context)?.translate('save') ?? ''
-                    : AppLocalizations.of(context)?.translate('crop') ?? '',
+                croppedData != null ? 'save' : 'crop',
                 style: TextStyle(color: Colors.white),
-              ),
+              ).tr(),
             ),
           ),
         ],
-        title: Text(
-          imageUrl != null
-              ? AppLocalizations.of(context)?.translate('edit_image') ?? '-'
-              : AppLocalizations.of(context)?.translate('add_image') ?? '-',
-        ),
+        title: Text(imageUrl != null ? 'edit_image' : 'add_image').tr(),
       ),
       body: LoadingOverlay(
         isLoading: isProcessing.value,
@@ -136,9 +130,7 @@ class AddImageScreen extends HookConsumerWidget {
                           onPressed: () async {
                             await pickImage(ref, isProcessing);
                           },
-                          child: Text(
-                              AppLocalizations.of(context)?.translate('edit') ??
-                                  '-'),
+                          child: Text('edit').tr(),
                         ),
                       ),
                     ],
@@ -148,9 +140,7 @@ class AddImageScreen extends HookConsumerWidget {
                       onPressed: () async {
                         await pickImage(ref, isProcessing);
                       },
-                      child: Text(AppLocalizations.of(context)
-                              ?.translate('select_image') ??
-                          '-'),
+                      child: Text('select_image'.tr()),
                     ),
                   )
             : croppedData != null

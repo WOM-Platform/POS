@@ -47,3 +47,11 @@ class InsufficientPos extends LoginState {
   @override
   String toString() => 'Insufficient Merchants or Pos';
 }
+
+class EmailNotVerified extends LoginState {
+  @override
+  List<Object> get props => [];
+
+  @override
+  String toString() => 'Email not verified';
+}

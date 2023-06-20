@@ -1,8 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/custom_icons.dart';
-import 'package:pos/localization/app_localizations.dart';
 
 import '../../constants.dart';
 import '../../utils.dart';
@@ -77,9 +77,8 @@ class IntroScreenState extends State<IntroScreen> {
             MdiIcons.tools,
             size: 100,
           ),
-          title: AppLocalizations.of(context)?.translate('welcome') ?? '',
-          description:
-              AppLocalizations.of(context)?.translate('welcome_desc') ?? '',
+          title: 'welcome'.tr(),
+          description: 'welcome_desc'.tr(),
         ),
         Slide(
           maxLineTitle: 10,
@@ -95,17 +94,19 @@ class IntroScreenState extends State<IntroScreen> {
           widgetDescription: Column(
             children: <Widget>[
               Text(
-                AppLocalizations.of(context)?.translate('merchant_desc') ?? '',
+                'merchant_desc'.tr(),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               SizedBox(height: 16),
               FloatingActionButton.extended(
-                  onPressed: () {
-                    launchUrl('https://$domain/user/register-merchant');
-                  },
-                  label: Text(
-                      AppLocalizations.of(context)?.translate('sign_up') ?? ''))
+                onPressed: () {
+                  launchUrl('https://$domain/user/register-merchant');
+                },
+                label: Text(
+                  'sign_up'.tr(),
+                ),
+              )
             ],
           ),
         ),
@@ -116,9 +117,8 @@ class IntroScreenState extends State<IntroScreen> {
           backgroundColor: Colors.white,
           heightImage: 150,
           pathImage: "assets/slide4.png",
-          title: AppLocalizations.of(context)?.translate('wom') ?? '',
-          description:
-              AppLocalizations.of(context)?.translate('wom_desc') ?? '',
+          title: 'wom'.tr(),
+          description: 'wom_desc'.tr(),
         ),
         Slide(
           maxLineTitle: 10,
@@ -130,11 +130,8 @@ class IntroScreenState extends State<IntroScreen> {
             MdiIcons.piggyBank,
             size: 100,
           ),
-          title:
-              AppLocalizations.of(context)?.translate('wom_suggestion') ?? '',
-          description:
-              AppLocalizations.of(context)?.translate('wom_suggestion_desc') ??
-                  '',
+          title: 'wom_suggestion'.tr(),
+          description: 'wom_suggestion_desc'.tr(),
         ),
       ],
     );

@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 
 import '../../back_button_text.dart';
@@ -38,10 +39,7 @@ class _TypeSelectionPageState extends ConsumerState<TypeSelectionPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  AppLocalizations.of(context)
-                          ?.translate('is_a_persistent_request') ??
-                      '',
+                child: Text('is_a_persistent_request'.tr(),
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.white,

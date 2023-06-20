@@ -1,9 +1,10 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pdf/widgets.dart' as pdfWidgets;
-import 'package:pos/localization/app_localizations.dart';
+
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
@@ -138,7 +139,7 @@ class SummaryRequest extends ConsumerWidget {
                   );
                 },
                 label: Text(
-                    AppLocalizations.of(context)?.translate('duplicate') ?? ''),
+                    'duplicate'.tr()),
               ),
       ),
     );
