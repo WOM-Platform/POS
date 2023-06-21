@@ -1,3 +1,4 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -5,9 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:pos/src/exceptions.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/signup/application/sign_up_notifier.dart';
-import 'package:pos/src/signup/ui/screens/email_verification.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:validatorless/validatorless.dart';
 
 class SignUpScreen extends HookConsumerWidget {
@@ -32,6 +34,7 @@ class SignUpScreen extends HookConsumerWidget {
     final passwordFocusNode = useFocusNode();
     final passwordController = useTextEditingController();
     final _obscurePassword = useState(true);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Registrazione'),
@@ -61,17 +64,12 @@ class SignUpScreen extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                // decoration: InputDecoration(
-                //   contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                //   prefix: Icon(Icons.email),
-                //
-                //   border: OutlineInputBorder(),
-                //   hintText: 'write_here'.tr(),
-                // ),
                 validator: Validatorless.multiple(
                   [
-                    Validatorless.email('The field must be an email'),
-                    Validatorless.required('The field is obligatory')
+                    Validatorless.email('email_not_valid'.tr()),
+                    Validatorless.required(
+                      'mandatory_field'.tr(),
+                    ),
                   ],
                 ),
               ),
@@ -95,7 +93,11 @@ class SignUpScreen extends HookConsumerWidget {
                   ),
                 ),
                 validator: Validatorless.multiple(
-                  [Validatorless.required('The field is obligatory')],
+                  [
+                    Validatorless.required(
+                      'mandatory_field'.tr(),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -118,7 +120,11 @@ class SignUpScreen extends HookConsumerWidget {
                   ),
                 ),
                 validator: Validatorless.multiple(
-                  [Validatorless.required('The field is obligatory')],
+                  [
+                    Validatorless.required(
+                      'mandatory_field'.tr(),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -148,7 +154,11 @@ class SignUpScreen extends HookConsumerWidget {
                   ),
                 ),
                 validator: Validatorless.multiple(
-                  [Validatorless.required('The field is obligatory')],
+                  [
+                    Validatorless.required(
+                      'mandatory_field'.tr(),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 32),
@@ -179,9 +189,27 @@ class SignUpScreen extends HookConsumerWidget {
                       context.pop();
                       // isLoading.value = false;
                     }
-                  } catch (ex) {
-                    logger.e(ex);
+                  } on ServerException catch (ex) {
                     isLoading.value = false;
+                    Alert(
+                      context: context,
+                      title:
+                          'Spiacenti si è verificato un errore durante la creazione del merchant',
+                      desc: ex.errorDescription,
+                      buttons: [
+                        DialogButton(
+                          child: Text('Ok'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ).show();
+                    logger.e(ex);
+                  } catch (ex, st) {
+                    isLoading.value = false;
+                    logger.e(ex);
+                    logger.e(st);
                   }
                 },
                 child: Text('Registrati'),

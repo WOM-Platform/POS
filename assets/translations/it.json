@@ -146,9 +146,9 @@
   "agricolture": "Agricoltura",
   "construction": "Costruzioni",
   "manifacture": "Manifatture",
-  "retailCommerce": "retailCommerce",
+  "retailCommerce": "Commercio al dettaglio",
   "transport": "Trasporti",
-  "lodging": "lodging",
+  "lodging": "Alloggio",
   "food": "Cibo",
   "information": "Informazioni",
   "finance": "Finanza",
@@ -157,6 +157,11 @@
   "health": "Salute",
   "sports": "Sport",
   "services": "Servizi",
-  "entertainment": "entertainment",
-  "organization": "Organizzazioni"
+  "entertainment": "Divertimento",
+  "organization": "Organizzazioni",
+  "mandatory_field": "Il campo è obbligatorio",
+  "email_not_valid": "Email non valida",
+  "invalid_fiscal_code":"Il codice fiscale inserito non è valido",
+  "fiscal_code_already_used": "IL codice fiscale risulta già utilizzato per un altro account",
+  "validation_error": "C'è un errore di validazione in uno dei campi immessi"
 }

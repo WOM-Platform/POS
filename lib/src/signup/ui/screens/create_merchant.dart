@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:pos/src/exceptions.dart';
 import 'package:pos/src/screens/root/root.dart';
 import 'package:pos/src/signup/application/create_merchant.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -148,6 +149,20 @@ class CreateMerchantScreen extends HookConsumerWidget {
               ).show();
             } on ServerException catch (ex) {
               isLoading.value = false;
+              Alert(
+                context: context,
+                title:
+                    'Spiacenti si è verificato un errore durante la creazione del merchant',
+                desc: ex.errorDescription,
+                buttons: [
+                  DialogButton(
+                    child: Text('Ok'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ).show();
               logger.e(ex);
             } catch (ex, st) {
               isLoading.value = false;
@@ -521,7 +536,8 @@ class CustomFormWidget extends HookConsumerWidget {
                     [
                       if (forms[i].mandatory)
                         RequiredValidator(
-                            errorText: 'Questo campo è obbligatorio'),
+                          errorText: 'mandatory_field'.tr(),
+                        ),
                       if (forms[i].minLength != null && forms[i].minLength! > 0)
                         MinLengthValidator(
                           forms[i].minLength!,

@@ -34,13 +34,13 @@ class POSManagerScreen extends HookConsumerWidget {
       appBar: AppBar(
         elevation: 1,
         actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            color: Colors.white,
-            onPressed: () {
-              context.go('/${SettingsScreen.path}/${POSManagerScreen.path}/${CreateMerchantScreen.path}');
-            },
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.add),
+          //   color: Colors.white,
+          //   onPressed: () {
+          //     context.go('/${SettingsScreen.path}/${POSManagerScreen.path}/${CreateMerchantScreen.path}');
+          //   },
+          // ),
         ],
         title: Text('handlePos'.tr()),
         bottom: TabBar(
