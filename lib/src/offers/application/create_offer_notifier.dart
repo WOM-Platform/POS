@@ -99,7 +99,8 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
     // ref.listen(maxAgeControllerProvider, (_, __) {});
     ref.listen(aimSelectionNotifierProvider, (_, next) {});
     final offerType = ref.watch(offersTabProvider);
-    final canCreateOffer = ref.watch(selectedPosProvider)?.merchant.access == MerchantAccess.admin;
+    final canCreateOffer =
+        ref.watch(selectedPosProvider)?.merchant.access == MerchantAccess.admin;
     return CreateOfferState.initial(
       offerType: canCreateOffer ? offerType : OfferType.ephemeral,
     );
@@ -121,8 +122,8 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
       );
     }
     // else if (state.activeStep == 2) {
-      // final maxAge = int.tryParse(ref.read(maxAgeControllerProvider).text);
-      // tmp = tmp.copyWith(maxAge: maxAge);
+    // final maxAge = int.tryParse(ref.read(maxAgeControllerProvider).text);
+    // tmp = tmp.copyWith(maxAge: maxAge);
     // }
     state = tmp;
   }
@@ -204,19 +205,17 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
         aim: state.aimCode,
       ),
     );
-    final secureStorage = ref.read(getSecureStorageProvider);
-    final email = await secureStorage.read(key: 'email');
-    final password = await secureStorage.read(key: 'password');
-    if (email == null || password == null) {
-      logger.i('username or password are null');
-      return;
-    }
+
     if (state.type == OfferType.persistent) {
+      final secureStorage = ref.read(getSecureStorageProvider);
+      final token = await secureStorage.read(key: 'token');
+      if (token == null) {
+        throw Exception('Token is null');
+      }
       await createCloudOffer(
         request,
         posId,
-        email,
-        password,
+        token,
       );
     } else {
       await createLocalOffer(request, posId, privateKey);
@@ -226,14 +225,12 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
   createCloudOffer(
     CreateOfferRequestDTO request,
     String posId,
-    String email,
-    String password,
+    String token,
   ) async {
     final res = await ref.read(getPosProvider).createOffer(
           posId,
           request,
-          email,
-          password,
+          token,
         );
     ref.invalidate(cloudOffersNotifierProvider(posId));
     ref.read(offersTabProvider.notifier).state = OfferType.persistent;

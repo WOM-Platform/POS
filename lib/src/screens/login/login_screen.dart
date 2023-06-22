@@ -5,12 +5,12 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/signup/ui/screens/sign_up.dart';
 
+import '../settings/change_language.dart';
 
 final loginLoadingProvider = StateProvider.autoDispose<bool>((ref) {
   return false;
@@ -23,15 +23,16 @@ class LoginScreen extends ConsumerWidget {
       backgroundColor: Colors.blue,
       body: LoadingOverlay(
         isLoading: ref.watch(loginLoadingProvider),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Center(child: LoginBox()),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: LoginBox(),
+          ),
         ),
       ),
     );
   }
 }
-
 
 class LoginBox extends StatefulHookConsumerWidget {
   const LoginBox({
@@ -57,7 +58,7 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
   Widget build(BuildContext context) {
     ref.listen<LoginFailure?>(
       loginErrorProvider,
-          (LoginFailure? previous, LoginFailure? next) {
+      (LoginFailure? previous, LoginFailure? next) {
         if (next != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -71,133 +72,155 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
 
     final usernameController = useTextEditingController();
     final passwordController = useTextEditingController();
-    return Center(
-      child: ListView(
-        children: <Widget>[
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 6,
-          ),
-          AspectRatio(
-            aspectRatio: 1,
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      const Spacer(),
-                      Image.asset(
-                        'assets/logo_wom.png',
-                        height: 60.0,
-                      ),
-                      const Spacer(),
-                      TextField(
-                        controller: usernameController,
-                        decoration: const InputDecoration(
-                          hintText: "Email",
-                          prefixIcon: Icon(Icons.email),
-                        ),
-                      ),
-                      const Spacer(),
-                      TextField(
-                        obscureText: obscureText,
-                        controller: passwordController,
-                        decoration: InputDecoration(
-                          hintText: "Password",
-                          prefixIcon: const Icon(Icons.lock),
-                          suffixIcon: IconButton(
-                              icon: Icon(obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility),
-                              color: Colors.blue,
-                              onPressed: () {
-                                setState(() {
-                                  obscureText = !obscureText;
-                                });
-                              }),
-                        ),
-                      ),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: () => _onLoginButtonPressed(
-                            usernameController.text.trim(),
-                            passwordController.text.trim()),
-                        child: Text(
-                            'signIn'.tr()),
-                      ),
-                      const Spacer(),
-                    ],
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              icon: Icon(Icons.language),
+              color: Colors.white,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChangeLanguageScreen(),
                   ),
-                ),
-              ),
+                );
+              },
             ),
-          ),
-          Container(
-            height: 50,
-            margin: const EdgeInsets.all(4),
-            child: Material(
-              color: Colors.transparent,
-              child: Ink(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+          ],
+        ),
+        Spacer(),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // SizedBox(
+            //   height: MediaQuery.of(context).size.height / 6,
+            // ),
+            AspectRatio(
+              aspectRatio: 1,
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-                child: InkWell(
-                  splashColor: Colors.green,
-                  borderRadius: BorderRadius.circular(15),
-                  onTap: () async {
-                    try {
-                      ref.read(loginLoadingProvider.notifier).state = true;
-                      await ref
-                          .read(authNotifierProvider.notifier)
-                          .anonymousLogin();
-                      ref.read(loginLoadingProvider.notifier).state = false;
-                    } catch (ex) {
-                      logger.e(ex);
-                      ref.read(loginLoadingProvider.notifier).state = false;
-                    }
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Center(
-                    child: Text('anonymousAccess'.tr(),
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const Spacer(),
+                        Image.asset(
+                          'assets/logo_wom.png',
+                          height: 60.0,
+                        ),
+                        const Spacer(),
+                        TextField(
+                          controller: usernameController,
+                          decoration: const InputDecoration(
+                            hintText: "Email",
+                            prefixIcon: Icon(Icons.email),
+                          ),
+                        ),
+                        const Spacer(),
+                        TextField(
+                          obscureText: obscureText,
+                          controller: passwordController,
+                          decoration: InputDecoration(
+                            hintText: "Password",
+                            prefixIcon: const Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                                icon: Icon(obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                                color: Colors.blue,
+                                onPressed: () {
+                                  setState(() {
+                                    obscureText = !obscureText;
+                                  });
+                                }),
+                          ),
+                        ),
+                        const Spacer(),
+                        ElevatedButton(
+                          onPressed: () => _onLoginButtonPressed(
+                              usernameController.text.trim(),
+                              passwordController.text.trim()),
+                          child: Text('signIn'.tr()),
+                        ),
+                        const Spacer(),
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 16.0,
-          ),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              context.go('/${SignUpScreen.path}');
-            },
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                text: 'areYouNotRegistered'.tr(),
-                children: [
-                  TextSpan(
-                    text: 'tapHere'.tr(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
-                style: TextStyle(color: Colors.white),
+            Container(
+              height: 50,
+              margin: const EdgeInsets.all(4),
+              child: Material(
+                color: Colors.transparent,
+                child: Ink(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: InkWell(
+                    splashColor: Colors.green,
+                    borderRadius: BorderRadius.circular(15),
+                    onTap: () async {
+                      try {
+                        ref.read(loginLoadingProvider.notifier).state = true;
+                        await ref
+                            .read(authNotifierProvider.notifier)
+                            .anonymousLogin();
+                        ref.read(loginLoadingProvider.notifier).state = false;
+                      } catch (ex) {
+                        logger.e(ex);
+                        ref.read(loginLoadingProvider.notifier).state = false;
+                      }
+                    },
+                    child: Center(
+                      child: Text(
+                        'anonymousAccess'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 8.0,
-          ),
-        ],
-      ),
+            const SizedBox(
+              height: 16.0,
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                context.go('/${SignUpScreen.path}');
+              },
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: 'areYouNotRegistered'.tr(),
+                  children: [
+                    TextSpan(
+                      text: 'tapHere'.tr(),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            // const SizedBox(
+            //   height: 8.0,
+            // ),
+          ],
+        ),
+        Spacer(),
+      ],
     );
   }
 
@@ -208,9 +231,9 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
         FocusScope.of(context).requestFocus(FocusNode());
         ref.read(loginLoadingProvider.notifier).state = true;
         await ref.read(authNotifierProvider.notifier).login(
-          email,
-          password,
-        );
+              email,
+              password,
+            );
         ref.read(loginLoadingProvider.notifier).state = false;
       } catch (ex) {
         logger.e(ex);

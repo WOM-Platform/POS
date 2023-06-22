@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
@@ -27,7 +28,7 @@ class NewOfferScreen extends HookConsumerWidget {
   showError(BuildContext context, {String? desc}) {
     Alert(
       context: context,
-      title: "somethings_wrong",
+      title: 'somethings_wrong'.tr(),
       desc: desc,
       buttons: [],
     ).show();
@@ -161,103 +162,6 @@ class NewOfferScreen extends HookConsumerWidget {
                 ),
               ),
             ),
-            // persistentFooterAlignment: AlignmentDirectional.center,
-            // persistentFooterButtons: [
-            //   Row(
-            //     children: [
-            //       if (activeStep > 0)
-            //         TextButton(
-            //           onPressed: () {
-            //             ref
-            //                 .read(createOfferNotifierProvider.notifier)
-            //                 .backStep();
-            //           },
-            //           child: Text(
-            //               'back') ??
-            //                   '-'),
-            //         ),
-            //       Flexible(
-            //         child: Padding(
-            //           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            //           child: AnotherStepper(
-            //             activeBarColor: Colors.blue,
-            //             // inActiveBarColor: Colors.white,
-            //             activeIndex: activeStep,
-            //             stepperList: [
-            //               StepperData(
-            //                 // title: StepperText(
-            //                 //   "type") ??
-            //                 //       '-',
-            //                 // ),
-            //               ),
-            //               StepperData(
-            //                 // title: StepperText(AppLocalizations.of(context)
-            //                 //         ?.translate("info") ??
-            //                 //     '-'),
-            //               ),
-            //               StepperData(
-            //                 // title: StepperText(AppLocalizations.of(context)
-            //                 //         ?.translate("filters") ??
-            //                 //     '-'),
-            //               ),
-            //               StepperData(
-            //                   // title: StepperText(
-            //                   //   AppLocalizations.of(context)
-            //                   //           ?.translate("summary") ??
-            //                   //       '-',
-            //                   // ),
-            //                   ),
-            //             ],
-            //             stepperDirection: Axis.horizontal,
-            //             iconWidth: 30,
-            //             iconHeight: 30,
-            //           ),
-            //         ),
-            //       ),
-            //       FloatingActionButton(
-            //         child: Icon(
-            //             activeStep == 3 ? Icons.check : Icons.navigate_next),
-            //         onPressed: () {
-            //           if (activeStep == 3) {
-            //             Alert(
-            //                 context: context,
-            //                 title: AppLocalizations.of(context)
-            //                         ?.translate('do_you_want_create') ??
-            //                     '-',
-            //                 buttons: [
-            //                   DialogButton(
-            //                     child: Text(AppLocalizations.of(context)
-            //                             ?.translate('yes') ??
-            //                         '-'),
-            //                     onPressed: () async {
-            //                       try {
-            //                         Navigator.of(context).pop();
-            //                         isLoading.value = true;
-            //                         await ref
-            //                             .read(createOfferNotifierProvider
-            //                                 .notifier)
-            //                             .createOffer();
-            //                         Navigator.of(context, rootNavigator: true)
-            //                             .pop();
-            //                       } catch (ex) {
-            //                         isLoading.value = false;
-            //                         logger.e(ex);
-            //                         Navigator.of(context).pop();
-            //                         showError(context);
-            //                       }
-            //                     },
-            //                   )
-            //                 ]).show();
-            //           } else {
-            //             ref
-            //                 .read(createOfferNotifierProvider.notifier)
-            //                 .nextStep();
-            //           }
-            //         },
-            //       ),
-            //     ],
-            //   ),
-            // ],
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: Container(
@@ -325,6 +229,7 @@ class NewOfferScreen extends HookConsumerWidget {
                         activeStep == 3 ? Icons.check : Icons.navigate_next),
                     onPressed: () async {
                       if (activeStep == 3) {
+                        final navigator = GoRouter.of(context);
                         final res = await askChoice(
                           context,
                           'do_you_want_create'.tr(),
@@ -332,16 +237,32 @@ class NewOfferScreen extends HookConsumerWidget {
 
                         if (res) {
                           try {
-                            Navigator.of(context).pop();
                             isLoading.value = true;
                             await ref
                                 .read(createOfferNotifierProvider.notifier)
                                 .createOffer();
                             Navigator.of(context, rootNavigator: true).pop();
-                          } catch (ex) {
+                          } on ServerException catch (ex, st) {
+                            logger.e(ex);
+                            logger.e(st);
+                            isLoading.value = false;
+                            Alert(
+                              context: context,
+                              title:
+                                  'Spiacenti si è verificato un errore imprevisto',
+                              buttons: [
+                                DialogButton(
+                                  child: Text('Ok'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ).show();
+                          } catch (ex, st) {
                             isLoading.value = false;
                             logger.e(ex);
-                            Navigator.of(context).pop();
+                            logger.e(st);
                             showError(context);
                           }
                         }

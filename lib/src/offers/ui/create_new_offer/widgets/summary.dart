@@ -37,7 +37,7 @@ class Summary extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           InfoText(
-            text: 'wom_number',
+            text: 'wom_number'.tr(),
             value: state.wom?.toString(),
           ),
           const SizedBox(height: 16),
@@ -57,7 +57,7 @@ class Summary extends ConsumerWidget {
                   Text(
                     'filters'.tr(),
                     style: TextStyle(fontSize: 20),
-                  ).tr(),
+                  ),
                   const SizedBox(height: 8),
                   InfoText(
                       text: 'filter_aim'.tr(),
@@ -81,7 +81,7 @@ class Summary extends ConsumerWidget {
             )
           ] else
             InfoText(
-              text: 'filters',
+              text: 'filters'.tr(),
               value: 'no_filters'.tr(),
             ),
         ],

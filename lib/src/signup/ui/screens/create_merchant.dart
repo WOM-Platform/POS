@@ -136,10 +136,10 @@ class CreateMerchantScreen extends HookConsumerWidget {
               isLoading.value = false;
               Alert(
                 context: context,
-                title: 'Abbiamo creato il tuo nuovo merchant!',
+                title: 'merchant_created'.tr(),
                 buttons: [
                   DialogButton(
-                    child: Text('Torna alla home'),
+                    child: Text('back_to_home'.tr()),
                     onPressed: () {
                       nav.pop();
                       router.go(RootScreen.path);
@@ -151,8 +151,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
               isLoading.value = false;
               Alert(
                 context: context,
-                title:
-                    'Spiacenti si è verificato un errore durante la creazione del merchant',
+                title: 'merchant_creation_error'.tr(),
                 desc: ex.errorDescription,
                 buttons: [
                   DialogButton(
@@ -168,8 +167,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
               isLoading.value = false;
               Alert(
                 context: context,
-                title:
-                    'Spiacenti si è verificato un errore durante la creazione del merchant',
+                title: 'merchant_creation_error'.tr(),
                 buttons: [
                   DialogButton(
                     child: Text('Ok'),
@@ -186,23 +184,19 @@ class CreateMerchantScreen extends HookConsumerWidget {
           forms: [
             FormData(
               field: FormField.name,
-              hintText: 'Ragione sociale',
-              labelText: 'Ragione sociale',
+              hintText: 'merchant_name'.tr(),
+              labelText: 'merchant_name'.tr(),
               minLength: 8,
             ),
             FormData(
               field: FormField.cf,
-              hintText: 'Codice Fiscale o Partita IVA',
-              labelText: 'Codice Fiscale o Partita IVA',
+              hintText: 'merchant_fiscal_code'.tr(),
+              labelText: 'merchant_fiscal_code'.tr(),
               minLength: 11,
               maxLength: 16,
               inputFormatters: [UpperCaseTextFormatter()],
               validators: <FieldValidator>[
-                CFValidator(),
-                // Validatorless.regex(
-                //     RegExp(
-                //         r'^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST]{1}[0-9LMNPQRSTUV]{2}[A-Z]{1}[0-9LMNPQRSTUV]{3}[A-Z]{1}$'),
-                //     'Codice fiscale non valido'),
+                CFValidator(errorText: 'invalid_fiscal_code'.tr()),
               ],
             ),
             FormData<MerchantActivity>(
@@ -212,16 +206,16 @@ class CreateMerchantScreen extends HookConsumerWidget {
               items: MerchantActivity.values
                   .map((e) => DropdownData(e.name, e.text.tr()))
                   .toList(),
-              hintText: 'Seleziona l\'attività',
-              labelText: 'Seleziona l\'attività',
+              hintText: 'merchant_select_activity'.tr(),
+              labelText: 'merchant_select_activity'.tr(),
               validators: [],
             ),
             FormData(
               type: FormType.searchAddress,
               field: FormField.address,
               // customKey: 'google_address',
-              hintText: 'Indirizzo',
-              labelText: 'Indirizzo',
+              hintText: 'merchant_address'.tr(),
+              labelText: 'merchant_address'.tr(),
             ),
             // FormData(
             //   field: FormField.address,
@@ -230,26 +224,26 @@ class CreateMerchantScreen extends HookConsumerWidget {
             // ),
             FormData(
               field: FormField.zip,
-              hintText: 'CAP',
-              labelText: 'CAP',
+              hintText: 'merchant_zip_code'.tr(),
+              labelText: 'merchant_zip_code'.tr(),
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               keyboardType: TextInputType.number,
             ),
             FormData(
               field: FormField.city,
-              hintText: 'Località',
-              labelText: 'Località',
+              hintText: 'merchant_city'.tr(),
+              labelText: 'merchant_city'.tr(),
             ),
             FormData(
               field: FormField.country,
-              hintText: 'Nazione',
-              labelText: 'Nazione',
+              hintText: 'merchant_country'.tr(),
+              labelText: 'merchant_country'.tr(),
             ),
             FormData(
               field: FormField.custom,
               customKey: 'description',
-              hintText: 'Descrizione',
-              labelText: 'Descrizione',
+              hintText: 'merchant_description'.tr(),
+              labelText: 'merchant_description'.tr(),
               maxLines: 3,
               mandatory: false,
             ),
@@ -257,9 +251,9 @@ class CreateMerchantScreen extends HookConsumerWidget {
               field: FormField.url,
               prefix: 'https://',
               hintText: 'miomerchant.it',
-              labelText: 'Sito WEB',
+              labelText: 'merchant_url'.tr(),
               validators: [
-                UrlValidator(),
+                UrlValidator(errorText: 'invalid_url_warning'.tr()),
               ],
               mandatory: false,
             ),
@@ -365,13 +359,16 @@ class CustomFormWidget extends HookConsumerWidget {
                   validator: forms[i].mandatory
                       ? (value) {
                           return value?.isEmpty ?? true
-                              ? 'Questo campo è obbligatorio'
+                              ? 'mandatory_field'.tr()
                               : null;
                         }
                       : null,
                   decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black, width: 1),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black, width: 1),
@@ -404,8 +401,13 @@ class CustomFormWidget extends HookConsumerWidget {
                     inputDecoration: InputDecoration(
                       prefixText: forms[i].prefix,
                       labelText: forms[i].labelText,
-                      border: OutlineInputBorder(),
                       hintText: forms[i].hintText,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 1),
+                      ),
                     ),
                     textEditingController: controllers[forms[i].key],
                     googleAPIKey: "AIzaSyBnSeX3CiELwq6CWBXFbcmW7DeZ3BGLaag",
@@ -541,14 +543,16 @@ class CustomFormWidget extends HookConsumerWidget {
                       if (forms[i].minLength != null && forms[i].minLength! > 0)
                         MinLengthValidator(
                           forms[i].minLength!,
-                          errorText:
-                              'Devi inserire almeno ${forms[i].minLength!} caratteri',
+                          errorText: 'minimum_chars_warning'.tr(
+                            args: [
+                              forms[i].minLength!.toString(),
+                            ],
+                          ),
                         ),
                       if (forms[i].maxLength != null && forms[i].maxLength! > 0)
                         MaxLengthValidator(
                           forms[i].maxLength!,
-                          errorText:
-                              'Hai superato il massimo numero di caratteri',
+                          errorText: 'max_chars_warning'.tr(),
                         ),
                       for (int j = 0; j < forms[i].validators.length; j++)
                         forms[i].validators[j],
@@ -604,7 +608,7 @@ class CustomFormWidget extends HookConsumerWidget {
 }
 
 class UrlValidator extends TextFieldValidator {
-  UrlValidator({String errorText = 'Url non valido'}) : super(errorText);
+  UrlValidator({String errorText = 'invalid url'}) : super(errorText);
 
   @override
   bool get ignoreEmptyValues => false;

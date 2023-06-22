@@ -37,7 +37,7 @@ class SignUpScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registrazione'),
+        title: Text('sign_up_title'.tr()),
       ),
       body: LoadingOverlay(
         isLoading: isLoading.value,
@@ -82,7 +82,7 @@ class SignUpScreen extends HookConsumerWidget {
                 },
                 controller: nameController,
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'name'.tr(),
                   hintText: 'write_here'.tr(),
                   prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
@@ -109,7 +109,7 @@ class SignUpScreen extends HookConsumerWidget {
                 },
                 controller: surnameController,
                 decoration: InputDecoration(
-                  labelText: 'Surname',
+                  labelText: 'surname'.tr(),
                   hintText: 'write_here'.tr(),
                   prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
@@ -163,7 +163,7 @@ class SignUpScreen extends HookConsumerWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                'Registrandoti accetti i termini e le condizioni delle piattaforma WOM.',
+                'terms_and_conditions'.tr(),
                 style: TextStyle(
                   color: Colors.grey,
                 ),
@@ -193,8 +193,7 @@ class SignUpScreen extends HookConsumerWidget {
                     isLoading.value = false;
                     Alert(
                       context: context,
-                      title:
-                          'Spiacenti si è verificato un errore durante la creazione del merchant',
+                      title: 'sign_up_error'.tr(),
                       desc: ex.errorDescription,
                       buttons: [
                         DialogButton(
@@ -210,9 +209,21 @@ class SignUpScreen extends HookConsumerWidget {
                     isLoading.value = false;
                     logger.e(ex);
                     logger.e(st);
+                    Alert(
+                      context: context,
+                      title: 'sign_up_error'.tr(),
+                      buttons: [
+                        DialogButton(
+                          child: Text('Ok'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ).show();
                   }
                 },
-                child: Text('Registrati'),
+                child: Text('sign_up'.tr()),
               ),
             ],
           ),

@@ -71,8 +71,8 @@ class SelectAim extends ConsumerWidget {
       );
     }
     return CreateOfferCard(
-      title: 'filter_aim',
-      description: 'aimDesc',
+      title: 'filter_aim'.tr(),
+      description: 'aimDesc'.tr(),
       extra: state.aimCode != null
           ? TextButton(
               onPressed: () {
@@ -87,7 +87,7 @@ class SelectAim extends ConsumerWidget {
           AimDropdown(
             list: state.aimList,
             value: state.aimCode,
-            labelText: 'primary_aim',
+            labelText: 'primary_aim'.tr(),
             onChanged: (aim) {
               if (aim == null) return;
               ref
@@ -168,8 +168,8 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
       }
     });
     return CreateOfferCard(
-      title: 'bounding_box',
-      description: 'bounding_box_desc',
+      title: 'bounding_box'.tr(),
+      description: 'bounding_box_desc'.tr(),
       extra: mapPolygon != null
           ? TextButton(
               onPressed: () {
@@ -222,8 +222,8 @@ class SelectMaxAge extends HookConsumerWidget {
     // final maxAge =
     //     ref.watch(createOfferNotifierProvider.select((value) => value.maxAge));
     return CreateOfferCard(
-        title: 'wom_age',
-        description: 'wom_age_desc',
+        title: 'wom_age'.tr(),
+        description: 'wom_age_desc'.tr(),
         // extra: maxAge != null
         //     ? TextButton(
         //         onPressed: () {

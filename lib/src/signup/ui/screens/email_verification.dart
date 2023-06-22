@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +9,6 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/blocs/authentication/authentication_state.dart';
 import 'package:pos/src/my_logger.dart';
-import 'package:pos/src/signup/application/sign_up_notifier.dart';
 
 class EmailVerificationScreen extends HookConsumerWidget {
   static const String path = 'emailVerification';
@@ -43,7 +43,7 @@ class EmailVerificationScreen extends HookConsumerWidget {
     }, Duration(seconds: 1));
     return Scaffold(
       appBar: AppBar(
-        title: Text('Verifica il tuo account'),
+        title: Text('verify_account'.tr()),
       ),
       body: LoadingOverlay(
         isLoading: isLoading.value,
@@ -51,8 +51,9 @@ class EmailVerificationScreen extends HookConsumerWidget {
           padding: const EdgeInsets.all(16),
           children: [
             Text(
-              'Abbiamo inviato una mail di verifica${email != null ? ' a $email' : ' al tuo indirizzo email'}.\n\n'
-              'Clicca sul link contenuto nella email per confermare il tuo account e poi torna nell\'app e clicca sul pulsante seguente.',
+              'email_sent'.tr(
+                args: ['${email != null ? ' $email' : ''}'],
+              ),
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 8),
@@ -74,17 +75,13 @@ class EmailVerificationScreen extends HookConsumerWidget {
                 children: [
                   Icon(Icons.check),
                   const SizedBox(width: 8),
-                  Text('Ok, ho verificato la mia email'),
+                  Text('i_verified_my_email'.tr()),
                 ],
               ),
             ),
             const SizedBox(height: 24),
             Divider(),
-            Text(
-              'Non hai ricevuto nessuna email? Verifica nella cartella dello '
-              'spam oppure clicca sul seguente pulsante per ottenere un nuovo link di verifica.',
-            ),
-            // Text('se non trovi l\'email'),
+            Text('didnt_receive_email'.tr()),
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: remainingSeconds.value > 0
@@ -100,14 +97,13 @@ class EmailVerificationScreen extends HookConsumerWidget {
                 children: [
                   Icon(Icons.refresh),
                   const SizedBox(width: 8),
-                  Text('Richiedi una nuova email di verifica'),
+                  Text('request_new_email'.tr()),
                 ],
               ),
             ),
-
             if (remainingSeconds.value > 0) ...[
               Text(
-                'Attendi ${remainingSeconds.value} secondi per inviare di nuovo la mail',
+                'wait_seconds'.tr(args: ['${remainingSeconds.value}']),
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black54),
               ),
@@ -118,7 +114,7 @@ class EmailVerificationScreen extends HookConsumerWidget {
                 ref.read(authNotifierProvider.notifier).logOut();
               },
               child: Text(
-                'Torna al login',
+                'back_to_login'.tr(),
                 style: TextStyle(),
               ),
             ),
