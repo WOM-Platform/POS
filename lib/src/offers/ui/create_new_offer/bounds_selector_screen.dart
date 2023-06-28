@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:location/location.dart' as locService;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -43,7 +44,7 @@ const cameraZoom = <double>[
 ];
 
 class PositionSelectionPage extends StatefulHookConsumerWidget {
-  static const String path = '/positionSelection';
+  static const String path = 'positionSelection';
   @override
   _PositionSelectionPageState createState() => _PositionSelectionPageState();
 }
@@ -295,7 +296,7 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
           heroTag: const Key("positionHero"),
           child: const Icon(Icons.check),
           onPressed: () {
-            Navigator.of(context).pop();
+            context.pop();
           },
         ),
       ),

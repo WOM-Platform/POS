@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/create_offer_notifier.dart';
 import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
+import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/common_card.dart';
 import 'package:pos/src/offers/ui/create_new_offer/widgets/common_dropdown.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
@@ -181,7 +182,8 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
       child: mapPolygon == null
           ? ElevatedButton(
               onPressed: () {
-                context.go(PositionSelectionPage.path);
+                // context.go('/${NewOfferScreen.path}/${PositionSelectionPage.path}');
+                context.push('/${PositionSelectionPage.path}');
               },
               child: Text('Imposta'),
             )
@@ -192,7 +194,7 @@ class _SelectBoundsState extends ConsumerState<SelectBounds> {
                   _controller.complete(controller);
                 },
                 onTap: (_) {
-                  context.go(PositionSelectionPage.path);
+                  context.push('/${PositionSelectionPage.path}');
                 },
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,

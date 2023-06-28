@@ -55,7 +55,11 @@ class AddImageScreen extends HookConsumerWidget {
         // maxHeight: 1024
       );
 
-      if (image == null) return;
+      if (image == null) {
+        isProcessing.value = false;
+        return;
+      }
+
       final bytes = await image.readAsBytes();
       ref.read(selectedImageProvider.notifier).state = bytes;
       isProcessing.value = false;
@@ -75,43 +79,44 @@ class AddImageScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ActionChip(
-              backgroundColor: Colors.green,
-              onPressed: isProcessing.value
-                  ? null
-                  : () async {
-                      if (croppedData != null) {
-                        try {
-                          isProcessing.value = true;
-                          final result =
-                              await FlutterImageCompress.compressWithList(
-                            croppedData,
-                            minHeight: minHeight,
-                            minWidth: minWidth,
-                            quality: 80,
-                          );
-                          print(croppedData.length);
-                          print(result.length);
+          if (selectedImage != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ActionChip(
+                backgroundColor: Colors.green,
+                onPressed: isProcessing.value
+                    ? null
+                    : () async {
+                        if (croppedData != null) {
+                          try {
+                            isProcessing.value = true;
+                            final result =
+                                await FlutterImageCompress.compressWithList(
+                              croppedData,
+                              minHeight: minHeight,
+                              minWidth: minWidth,
+                              quality: 80,
+                            );
+                            print(croppedData.length);
+                            print(result.length);
 
-                          await onSave?.call(result);
-                          Navigator.of(context).pop();
-                        } catch (ex) {
-                          logger.e(ex);
-                          isProcessing.value = false;
+                            await onSave?.call(result);
+                            Navigator.of(context).pop();
+                          } catch (ex) {
+                            logger.e(ex);
+                            isProcessing.value = false;
+                          }
+                        } else {
+                          isProcessing.value = true;
+                          cropController.crop();
                         }
-                      } else {
-                        isProcessing.value = true;
-                        cropController.crop();
-                      }
-                    },
-              label: Text(
-                croppedData != null ? 'save' : 'crop',
-                style: TextStyle(color: Colors.white),
-              ).tr(),
+                      },
+                label: Text(
+                  croppedData != null ? 'save' : 'crop',
+                  style: TextStyle(color: Colors.white),
+                ).tr(),
+              ),
             ),
-          ),
         ],
         title: Text(imageUrl != null ? 'edit_image' : 'add_image').tr(),
       ),

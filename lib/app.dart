@@ -1,13 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
 import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/pos_handler/ui/screens/pos_manager.dart';
-import 'package:pos/src/screens/create_payment/pages/position_selection/position_selection_page.dart';
 
 import 'package:pos/src/screens/root/root.dart';
 import 'package:pos/src/screens/settings/settings.dart';
@@ -51,7 +50,6 @@ final _router = GoRouter(
             ),
           ]
         ),
-
         GoRoute(
           path: PositionSelectionPage.path,
           builder: (context, state) => PositionSelectionPage(),
