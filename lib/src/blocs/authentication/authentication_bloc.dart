@@ -215,7 +215,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
         AuthenticationAuthenticated(user, currentState.token, user.verified);
   }
 
-  void deleteAccount() async {
+  Future<void> deleteAccount() async {
     final currentState = state;
     if (currentState is AuthenticationAuthenticated) {
       final userId = currentState.user.id;

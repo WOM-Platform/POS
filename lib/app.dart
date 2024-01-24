@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
 import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/pos_handler/ui/screens/pos_manager.dart';
+import 'package:pos/src/screens/password/request_reset_password.dart';
+import 'package:pos/src/screens/password/reset_password.dart';
 
 import 'package:pos/src/screens/root/root.dart';
 import 'package:pos/src/screens/settings/settings.dart';
@@ -19,43 +21,66 @@ final _router = GoRouter(
   debugLogDiagnostics: kDebugMode,
   routes: [
     GoRoute(
-      path: RootScreen.path,
-      builder: (context, state) => RootScreen(),
-      routes: [
-        GoRoute(
-          path: SignUpScreen.path,
-          builder: (context, state) => SignUpScreen(),
-        ),
-        GoRoute(
-          path: EmailVerificationScreen.path,
-          builder: (context, state) => EmailVerificationScreen(),
-        ),
-        GoRoute(
-          path: NewOfferScreen.path,
-          builder: (context, state) => NewOfferScreen(),
-        ),
-        GoRoute(
-          path: SettingsScreen.path,
-          builder: (context, state) => SettingsScreen(),
-          routes: [
-            GoRoute(
-              path: POSManagerScreen.path,
-              builder: (context, state) => POSManagerScreen(),
+        path: RootScreen.path,
+        builder: (context, state) => RootScreen(),
+        routes: [
+          GoRoute(
+            path: RequestResetPasswordScreen.path,
+            builder: (context, state) => RequestResetPasswordScreen(),
+          ),
+          GoRoute(
+            path: 'password/:code',
+            builder: (context, state) => Container(
+              child: Text('No'),
+            ),
+          ),
+          // GoRoute(
+          //     path: ResetPasswordScreen.path,
+          //     builder: (context, state) => ResetPasswordScreen(),
+          //     routes: [
+          //       GoRoute(
+          //         path: 'password/:code',
+          //         builder: (context, state) =>
+          //             ResetPasswordScreen(code:state.pathParameters['code']),
+          //       ),
+          //     ]),
+          GoRoute(
+            path: ResetPasswordScreen.path,
+            builder: (context, state) => ResetPasswordScreen(
+                email: state.queryParameters['email'] as String,
+                code: state.queryParameters['token']),
+          ),
+          GoRoute(
+            path: SignUpScreen.path,
+            builder: (context, state) => SignUpScreen(),
+          ),
+          GoRoute(
+            path: EmailVerificationScreen.path,
+            builder: (context, state) => EmailVerificationScreen(),
+          ),
+          GoRoute(
+            path: NewOfferScreen.path,
+            builder: (context, state) => NewOfferScreen(),
+          ),
+          GoRoute(
+              path: SettingsScreen.path,
+              builder: (context, state) => SettingsScreen(),
               routes: [
                 GoRoute(
-                  path: CreateMerchantScreen.path,
-                  builder: (context, state) => CreateMerchantScreen(),
-                ),
-              ]
-            ),
-          ]
-        ),
-        GoRoute(
-          path: PositionSelectionPage.path,
-          builder: (context, state) => PositionSelectionPage(),
-        ),
-      ]
-    ),
+                    path: POSManagerScreen.path,
+                    builder: (context, state) => POSManagerScreen(),
+                    routes: [
+                      GoRoute(
+                        path: CreateMerchantScreen.path,
+                        builder: (context, state) => CreateMerchantScreen(),
+                      ),
+                    ]),
+              ]),
+          GoRoute(
+            path: PositionSelectionPage.path,
+            builder: (context, state) => PositionSelectionPage(),
+          ),
+        ]),
   ],
 );
 
@@ -90,6 +115,7 @@ class App extends ConsumerWidget {
         return supportedLocales.first;
       },
       theme: ThemeData(
+        useMaterial3: false,
         primaryColor: Colors.blue,
         // accentColor: Colors.yellow,
       ),

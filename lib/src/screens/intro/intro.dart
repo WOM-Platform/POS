@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pos/custom_icons.dart';
-
 import '../../constants.dart';
 import '../../utils.dart';
 import '../root/root.dart';
@@ -66,6 +65,7 @@ class IntroScreenState extends State<IntroScreen> {
             ?.copyWith(fontSize: 16, color: Theme.of(context).primaryColor),
       ),
       onDonePress: this.onDonePress,
+
       slides: [
         Slide(
           maxLineTitle: 10,

@@ -41,7 +41,7 @@ class SignUpNotifier extends _$SignUpNotifier {
     String surname,
     String password,
   ) async {
-    final userId = await ref.read(getPosProvider).singUp(
+    final userId = await ref.read(getPosProvider).signUp(
           email,
           name,
           surname,

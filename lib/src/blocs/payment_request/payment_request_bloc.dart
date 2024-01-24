@@ -75,7 +75,7 @@ class CreatePaymentRequestBloc {
     final aim = await ref.read(aimSelectionNotifierProvider.notifier).getAim();
 
     if (_amount == null) {
-      throw Exception('PaymentRequestloc amount or aim are null');
+      throw Exception('PaymentRequestBloc amount or aim are null');
     }
 
     final String name = nameController.text;

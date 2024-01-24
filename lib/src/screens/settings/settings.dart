@@ -11,6 +11,7 @@ import 'package:pos/src/extensions.dart';
 import 'package:pos/src/model/flavor_enum.dart';
 import 'package:pos/src/pos_handler/ui/screens/pos_manager.dart';
 import 'package:pos/src/screens/intro/intro.dart';
+import 'package:pos/src/screens/root/root.dart';
 import 'package:pos/src/screens/settings/change_language.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -131,9 +132,8 @@ class SettingsScreen extends ConsumerWidget {
                 );
 
                 if (res) {
-                  Navigator.of(context, rootNavigator: true).pop();
-                  ref.read(authNotifierProvider.notifier).deleteAccount();
-                  Navigator.of(context).pop();
+                  await ref.read(authNotifierProvider.notifier).deleteAccount();
+                  context.go(RootScreen.path);
                 }
               },
               child: Text(

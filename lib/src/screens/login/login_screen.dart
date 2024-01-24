@@ -1,3 +1,4 @@
+import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
 import 'package:pos/src/my_logger.dart';
+import 'package:pos/src/offers/application/offers.dart';
+import 'package:pos/src/screens/password/request_reset_password.dart';
 import 'package:pos/src/signup/ui/screens/sign_up.dart';
 
 import '../settings/change_language.dart';
@@ -150,7 +153,11 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
                               passwordController.text.trim()),
                           child: Text('signIn'.tr()),
                         ),
-                        const Spacer(),
+                        TextButton(
+                            onPressed: () async {
+                              context.go('/${RequestResetPasswordScreen.path}');
+                            },
+                            child: Text('forgotten-password'.tr())),
                       ],
                     ),
                   ),
