@@ -196,8 +196,10 @@
   "sign_up_error": "Sorry, an error occurred while registering your account",
   "verify_account": "Verify your account",
   "email_sent": "We’ve sent a verification e-mail to your address {}.\n\nTap on the link in the e-mail to confirm your profile and then come back to the app and tap the button below.",
-  "i_verified_my_email": "Ok, I verified my e-mail",
+  "i_verified_my_email": "Verify my email",
   "didnt_receive_email": "You haven’t received any e-mail? Please check the spam folder or tap the button below to request a new verification link.",
+  "verification_done": "La tua email è stata verificata con successo!",
+  "email_verification_error": "For some reason we were unable to verify your email.",
   "wait_seconds": "Wait {} seconds before requesting a new link",
   "back_to_login": "Back to login",
   "request_new_email": "Request a new verification link",
@@ -207,5 +209,7 @@
   "reset_password": "Reset password",
   "reset_password_title": "Reset password",
   "reset_password_description": "We have sent an email to {}. Follow the instructions to reset your password.",
-  "token_four_char": "The code must be 4 characters"
+  "token_four_char": "The code must be 4 characters",
+  "create_merchant_title": "Create your merchant",
+  "now_go_to_login": "Sign in in the app now"
 }

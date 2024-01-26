@@ -65,8 +65,8 @@ class UserRepository {
     await secureStorage.write(key: 'token', value: token);
   }
 
-  Future<void> sendEmailVerification(String userId, String token) async {
-    await pos.sendVerificationEmail(userId, token);
+  Future<void> sendEmailVerification(String email) async {
+    await pos.sendVerificationEmail(email);
   }
 
   /* Future<POSUser?> readUser() async {

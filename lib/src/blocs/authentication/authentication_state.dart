@@ -1,7 +1,7 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class AuthenticationState extends Equatable {}
+sealed class AuthenticationState extends Equatable {}
 
 class AuthenticationUninitialized extends AuthenticationState {
   @override

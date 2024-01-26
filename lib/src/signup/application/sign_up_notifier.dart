@@ -58,9 +58,7 @@ class SignUpNotifier extends _$SignUpNotifier {
     if (authResponse == null) {
       throw Exception('AuthResponse is null');
     }
-    await ref
-        .read(getPosProvider)
-        .sendVerificationEmail(userId, authResponse.token);
+    await ref.read(getPosProvider).sendVerificationEmail(email);
 
     // state = SignUpStateEmailVerification(userId);
   }

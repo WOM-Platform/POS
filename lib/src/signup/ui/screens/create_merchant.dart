@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/exceptions.dart';
 import 'package:pos/src/screens/root/root.dart';
 import 'package:pos/src/signup/application/create_merchant.dart';
@@ -93,7 +94,15 @@ class CreateMerchantScreen extends HookConsumerWidget {
     final isLoading = useState<bool>(false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Crea il tuo merchant'),
+        title: Text('create_merchant_title'.tr()),
+        actions: [
+           IconButton(
+                         icon: Icon(Icons.exit_to_app),
+                         color: Colors.white,
+                         onPressed: () {
+                           ref.read(authNotifierProvider.notifier).logOut();
+                         }),
+        ],
       ),
       body: LoadingOverlay(
         isLoading: isLoading.value,

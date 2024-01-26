@@ -196,8 +196,10 @@
   "sign_up_error": "Spiacenti si è verificato un errore durante la registrazione del tuo account",
   "verify_account": "Verifica il tuo account",
   "email_sent": "Abbiamo inviato una mail di verifica al tuo indirizzo email {}.\n\nClicca sul link contenuto nella email per confermare il tuo account e poi torna nell'app e clicca sul pulsante seguente.",
-  "i_verified_my_email": "Ok, ho verificato la mia email",
+  "i_verified_my_email": "Verifica la mia email",
   "didnt_receive_email": "Non hai ricevuto nessuna email? Verifica nella cartella dello spam oppure clicca sul seguente pulsante per ottenere un nuovo link di verifica.",
+  "verification_done": "La tua email è stata verificata con successo!",
+  "email_verification_error": "Per qualche motivo non siamo riusciti a verificare la tua email",
   "wait_seconds": "Attendi {} secondi per inviare di nuovo la mail",
   "back_to_login": "Torna al login",
   "request_new_email": "Richiedi una nuova email di verifica",
@@ -207,5 +209,7 @@
   "reset_password": "Reimposta password",
   "reset_password_title": "Reimposta password",
   "reset_password_description": "Abbiamo inviato una mail a {}. Segui le istruzioni per reimpostare la password.",
-  "token_four_char": "Il codice è di 4 caratteri"
+  "token_max_length_warning": "Il codice è di {} caratteri",
+  "create_merchant_title": "Crea il tuo merchant",
+  "now_go_to_login": "Ora effettua il login"
 }

@@ -160,22 +160,23 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     }
   }
 
-  checkEmailVerification() async {
-    if (state is AuthenticationEmailNotVerified) {
-      await login(
-        (state as AuthenticationEmailNotVerified).email,
-        (state as AuthenticationEmailNotVerified).password,
+  Future<(bool, bool)> verifyEmail(String email, String token) async {
+    final currentState = state;
+    await ref.read(getPosProvider).verifyEmail(email, token);
+    if (currentState is AuthenticationEmailNotVerified) {
+      final response = await login(
+        currentState.email,
+        currentState.password,
       );
+      return (response?.verified ?? false, false);
+    } else {
+      state = AuthenticationUnauthenticated();
+      return (true, true);
     }
   }
 
-  sendEmailVerification() async {
-    if (state is AuthenticationEmailNotVerified) {
-      await ref.read(userRepositoryProvider).sendEmailVerification(
-            (state as AuthenticationEmailNotVerified).userId,
-            (state as AuthenticationEmailNotVerified).token,
-          );
-    }
+  Future sendEmailVerification(String email) async {
+    await ref.read(userRepositoryProvider).sendEmailVerification(email);
   }
 
   anonymousLogin() async {

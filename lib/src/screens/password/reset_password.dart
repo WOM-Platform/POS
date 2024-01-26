@@ -107,7 +107,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
                   code != null
                       ? []
                       : [
-                          Validatorless.max(4, 'token_four_char'.tr()),
+                          Validatorless.max(4, 'token_max_length_warning'.tr(args: ['4'])),
                           Validatorless.required('mandatory_field'.tr()),
                         ],
                 ),

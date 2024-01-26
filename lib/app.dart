@@ -17,70 +17,75 @@ import 'package:pos/src/signup/ui/screens/create_merchant.dart';
 import 'package:pos/src/signup/ui/screens/email_verification.dart';
 import 'package:pos/src/signup/ui/screens/sign_up.dart';
 
+//wompos://process/verify?email=d.ifrancescogianmarco@gmail.com&token=T0YDD4P9
 final _router = GoRouter(
   debugLogDiagnostics: kDebugMode,
   routes: [
     GoRoute(
-        path: RootScreen.path,
-        builder: (context, state) => RootScreen(),
-        routes: [
-          GoRoute(
-            path: RequestResetPasswordScreen.path,
-            builder: (context, state) => RequestResetPasswordScreen(),
+      path: RootScreen.path,
+      builder: (context, state) => RootScreen(),
+      routes: [
+        GoRoute(
+          path: RequestResetPasswordScreen.path,
+          builder: (context, state) => RequestResetPasswordScreen(),
+        ),
+        GoRoute(
+          path: 'password/:code',
+          builder: (context, state) => Container(
+            child: Text('No'),
           ),
-          GoRoute(
-            path: 'password/:code',
-            builder: (context, state) => Container(
-              child: Text('No'),
-            ),
-          ),
-          // GoRoute(
-          //     path: ResetPasswordScreen.path,
-          //     builder: (context, state) => ResetPasswordScreen(),
-          //     routes: [
-          //       GoRoute(
-          //         path: 'password/:code',
-          //         builder: (context, state) =>
-          //             ResetPasswordScreen(code:state.pathParameters['code']),
-          //       ),
-          //     ]),
-          GoRoute(
-            path: ResetPasswordScreen.path,
-            builder: (context, state) => ResetPasswordScreen(
-                email: state.queryParameters['email'] as String,
-                code: state.queryParameters['token']),
-          ),
-          GoRoute(
-            path: SignUpScreen.path,
-            builder: (context, state) => SignUpScreen(),
-          ),
-          GoRoute(
-            path: EmailVerificationScreen.path,
-            builder: (context, state) => EmailVerificationScreen(),
-          ),
-          GoRoute(
-            path: NewOfferScreen.path,
-            builder: (context, state) => NewOfferScreen(),
-          ),
-          GoRoute(
-              path: SettingsScreen.path,
-              builder: (context, state) => SettingsScreen(),
-              routes: [
-                GoRoute(
-                    path: POSManagerScreen.path,
-                    builder: (context, state) => POSManagerScreen(),
-                    routes: [
-                      GoRoute(
-                        path: CreateMerchantScreen.path,
-                        builder: (context, state) => CreateMerchantScreen(),
-                      ),
-                    ]),
-              ]),
-          GoRoute(
-            path: PositionSelectionPage.path,
-            builder: (context, state) => PositionSelectionPage(),
-          ),
-        ]),
+        ),
+        // GoRoute(
+        //     path: ResetPasswordScreen.path,
+        //     builder: (context, state) => ResetPasswordScreen(),
+        //     routes: [
+        //       GoRoute(
+        //         path: 'password/:code',
+        //         builder: (context, state) =>
+        //             ResetPasswordScreen(code:state.pathParameters['code']),
+        //       ),
+        //     ]),
+        GoRoute(
+          path: ResetPasswordScreen.path,
+          builder: (context, state) => ResetPasswordScreen(
+              email: state.queryParameters['email'] as String,
+              code: state.queryParameters['token']),
+        ),
+        GoRoute(
+          path: SignUpScreen.path,
+          builder: (context, state) => SignUpScreen(),
+        ),
+        GoRoute(
+          path: NewOfferScreen.path,
+          builder: (context, state) => NewOfferScreen(),
+        ),
+        GoRoute(
+            path: SettingsScreen.path,
+            builder: (context, state) => SettingsScreen(),
+            routes: [
+              GoRoute(
+                  path: POSManagerScreen.path,
+                  builder: (context, state) => POSManagerScreen(),
+                  routes: [
+                    GoRoute(
+                      path: CreateMerchantScreen.path,
+                      builder: (context, state) => CreateMerchantScreen(),
+                    ),
+                  ]),
+            ]),
+        GoRoute(
+          path: PositionSelectionPage.path,
+          builder: (context, state) => PositionSelectionPage(),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/${EmailVerificationScreen.path}',
+      builder: (context, state) => EmailVerificationScreen(
+        email: state.queryParameters['email'],
+        code: state.queryParameters['token'],
+      ),
+    ),
   ],
 );
 
