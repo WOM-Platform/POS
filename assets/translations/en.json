@@ -113,7 +113,7 @@
   "inactive": "Inactive",
   "edit_url": "Edit the URL",
   "website": "Website",
-  "noPosForThisMerchant": "Website",
+  "noPosForThisMerchant": "No POS for this merchant",
   "selectPosToHandle": "Select POS to manage",
   "createYourMerchant": "Create your Merchant on our website",
   "backHereAndLogin": ", then come back here and log in again",

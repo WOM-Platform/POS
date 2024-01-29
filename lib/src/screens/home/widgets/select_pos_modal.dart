@@ -76,7 +76,7 @@ class PosSelectorWidget extends ConsumerWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child:
-                                Text('noPosForThisMerchant' 'try_again'.tr()),
+                                Text('noPosForThisMerchant'.tr()),
                           ),
                         for (int index = 0;
                             index < merchants[i].posList.length;

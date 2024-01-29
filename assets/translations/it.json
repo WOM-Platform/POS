@@ -113,7 +113,7 @@
   "inactive": "Inattivo",
   "edit_url": "Modifica URL",
   "website": "Sito Web",
-  "noPosForThisMerchant": "Sito Web",
+  "noPosForThisMerchant": "Non ci sono POS per questo merchant",
   "selectPosToHandle": "Seleziona il POS da gestire",
   "createYourMerchant": "Crea il tuo merchant su",
   "backHereAndLogin": " torna qui ed effettua di nuovo l’accesso",

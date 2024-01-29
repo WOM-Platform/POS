@@ -109,7 +109,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
         child: CustomFormWidget(
           buttonText: "Salva",
           onSubmit: (answers) async {
-            // answers.forEach(print);
+            FocusScope.of(context).requestFocus(new FocusNode());
             try {
               final nav = Navigator.of(context);
               final router = GoRouter.of(context);
@@ -193,6 +193,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
           forms: [
             FormData(
               field: FormField.name,
+              keyboardType: TextInputType.name,
               hintText: 'merchant_name'.tr(),
               labelText: 'merchant_name'.tr(),
               minLength: 8,
@@ -222,6 +223,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
             FormData(
               type: FormType.searchAddress,
               field: FormField.address,
+              keyboardType: TextInputType.streetAddress,
               // customKey: 'google_address',
               hintText: 'merchant_address'.tr(),
               labelText: 'merchant_address'.tr(),
@@ -258,6 +260,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
             ),
             FormData(
               field: FormField.url,
+              keyboardType: TextInputType.url,
               prefix: 'https://',
               hintText: 'miomerchant.it',
               labelText: 'merchant_url'.tr(),

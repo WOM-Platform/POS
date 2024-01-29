@@ -47,6 +47,7 @@ class SignUpScreen extends HookConsumerWidget {
             padding: const EdgeInsets.all(16),
             children: [
               TextFormField(
+                keyboardType: TextInputType.emailAddress,
                 focusNode: emailFocusNode,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (v) {
@@ -75,6 +76,8 @@ class SignUpScreen extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                textCapitalization: TextCapitalization.words,
+                keyboardType: TextInputType.name,
                 focusNode: nameFocusNode,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (v) {
@@ -102,6 +105,8 @@ class SignUpScreen extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                textCapitalization: TextCapitalization.words,
+                keyboardType: TextInputType.name,
                 focusNode: surnameFocusNode,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (v) {
@@ -171,6 +176,7 @@ class SignUpScreen extends HookConsumerWidget {
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: () async {
+                  FocusScope.of(context).requestFocus(new FocusNode());
                   try {
                     if (formKey.currentState!.validate()) {
                       isLoading.value = true;
