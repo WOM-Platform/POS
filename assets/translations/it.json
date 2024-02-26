@@ -176,9 +176,11 @@
   "forgotten-password": "Forgotten password?",
   "validation_error": "C’è un errore di validazione in uno dei campi immessi",
   "merchant_created": "Abbiamo creato il tuo Merchant!",
+  "pos_created": "Abbiamo creato il tuo POS!",
   "back_to_home": "Torna alla home",
   "merchant_creation_error": "Spiacenti si è verificato un errore durante la creazione del Merchant",
   "merchant_name": "Ragione sociale",
+  "pos_name": "Nome del POS",
   "merchant_fiscal_code": "Codice Fiscale o Partita IVA",
   "merchant_select_activity": "Seleziona l’attività",
   "merchant_address": "Indirizzo",
@@ -211,5 +213,8 @@
   "reset_password_description": "Abbiamo inviato una mail a {}. Segui le istruzioni per reimpostare la password.",
   "token_max_length_warning": "Il codice è di {} caratteri",
   "create_merchant_title": "Crea il tuo merchant",
-  "now_go_to_login": "Ora effettua il login"
+  "create_pos_title": "Crea il tuo POS",
+  "now_go_to_login": "Ora effettua il login",
+  "select_merchant": "Seleziona il merchant per cui creare un POS:",
+  "creation_complete":"Creazione completata"
 }

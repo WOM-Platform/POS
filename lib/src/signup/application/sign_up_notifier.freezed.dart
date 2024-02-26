@@ -100,20 +100,20 @@ class _$SignUpStateCopyWithImpl<$Res, $Val extends SignUpState>
 }
 
 /// @nodoc
-abstract class _$$SignUpStateDataCopyWith<$Res> {
-  factory _$$SignUpStateDataCopyWith(
-          _$SignUpStateData value, $Res Function(_$SignUpStateData) then) =
-      __$$SignUpStateDataCopyWithImpl<$Res>;
+abstract class _$$SignUpStateDataImplCopyWith<$Res> {
+  factory _$$SignUpStateDataImplCopyWith(_$SignUpStateDataImpl value,
+          $Res Function(_$SignUpStateDataImpl) then) =
+      __$$SignUpStateDataImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<String> items, int totalItemsCount, bool hasReachedMax});
 }
 
 /// @nodoc
-class __$$SignUpStateDataCopyWithImpl<$Res>
-    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateData>
-    implements _$$SignUpStateDataCopyWith<$Res> {
-  __$$SignUpStateDataCopyWithImpl(
-      _$SignUpStateData _value, $Res Function(_$SignUpStateData) _then)
+class __$$SignUpStateDataImplCopyWithImpl<$Res>
+    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateDataImpl>
+    implements _$$SignUpStateDataImplCopyWith<$Res> {
+  __$$SignUpStateDataImplCopyWithImpl(
+      _$SignUpStateDataImpl _value, $Res Function(_$SignUpStateDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -123,7 +123,7 @@ class __$$SignUpStateDataCopyWithImpl<$Res>
     Object? totalItemsCount = null,
     Object? hasReachedMax = null,
   }) {
-    return _then(_$SignUpStateData(
+    return _then(_$SignUpStateDataImpl(
       null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
@@ -142,8 +142,8 @@ class __$$SignUpStateDataCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SignUpStateData implements SignUpStateData {
-  const _$SignUpStateData(final List<String> items, this.totalItemsCount,
+class _$SignUpStateDataImpl implements SignUpStateData {
+  const _$SignUpStateDataImpl(final List<String> items, this.totalItemsCount,
       {this.hasReachedMax = true})
       : _items = items;
 
@@ -167,10 +167,10 @@ class _$SignUpStateData implements SignUpStateData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SignUpStateData &&
+            other is _$SignUpStateDataImpl &&
             const DeepCollectionEquality().equals(other._items, _items) &&
             (identical(other.totalItemsCount, totalItemsCount) ||
                 other.totalItemsCount == totalItemsCount) &&
@@ -188,8 +188,9 @@ class _$SignUpStateData implements SignUpStateData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SignUpStateDataCopyWith<_$SignUpStateData> get copyWith =>
-      __$$SignUpStateDataCopyWithImpl<_$SignUpStateData>(this, _$identity);
+  _$$SignUpStateDataImplCopyWith<_$SignUpStateDataImpl> get copyWith =>
+      __$$SignUpStateDataImplCopyWithImpl<_$SignUpStateDataImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -282,36 +283,36 @@ class _$SignUpStateData implements SignUpStateData {
 abstract class SignUpStateData implements SignUpState {
   const factory SignUpStateData(
       final List<String> items, final int totalItemsCount,
-      {final bool hasReachedMax}) = _$SignUpStateData;
+      {final bool hasReachedMax}) = _$SignUpStateDataImpl;
 
   List<String> get items;
   int get totalItemsCount;
   bool get hasReachedMax;
   @JsonKey(ignore: true)
-  _$$SignUpStateDataCopyWith<_$SignUpStateData> get copyWith =>
+  _$$SignUpStateDataImplCopyWith<_$SignUpStateDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$SignUpStateInitialCopyWith<$Res> {
-  factory _$$SignUpStateInitialCopyWith(_$SignUpStateInitial value,
-          $Res Function(_$SignUpStateInitial) then) =
-      __$$SignUpStateInitialCopyWithImpl<$Res>;
+abstract class _$$SignUpStateInitialImplCopyWith<$Res> {
+  factory _$$SignUpStateInitialImplCopyWith(_$SignUpStateInitialImpl value,
+          $Res Function(_$SignUpStateInitialImpl) then) =
+      __$$SignUpStateInitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$SignUpStateInitialCopyWithImpl<$Res>
-    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateInitial>
-    implements _$$SignUpStateInitialCopyWith<$Res> {
-  __$$SignUpStateInitialCopyWithImpl(
-      _$SignUpStateInitial _value, $Res Function(_$SignUpStateInitial) _then)
+class __$$SignUpStateInitialImplCopyWithImpl<$Res>
+    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateInitialImpl>
+    implements _$$SignUpStateInitialImplCopyWith<$Res> {
+  __$$SignUpStateInitialImplCopyWithImpl(_$SignUpStateInitialImpl _value,
+      $Res Function(_$SignUpStateInitialImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$SignUpStateInitial implements SignUpStateInitial {
-  const _$SignUpStateInitial();
+class _$SignUpStateInitialImpl implements SignUpStateInitial {
+  const _$SignUpStateInitialImpl();
 
   @override
   String toString() {
@@ -319,9 +320,9 @@ class _$SignUpStateInitial implements SignUpStateInitial {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$SignUpStateInitial);
+        (other.runtimeType == runtimeType && other is _$SignUpStateInitialImpl);
   }
 
   @override
@@ -416,26 +417,26 @@ class _$SignUpStateInitial implements SignUpStateInitial {
 }
 
 abstract class SignUpStateInitial implements SignUpState {
-  const factory SignUpStateInitial() = _$SignUpStateInitial;
+  const factory SignUpStateInitial() = _$SignUpStateInitialImpl;
 }
 
 /// @nodoc
-abstract class _$$SignUpStateEmailVerificationCopyWith<$Res> {
-  factory _$$SignUpStateEmailVerificationCopyWith(
-          _$SignUpStateEmailVerification value,
-          $Res Function(_$SignUpStateEmailVerification) then) =
-      __$$SignUpStateEmailVerificationCopyWithImpl<$Res>;
+abstract class _$$SignUpStateEmailVerificationImplCopyWith<$Res> {
+  factory _$$SignUpStateEmailVerificationImplCopyWith(
+          _$SignUpStateEmailVerificationImpl value,
+          $Res Function(_$SignUpStateEmailVerificationImpl) then) =
+      __$$SignUpStateEmailVerificationImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String userId});
 }
 
 /// @nodoc
-class __$$SignUpStateEmailVerificationCopyWithImpl<$Res>
-    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateEmailVerification>
-    implements _$$SignUpStateEmailVerificationCopyWith<$Res> {
-  __$$SignUpStateEmailVerificationCopyWithImpl(
-      _$SignUpStateEmailVerification _value,
-      $Res Function(_$SignUpStateEmailVerification) _then)
+class __$$SignUpStateEmailVerificationImplCopyWithImpl<$Res>
+    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateEmailVerificationImpl>
+    implements _$$SignUpStateEmailVerificationImplCopyWith<$Res> {
+  __$$SignUpStateEmailVerificationImplCopyWithImpl(
+      _$SignUpStateEmailVerificationImpl _value,
+      $Res Function(_$SignUpStateEmailVerificationImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -443,7 +444,7 @@ class __$$SignUpStateEmailVerificationCopyWithImpl<$Res>
   $Res call({
     Object? userId = null,
   }) {
-    return _then(_$SignUpStateEmailVerification(
+    return _then(_$SignUpStateEmailVerificationImpl(
       null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -454,8 +455,9 @@ class __$$SignUpStateEmailVerificationCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SignUpStateEmailVerification implements SignUpStateEmailVerification {
-  const _$SignUpStateEmailVerification(this.userId);
+class _$SignUpStateEmailVerificationImpl
+    implements SignUpStateEmailVerification {
+  const _$SignUpStateEmailVerificationImpl(this.userId);
 
   @override
   final String userId;
@@ -466,10 +468,10 @@ class _$SignUpStateEmailVerification implements SignUpStateEmailVerification {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SignUpStateEmailVerification &&
+            other is _$SignUpStateEmailVerificationImpl &&
             (identical(other.userId, userId) || other.userId == userId));
   }
 
@@ -479,9 +481,10 @@ class _$SignUpStateEmailVerification implements SignUpStateEmailVerification {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SignUpStateEmailVerificationCopyWith<_$SignUpStateEmailVerification>
-      get copyWith => __$$SignUpStateEmailVerificationCopyWithImpl<
-          _$SignUpStateEmailVerification>(this, _$identity);
+  _$$SignUpStateEmailVerificationImplCopyWith<
+          _$SignUpStateEmailVerificationImpl>
+      get copyWith => __$$SignUpStateEmailVerificationImplCopyWithImpl<
+          _$SignUpStateEmailVerificationImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -573,34 +576,35 @@ class _$SignUpStateEmailVerification implements SignUpStateEmailVerification {
 
 abstract class SignUpStateEmailVerification implements SignUpState {
   const factory SignUpStateEmailVerification(final String userId) =
-      _$SignUpStateEmailVerification;
+      _$SignUpStateEmailVerificationImpl;
 
   String get userId;
   @JsonKey(ignore: true)
-  _$$SignUpStateEmailVerificationCopyWith<_$SignUpStateEmailVerification>
+  _$$SignUpStateEmailVerificationImplCopyWith<
+          _$SignUpStateEmailVerificationImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$SignUpStateLoadingCopyWith<$Res> {
-  factory _$$SignUpStateLoadingCopyWith(_$SignUpStateLoading value,
-          $Res Function(_$SignUpStateLoading) then) =
-      __$$SignUpStateLoadingCopyWithImpl<$Res>;
+abstract class _$$SignUpStateLoadingImplCopyWith<$Res> {
+  factory _$$SignUpStateLoadingImplCopyWith(_$SignUpStateLoadingImpl value,
+          $Res Function(_$SignUpStateLoadingImpl) then) =
+      __$$SignUpStateLoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$SignUpStateLoadingCopyWithImpl<$Res>
-    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateLoading>
-    implements _$$SignUpStateLoadingCopyWith<$Res> {
-  __$$SignUpStateLoadingCopyWithImpl(
-      _$SignUpStateLoading _value, $Res Function(_$SignUpStateLoading) _then)
+class __$$SignUpStateLoadingImplCopyWithImpl<$Res>
+    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateLoadingImpl>
+    implements _$$SignUpStateLoadingImplCopyWith<$Res> {
+  __$$SignUpStateLoadingImplCopyWithImpl(_$SignUpStateLoadingImpl _value,
+      $Res Function(_$SignUpStateLoadingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$SignUpStateLoading implements SignUpStateLoading {
-  const _$SignUpStateLoading();
+class _$SignUpStateLoadingImpl implements SignUpStateLoading {
+  const _$SignUpStateLoadingImpl();
 
   @override
   String toString() {
@@ -608,9 +612,9 @@ class _$SignUpStateLoading implements SignUpStateLoading {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$SignUpStateLoading);
+        (other.runtimeType == runtimeType && other is _$SignUpStateLoadingImpl);
   }
 
   @override
@@ -705,24 +709,24 @@ class _$SignUpStateLoading implements SignUpStateLoading {
 }
 
 abstract class SignUpStateLoading implements SignUpState {
-  const factory SignUpStateLoading() = _$SignUpStateLoading;
+  const factory SignUpStateLoading() = _$SignUpStateLoadingImpl;
 }
 
 /// @nodoc
-abstract class _$$SignUpStateErrorCopyWith<$Res> {
-  factory _$$SignUpStateErrorCopyWith(
-          _$SignUpStateError value, $Res Function(_$SignUpStateError) then) =
-      __$$SignUpStateErrorCopyWithImpl<$Res>;
+abstract class _$$SignUpStateErrorImplCopyWith<$Res> {
+  factory _$$SignUpStateErrorImplCopyWith(_$SignUpStateErrorImpl value,
+          $Res Function(_$SignUpStateErrorImpl) then) =
+      __$$SignUpStateErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Object error, StackTrace st});
 }
 
 /// @nodoc
-class __$$SignUpStateErrorCopyWithImpl<$Res>
-    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateError>
-    implements _$$SignUpStateErrorCopyWith<$Res> {
-  __$$SignUpStateErrorCopyWithImpl(
-      _$SignUpStateError _value, $Res Function(_$SignUpStateError) _then)
+class __$$SignUpStateErrorImplCopyWithImpl<$Res>
+    extends _$SignUpStateCopyWithImpl<$Res, _$SignUpStateErrorImpl>
+    implements _$$SignUpStateErrorImplCopyWith<$Res> {
+  __$$SignUpStateErrorImplCopyWithImpl(_$SignUpStateErrorImpl _value,
+      $Res Function(_$SignUpStateErrorImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -731,7 +735,7 @@ class __$$SignUpStateErrorCopyWithImpl<$Res>
     Object? error = null,
     Object? st = null,
   }) {
-    return _then(_$SignUpStateError(
+    return _then(_$SignUpStateErrorImpl(
       null == error ? _value.error : error,
       null == st
           ? _value.st
@@ -743,8 +747,8 @@ class __$$SignUpStateErrorCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SignUpStateError implements SignUpStateError {
-  const _$SignUpStateError(this.error, this.st);
+class _$SignUpStateErrorImpl implements SignUpStateError {
+  const _$SignUpStateErrorImpl(this.error, this.st);
 
   @override
   final Object error;
@@ -757,10 +761,10 @@ class _$SignUpStateError implements SignUpStateError {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SignUpStateError &&
+            other is _$SignUpStateErrorImpl &&
             const DeepCollectionEquality().equals(other.error, error) &&
             (identical(other.st, st) || other.st == st));
   }
@@ -772,8 +776,9 @@ class _$SignUpStateError implements SignUpStateError {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SignUpStateErrorCopyWith<_$SignUpStateError> get copyWith =>
-      __$$SignUpStateErrorCopyWithImpl<_$SignUpStateError>(this, _$identity);
+  _$$SignUpStateErrorImplCopyWith<_$SignUpStateErrorImpl> get copyWith =>
+      __$$SignUpStateErrorImplCopyWithImpl<_$SignUpStateErrorImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -865,11 +870,11 @@ class _$SignUpStateError implements SignUpStateError {
 
 abstract class SignUpStateError implements SignUpState {
   const factory SignUpStateError(final Object error, final StackTrace st) =
-      _$SignUpStateError;
+      _$SignUpStateErrorImpl;
 
   Object get error;
   StackTrace get st;
   @JsonKey(ignore: true)
-  _$$SignUpStateErrorCopyWith<_$SignUpStateError> get copyWith =>
+  _$$SignUpStateErrorImplCopyWith<_$SignUpStateErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

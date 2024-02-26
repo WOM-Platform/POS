@@ -102,20 +102,23 @@ class _$CreateMerchantStateCopyWithImpl<$Res, $Val extends CreateMerchantState>
 }
 
 /// @nodoc
-abstract class _$$CreateMerchantStateDataCopyWith<$Res> {
-  factory _$$CreateMerchantStateDataCopyWith(_$CreateMerchantStateData value,
-          $Res Function(_$CreateMerchantStateData) then) =
-      __$$CreateMerchantStateDataCopyWithImpl<$Res>;
+abstract class _$$CreateMerchantStateDataImplCopyWith<$Res> {
+  factory _$$CreateMerchantStateDataImplCopyWith(
+          _$CreateMerchantStateDataImpl value,
+          $Res Function(_$CreateMerchantStateDataImpl) then) =
+      __$$CreateMerchantStateDataImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<String> items, int totalItemsCount, bool hasReachedMax});
 }
 
 /// @nodoc
-class __$$CreateMerchantStateDataCopyWithImpl<$Res>
-    extends _$CreateMerchantStateCopyWithImpl<$Res, _$CreateMerchantStateData>
-    implements _$$CreateMerchantStateDataCopyWith<$Res> {
-  __$$CreateMerchantStateDataCopyWithImpl(_$CreateMerchantStateData _value,
-      $Res Function(_$CreateMerchantStateData) _then)
+class __$$CreateMerchantStateDataImplCopyWithImpl<$Res>
+    extends _$CreateMerchantStateCopyWithImpl<$Res,
+        _$CreateMerchantStateDataImpl>
+    implements _$$CreateMerchantStateDataImplCopyWith<$Res> {
+  __$$CreateMerchantStateDataImplCopyWithImpl(
+      _$CreateMerchantStateDataImpl _value,
+      $Res Function(_$CreateMerchantStateDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -125,7 +128,7 @@ class __$$CreateMerchantStateDataCopyWithImpl<$Res>
     Object? totalItemsCount = null,
     Object? hasReachedMax = null,
   }) {
-    return _then(_$CreateMerchantStateData(
+    return _then(_$CreateMerchantStateDataImpl(
       null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
@@ -144,8 +147,8 @@ class __$$CreateMerchantStateDataCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CreateMerchantStateData implements CreateMerchantStateData {
-  const _$CreateMerchantStateData(
+class _$CreateMerchantStateDataImpl implements CreateMerchantStateData {
+  const _$CreateMerchantStateDataImpl(
       final List<String> items, this.totalItemsCount,
       {this.hasReachedMax = true})
       : _items = items;
@@ -170,10 +173,10 @@ class _$CreateMerchantStateData implements CreateMerchantStateData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateMerchantStateData &&
+            other is _$CreateMerchantStateDataImpl &&
             const DeepCollectionEquality().equals(other._items, _items) &&
             (identical(other.totalItemsCount, totalItemsCount) ||
                 other.totalItemsCount == totalItemsCount) &&
@@ -191,9 +194,9 @@ class _$CreateMerchantStateData implements CreateMerchantStateData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$CreateMerchantStateDataCopyWith<_$CreateMerchantStateData> get copyWith =>
-      __$$CreateMerchantStateDataCopyWithImpl<_$CreateMerchantStateData>(
-          this, _$identity);
+  _$$CreateMerchantStateDataImplCopyWith<_$CreateMerchantStateDataImpl>
+      get copyWith => __$$CreateMerchantStateDataImplCopyWithImpl<
+          _$CreateMerchantStateDataImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -288,39 +291,39 @@ class _$CreateMerchantStateData implements CreateMerchantStateData {
 abstract class CreateMerchantStateData implements CreateMerchantState {
   const factory CreateMerchantStateData(
       final List<String> items, final int totalItemsCount,
-      {final bool hasReachedMax}) = _$CreateMerchantStateData;
+      {final bool hasReachedMax}) = _$CreateMerchantStateDataImpl;
 
   List<String> get items;
   int get totalItemsCount;
   bool get hasReachedMax;
   @JsonKey(ignore: true)
-  _$$CreateMerchantStateDataCopyWith<_$CreateMerchantStateData> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$CreateMerchantStateDataImplCopyWith<_$CreateMerchantStateDataImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$CreateMerchantStateInitialCopyWith<$Res> {
-  factory _$$CreateMerchantStateInitialCopyWith(
-          _$CreateMerchantStateInitial value,
-          $Res Function(_$CreateMerchantStateInitial) then) =
-      __$$CreateMerchantStateInitialCopyWithImpl<$Res>;
+abstract class _$$CreateMerchantStateInitialImplCopyWith<$Res> {
+  factory _$$CreateMerchantStateInitialImplCopyWith(
+          _$CreateMerchantStateInitialImpl value,
+          $Res Function(_$CreateMerchantStateInitialImpl) then) =
+      __$$CreateMerchantStateInitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$CreateMerchantStateInitialCopyWithImpl<$Res>
+class __$$CreateMerchantStateInitialImplCopyWithImpl<$Res>
     extends _$CreateMerchantStateCopyWithImpl<$Res,
-        _$CreateMerchantStateInitial>
-    implements _$$CreateMerchantStateInitialCopyWith<$Res> {
-  __$$CreateMerchantStateInitialCopyWithImpl(
-      _$CreateMerchantStateInitial _value,
-      $Res Function(_$CreateMerchantStateInitial) _then)
+        _$CreateMerchantStateInitialImpl>
+    implements _$$CreateMerchantStateInitialImplCopyWith<$Res> {
+  __$$CreateMerchantStateInitialImplCopyWithImpl(
+      _$CreateMerchantStateInitialImpl _value,
+      $Res Function(_$CreateMerchantStateInitialImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$CreateMerchantStateInitial implements CreateMerchantStateInitial {
-  const _$CreateMerchantStateInitial();
+class _$CreateMerchantStateInitialImpl implements CreateMerchantStateInitial {
+  const _$CreateMerchantStateInitialImpl();
 
   @override
   String toString() {
@@ -328,10 +331,10 @@ class _$CreateMerchantStateInitial implements CreateMerchantStateInitial {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateMerchantStateInitial);
+            other is _$CreateMerchantStateInitialImpl);
   }
 
   @override
@@ -428,27 +431,27 @@ class _$CreateMerchantStateInitial implements CreateMerchantStateInitial {
 }
 
 abstract class CreateMerchantStateInitial implements CreateMerchantState {
-  const factory CreateMerchantStateInitial() = _$CreateMerchantStateInitial;
+  const factory CreateMerchantStateInitial() = _$CreateMerchantStateInitialImpl;
 }
 
 /// @nodoc
-abstract class _$$CreateMerchantStateEmailVerificationCopyWith<$Res> {
-  factory _$$CreateMerchantStateEmailVerificationCopyWith(
-          _$CreateMerchantStateEmailVerification value,
-          $Res Function(_$CreateMerchantStateEmailVerification) then) =
-      __$$CreateMerchantStateEmailVerificationCopyWithImpl<$Res>;
+abstract class _$$CreateMerchantStateEmailVerificationImplCopyWith<$Res> {
+  factory _$$CreateMerchantStateEmailVerificationImplCopyWith(
+          _$CreateMerchantStateEmailVerificationImpl value,
+          $Res Function(_$CreateMerchantStateEmailVerificationImpl) then) =
+      __$$CreateMerchantStateEmailVerificationImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String userId});
 }
 
 /// @nodoc
-class __$$CreateMerchantStateEmailVerificationCopyWithImpl<$Res>
+class __$$CreateMerchantStateEmailVerificationImplCopyWithImpl<$Res>
     extends _$CreateMerchantStateCopyWithImpl<$Res,
-        _$CreateMerchantStateEmailVerification>
-    implements _$$CreateMerchantStateEmailVerificationCopyWith<$Res> {
-  __$$CreateMerchantStateEmailVerificationCopyWithImpl(
-      _$CreateMerchantStateEmailVerification _value,
-      $Res Function(_$CreateMerchantStateEmailVerification) _then)
+        _$CreateMerchantStateEmailVerificationImpl>
+    implements _$$CreateMerchantStateEmailVerificationImplCopyWith<$Res> {
+  __$$CreateMerchantStateEmailVerificationImplCopyWithImpl(
+      _$CreateMerchantStateEmailVerificationImpl _value,
+      $Res Function(_$CreateMerchantStateEmailVerificationImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -456,7 +459,7 @@ class __$$CreateMerchantStateEmailVerificationCopyWithImpl<$Res>
   $Res call({
     Object? userId = null,
   }) {
-    return _then(_$CreateMerchantStateEmailVerification(
+    return _then(_$CreateMerchantStateEmailVerificationImpl(
       null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -467,9 +470,9 @@ class __$$CreateMerchantStateEmailVerificationCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CreateMerchantStateEmailVerification
+class _$CreateMerchantStateEmailVerificationImpl
     implements CreateMerchantStateEmailVerification {
-  const _$CreateMerchantStateEmailVerification(this.userId);
+  const _$CreateMerchantStateEmailVerificationImpl(this.userId);
 
   @override
   final String userId;
@@ -480,10 +483,10 @@ class _$CreateMerchantStateEmailVerification
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateMerchantStateEmailVerification &&
+            other is _$CreateMerchantStateEmailVerificationImpl &&
             (identical(other.userId, userId) || other.userId == userId));
   }
 
@@ -493,10 +496,10 @@ class _$CreateMerchantStateEmailVerification
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$CreateMerchantStateEmailVerificationCopyWith<
-          _$CreateMerchantStateEmailVerification>
-      get copyWith => __$$CreateMerchantStateEmailVerificationCopyWithImpl<
-          _$CreateMerchantStateEmailVerification>(this, _$identity);
+  _$$CreateMerchantStateEmailVerificationImplCopyWith<
+          _$CreateMerchantStateEmailVerificationImpl>
+      get copyWith => __$$CreateMerchantStateEmailVerificationImplCopyWithImpl<
+          _$CreateMerchantStateEmailVerificationImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -591,38 +594,38 @@ class _$CreateMerchantStateEmailVerification
 abstract class CreateMerchantStateEmailVerification
     implements CreateMerchantState {
   const factory CreateMerchantStateEmailVerification(final String userId) =
-      _$CreateMerchantStateEmailVerification;
+      _$CreateMerchantStateEmailVerificationImpl;
 
   String get userId;
   @JsonKey(ignore: true)
-  _$$CreateMerchantStateEmailVerificationCopyWith<
-          _$CreateMerchantStateEmailVerification>
+  _$$CreateMerchantStateEmailVerificationImplCopyWith<
+          _$CreateMerchantStateEmailVerificationImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$CreateMerchantStateLoadingCopyWith<$Res> {
-  factory _$$CreateMerchantStateLoadingCopyWith(
-          _$CreateMerchantStateLoading value,
-          $Res Function(_$CreateMerchantStateLoading) then) =
-      __$$CreateMerchantStateLoadingCopyWithImpl<$Res>;
+abstract class _$$CreateMerchantStateLoadingImplCopyWith<$Res> {
+  factory _$$CreateMerchantStateLoadingImplCopyWith(
+          _$CreateMerchantStateLoadingImpl value,
+          $Res Function(_$CreateMerchantStateLoadingImpl) then) =
+      __$$CreateMerchantStateLoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$CreateMerchantStateLoadingCopyWithImpl<$Res>
+class __$$CreateMerchantStateLoadingImplCopyWithImpl<$Res>
     extends _$CreateMerchantStateCopyWithImpl<$Res,
-        _$CreateMerchantStateLoading>
-    implements _$$CreateMerchantStateLoadingCopyWith<$Res> {
-  __$$CreateMerchantStateLoadingCopyWithImpl(
-      _$CreateMerchantStateLoading _value,
-      $Res Function(_$CreateMerchantStateLoading) _then)
+        _$CreateMerchantStateLoadingImpl>
+    implements _$$CreateMerchantStateLoadingImplCopyWith<$Res> {
+  __$$CreateMerchantStateLoadingImplCopyWithImpl(
+      _$CreateMerchantStateLoadingImpl _value,
+      $Res Function(_$CreateMerchantStateLoadingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$CreateMerchantStateLoading implements CreateMerchantStateLoading {
-  const _$CreateMerchantStateLoading();
+class _$CreateMerchantStateLoadingImpl implements CreateMerchantStateLoading {
+  const _$CreateMerchantStateLoadingImpl();
 
   @override
   String toString() {
@@ -630,10 +633,10 @@ class _$CreateMerchantStateLoading implements CreateMerchantStateLoading {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateMerchantStateLoading);
+            other is _$CreateMerchantStateLoadingImpl);
   }
 
   @override
@@ -730,24 +733,27 @@ class _$CreateMerchantStateLoading implements CreateMerchantStateLoading {
 }
 
 abstract class CreateMerchantStateLoading implements CreateMerchantState {
-  const factory CreateMerchantStateLoading() = _$CreateMerchantStateLoading;
+  const factory CreateMerchantStateLoading() = _$CreateMerchantStateLoadingImpl;
 }
 
 /// @nodoc
-abstract class _$$CreateMerchantStateErrorCopyWith<$Res> {
-  factory _$$CreateMerchantStateErrorCopyWith(_$CreateMerchantStateError value,
-          $Res Function(_$CreateMerchantStateError) then) =
-      __$$CreateMerchantStateErrorCopyWithImpl<$Res>;
+abstract class _$$CreateMerchantStateErrorImplCopyWith<$Res> {
+  factory _$$CreateMerchantStateErrorImplCopyWith(
+          _$CreateMerchantStateErrorImpl value,
+          $Res Function(_$CreateMerchantStateErrorImpl) then) =
+      __$$CreateMerchantStateErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Object error, StackTrace st});
 }
 
 /// @nodoc
-class __$$CreateMerchantStateErrorCopyWithImpl<$Res>
-    extends _$CreateMerchantStateCopyWithImpl<$Res, _$CreateMerchantStateError>
-    implements _$$CreateMerchantStateErrorCopyWith<$Res> {
-  __$$CreateMerchantStateErrorCopyWithImpl(_$CreateMerchantStateError _value,
-      $Res Function(_$CreateMerchantStateError) _then)
+class __$$CreateMerchantStateErrorImplCopyWithImpl<$Res>
+    extends _$CreateMerchantStateCopyWithImpl<$Res,
+        _$CreateMerchantStateErrorImpl>
+    implements _$$CreateMerchantStateErrorImplCopyWith<$Res> {
+  __$$CreateMerchantStateErrorImplCopyWithImpl(
+      _$CreateMerchantStateErrorImpl _value,
+      $Res Function(_$CreateMerchantStateErrorImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -756,7 +762,7 @@ class __$$CreateMerchantStateErrorCopyWithImpl<$Res>
     Object? error = null,
     Object? st = null,
   }) {
-    return _then(_$CreateMerchantStateError(
+    return _then(_$CreateMerchantStateErrorImpl(
       null == error ? _value.error : error,
       null == st
           ? _value.st
@@ -768,8 +774,8 @@ class __$$CreateMerchantStateErrorCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CreateMerchantStateError implements CreateMerchantStateError {
-  const _$CreateMerchantStateError(this.error, this.st);
+class _$CreateMerchantStateErrorImpl implements CreateMerchantStateError {
+  const _$CreateMerchantStateErrorImpl(this.error, this.st);
 
   @override
   final Object error;
@@ -782,10 +788,10 @@ class _$CreateMerchantStateError implements CreateMerchantStateError {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateMerchantStateError &&
+            other is _$CreateMerchantStateErrorImpl &&
             const DeepCollectionEquality().equals(other.error, error) &&
             (identical(other.st, st) || other.st == st));
   }
@@ -797,10 +803,9 @@ class _$CreateMerchantStateError implements CreateMerchantStateError {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$CreateMerchantStateErrorCopyWith<_$CreateMerchantStateError>
-      get copyWith =>
-          __$$CreateMerchantStateErrorCopyWithImpl<_$CreateMerchantStateError>(
-              this, _$identity);
+  _$$CreateMerchantStateErrorImplCopyWith<_$CreateMerchantStateErrorImpl>
+      get copyWith => __$$CreateMerchantStateErrorImplCopyWithImpl<
+          _$CreateMerchantStateErrorImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -894,11 +899,11 @@ class _$CreateMerchantStateError implements CreateMerchantStateError {
 
 abstract class CreateMerchantStateError implements CreateMerchantState {
   const factory CreateMerchantStateError(
-      final Object error, final StackTrace st) = _$CreateMerchantStateError;
+      final Object error, final StackTrace st) = _$CreateMerchantStateErrorImpl;
 
   Object get error;
   StackTrace get st;
   @JsonKey(ignore: true)
-  _$$CreateMerchantStateErrorCopyWith<_$CreateMerchantStateError>
+  _$$CreateMerchantStateErrorImplCopyWith<_$CreateMerchantStateErrorImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'delete_merchant_dialog.dart';
+part of 'create_pos_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$deleteMerchantNotifierHash() =>
-    r'e10bf5e718f92f6c3e8769355a0acb38adf5dbe7';
+String _$createPOSNotifierHash() => r'46ffd75254972658f847d5966a67085ea8851ff9';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,37 +29,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$DeleteMerchantNotifier
-    extends BuildlessAutoDisposeAsyncNotifier<DeleteMerchantData> {
+abstract class _$CreatePOSNotifier
+    extends BuildlessAutoDisposeNotifier<CreatePOSState> {
   late final String merchantId;
 
-  FutureOr<DeleteMerchantData> build(
+  CreatePOSState build(
     String merchantId,
   );
 }
 
-/// See also [DeleteMerchantNotifier].
-@ProviderFor(DeleteMerchantNotifier)
-const deleteMerchantNotifierProvider = DeleteMerchantNotifierFamily();
+/// See also [CreatePOSNotifier].
+@ProviderFor(CreatePOSNotifier)
+const createPOSNotifierProvider = CreatePOSNotifierFamily();
 
-/// See also [DeleteMerchantNotifier].
-class DeleteMerchantNotifierFamily
-    extends Family<AsyncValue<DeleteMerchantData>> {
-  /// See also [DeleteMerchantNotifier].
-  const DeleteMerchantNotifierFamily();
+/// See also [CreatePOSNotifier].
+class CreatePOSNotifierFamily extends Family<CreatePOSState> {
+  /// See also [CreatePOSNotifier].
+  const CreatePOSNotifierFamily();
 
-  /// See also [DeleteMerchantNotifier].
-  DeleteMerchantNotifierProvider call(
+  /// See also [CreatePOSNotifier].
+  CreatePOSNotifierProvider call(
     String merchantId,
   ) {
-    return DeleteMerchantNotifierProvider(
+    return CreatePOSNotifierProvider(
       merchantId,
     );
   }
 
   @override
-  DeleteMerchantNotifierProvider getProviderOverride(
-    covariant DeleteMerchantNotifierProvider provider,
+  CreatePOSNotifierProvider getProviderOverride(
+    covariant CreatePOSNotifierProvider provider,
   ) {
     return call(
       provider.merchantId,
@@ -79,31 +77,30 @@ class DeleteMerchantNotifierFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'deleteMerchantNotifierProvider';
+  String? get name => r'createPOSNotifierProvider';
 }
 
-/// See also [DeleteMerchantNotifier].
-class DeleteMerchantNotifierProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<DeleteMerchantNotifier,
-        DeleteMerchantData> {
-  /// See also [DeleteMerchantNotifier].
-  DeleteMerchantNotifierProvider(
+/// See also [CreatePOSNotifier].
+class CreatePOSNotifierProvider
+    extends AutoDisposeNotifierProviderImpl<CreatePOSNotifier, CreatePOSState> {
+  /// See also [CreatePOSNotifier].
+  CreatePOSNotifierProvider(
     String merchantId,
   ) : this._internal(
-          () => DeleteMerchantNotifier()..merchantId = merchantId,
-          from: deleteMerchantNotifierProvider,
-          name: r'deleteMerchantNotifierProvider',
+          () => CreatePOSNotifier()..merchantId = merchantId,
+          from: createPOSNotifierProvider,
+          name: r'createPOSNotifierProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$deleteMerchantNotifierHash,
-          dependencies: DeleteMerchantNotifierFamily._dependencies,
+                  : _$createPOSNotifierHash,
+          dependencies: CreatePOSNotifierFamily._dependencies,
           allTransitiveDependencies:
-              DeleteMerchantNotifierFamily._allTransitiveDependencies,
+              CreatePOSNotifierFamily._allTransitiveDependencies,
           merchantId: merchantId,
         );
 
-  DeleteMerchantNotifierProvider._internal(
+  CreatePOSNotifierProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -116,8 +113,8 @@ class DeleteMerchantNotifierProvider
   final String merchantId;
 
   @override
-  FutureOr<DeleteMerchantData> runNotifierBuild(
-    covariant DeleteMerchantNotifier notifier,
+  CreatePOSState runNotifierBuild(
+    covariant CreatePOSNotifier notifier,
   ) {
     return notifier.build(
       merchantId,
@@ -125,10 +122,10 @@ class DeleteMerchantNotifierProvider
   }
 
   @override
-  Override overrideWith(DeleteMerchantNotifier Function() create) {
+  Override overrideWith(CreatePOSNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: DeleteMerchantNotifierProvider._internal(
+      override: CreatePOSNotifierProvider._internal(
         () => create()..merchantId = merchantId,
         from: from,
         name: null,
@@ -141,15 +138,14 @@ class DeleteMerchantNotifierProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<DeleteMerchantNotifier,
-      DeleteMerchantData> createElement() {
-    return _DeleteMerchantNotifierProviderElement(this);
+  AutoDisposeNotifierProviderElement<CreatePOSNotifier, CreatePOSState>
+      createElement() {
+    return _CreatePOSNotifierProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is DeleteMerchantNotifierProvider &&
-        other.merchantId == merchantId;
+    return other is CreatePOSNotifierProvider && other.merchantId == merchantId;
   }
 
   @override
@@ -161,20 +157,18 @@ class DeleteMerchantNotifierProvider
   }
 }
 
-mixin DeleteMerchantNotifierRef
-    on AutoDisposeAsyncNotifierProviderRef<DeleteMerchantData> {
+mixin CreatePOSNotifierRef on AutoDisposeNotifierProviderRef<CreatePOSState> {
   /// The parameter `merchantId` of this provider.
   String get merchantId;
 }
 
-class _DeleteMerchantNotifierProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<DeleteMerchantNotifier,
-        DeleteMerchantData> with DeleteMerchantNotifierRef {
-  _DeleteMerchantNotifierProviderElement(super.provider);
+class _CreatePOSNotifierProviderElement
+    extends AutoDisposeNotifierProviderElement<CreatePOSNotifier,
+        CreatePOSState> with CreatePOSNotifierRef {
+  _CreatePOSNotifierProviderElement(super.provider);
 
   @override
-  String get merchantId =>
-      (origin as DeleteMerchantNotifierProvider).merchantId;
+  String get merchantId => (origin as CreatePOSNotifierProvider).merchantId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

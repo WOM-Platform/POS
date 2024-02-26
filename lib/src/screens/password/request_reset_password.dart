@@ -21,7 +21,7 @@ class RequestResetPasswordScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
-    final emailController =
+    final passwordController =
         useTextEditingController();
     final isLoading = useState(false);
     return Scaffold(
@@ -40,7 +40,7 @@ class RequestResetPasswordScreen extends HookConsumerWidget {
               TextFormField(
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (v) {},
-                controller: emailController,
+                controller: passwordController,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
                   labelText: 'Email',
@@ -71,10 +71,10 @@ class RequestResetPasswordScreen extends HookConsumerWidget {
                       isLoading.value = true;
                       await ref
                           .read(getPosProvider)
-                          .requestResetPassword(emailController.text.trim());
+                          .requestResetPassword(passwordController.text.trim());
 
                       context.go(
-                          '/${ResetPasswordScreen.path}?email=${emailController.text.trim()}');
+                          '/${ResetPasswordScreen.path}?email=${passwordController.text.trim()}');
                     } on ServerException catch (ex) {
                       isLoading.value = false;
                       logger.e(ex);

@@ -11,22 +11,27 @@ import 'package:pos/src/add_image/ui/add_image.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pos/src/blocs/authentication/authentication_state.dart';
+import 'package:pos/src/create_new_pos/ui/create_pos_screen.dart';
 import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/screens/settings/settings.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:pos/src/signup/ui/screens/create_merchant.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class POSManagerScreen extends HookConsumerWidget {
   static const String path = 'posManager';
+
   const POSManagerScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final posUser = ref.watch(posUserProvider);
     final posCount = posUser?.merchants.fold<int>(
-        0, (previousValue, element) => previousValue + element.posList.length) ?? 0;
+            0,
+            (previousValue, element) =>
+                previousValue + element.posList.length) ??
+        0;
     final tabController = useTabController(initialLength: posCount);
     final merchants = posUser?.merchants ?? [];
     // final List<PointOfSale> list = merchants.expand((e) => e.posList).toList();
@@ -34,13 +39,18 @@ class POSManagerScreen extends HookConsumerWidget {
       appBar: AppBar(
         elevation: 1,
         actions: [
-          // IconButton(
-          //   icon: Icon(Icons.add),
-          //   color: Colors.white,
-          //   onPressed: () {
-          //     context.go('/${SettingsScreen.path}/${POSManagerScreen.path}/${CreateMerchantScreen.path}');
-          //   },
-          // ),
+          IconButton(
+            icon: Icon(Icons.add),
+            color: Colors.white,
+            onPressed: () async {
+              final id = await showDialog(
+                  context: context, builder: (_) => MerchantSelectorDialog());
+              if (id != null) {
+                context.go(
+                    '/${SettingsScreen.path}/${POSManagerScreen.path}/${CreatePOSScreen.path}/$id');
+              }
+            },
+          ),
         ],
         title: Text('handlePos'.tr()),
         bottom: TabBar(
@@ -432,6 +442,53 @@ class EditTextDialog extends HookConsumerWidget {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class MerchantSelectorDialog extends HookConsumerWidget {
+  const MerchantSelectorDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final merchants = ref
+        .watch(merchantsProvider)
+        .where(
+          (element) => element.access == MerchantAccess.admin,
+        )
+        .toList();
+    final selectedMerchant = useState<Merchant?>(null);
+    return Dialog(
+      child: Container(
+        margin: EdgeInsets.all(16),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('select_merchant'.tr()),
+            const SizedBox(height: 16),
+            for (int i = 0; i < merchants.length; i++)
+              RadioListTile<Merchant>(
+                value: merchants[i],
+                groupValue: selectedMerchant.value,
+                title: Text(
+                  merchants[i].name,
+                ),
+                onChanged: (m) {
+                  selectedMerchant.value = m;
+                },
+              ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+                onPressed: selectedMerchant.value != null
+                    ? () =>
+                        Navigator.of(context).pop(selectedMerchant.value!.id)
+                    : null,
+                child: Text('continue'.tr())),
+          ],
         ),
       ),
     );

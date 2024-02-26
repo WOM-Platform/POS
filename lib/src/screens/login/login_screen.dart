@@ -122,6 +122,7 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
                         const Spacer(),
                         TextField(
                           controller: usernameController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
                             hintText: "Email",
                             prefixIcon: Icon(Icons.email),
@@ -131,6 +132,7 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
                         TextField(
                           obscureText: obscureText,
                           controller: passwordController,
+                          keyboardType: TextInputType.visiblePassword,
                           decoration: InputDecoration(
                             hintText: "Password",
                             prefixIcon: const Icon(Icons.lock),

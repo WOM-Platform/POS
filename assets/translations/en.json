@@ -176,9 +176,11 @@
   "forgotten-password": "Forgot password?",
   "validation_error": "There is a validation error in one of the fields",
   "merchant_created": "Your Merchant was created",
+  "pos_created": "Your POS was created",
   "back_to_home": "Back home",
-  "merchant_creation_error": "Sorrz, an error occurred while creating your Merchant.",
-  "merchant_name": "Name",
+  "merchant_creation_error": "Sorry, an error occurred while creating your Merchant.",
+  "merchant_name": "Merchant name",
+  "pos_name": "POS mame",
   "merchant_fiscal_code": "Italian Codice Fiscale or VAT number",
   "merchant_select_activity": "Select primary activity",
   "merchant_address": "Address",
@@ -211,5 +213,8 @@
   "reset_password_description": "We have sent an email to {}. Follow the instructions to reset your password.",
   "token_four_char": "The code must be 4 characters",
   "create_merchant_title": "Create your merchant",
-  "now_go_to_login": "Sign in in the app now"
+  "create_pos_title": "Create your POS",
+  "now_go_to_login": "Sign in in the app now",
+  "select_merchant": "Select Merchant to create your POS:",
+  "creation_complete":"Creation completed"
 }

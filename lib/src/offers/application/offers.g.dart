@@ -37,7 +37,7 @@ final getSecureStorageProvider =
 
 typedef GetSecureStorageRef = AutoDisposeProviderRef<FlutterSecureStorage>;
 String _$cloudOffersNotifierHash() =>
-    r'f9764fdb230652c6456f2820b1d1e1caeb1603a3';
+    r'75898b7bc5c23c9e84a07db11a907de385713bb4';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -64,7 +64,7 @@ abstract class _$CloudOffersNotifier
     extends BuildlessAutoDisposeAsyncNotifier<List<Offer>> {
   late final String? posId;
 
-  Future<List<Offer>> build(
+  FutureOr<List<Offer>> build(
     String? posId,
   );
 }
@@ -116,8 +116,8 @@ class CloudOffersNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
     CloudOffersNotifier, List<Offer>> {
   /// See also [CloudOffersNotifier].
   CloudOffersNotifierProvider(
-    this.posId,
-  ) : super.internal(
+    String? posId,
+  ) : this._internal(
           () => CloudOffersNotifier()..posId = posId,
           from: cloudOffersNotifierProvider,
           name: r'cloudOffersNotifierProvider',
@@ -128,9 +128,51 @@ class CloudOffersNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
           dependencies: CloudOffersNotifierFamily._dependencies,
           allTransitiveDependencies:
               CloudOffersNotifierFamily._allTransitiveDependencies,
+          posId: posId,
         );
 
+  CloudOffersNotifierProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.posId,
+  }) : super.internal();
+
   final String? posId;
+
+  @override
+  FutureOr<List<Offer>> runNotifierBuild(
+    covariant CloudOffersNotifier notifier,
+  ) {
+    return notifier.build(
+      posId,
+    );
+  }
+
+  @override
+  Override overrideWith(CloudOffersNotifier Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: CloudOffersNotifierProvider._internal(
+        () => create()..posId = posId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        posId: posId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<CloudOffersNotifier, List<Offer>>
+      createElement() {
+    return _CloudOffersNotifierProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -144,15 +186,21 @@ class CloudOffersNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin CloudOffersNotifierRef
+    on AutoDisposeAsyncNotifierProviderRef<List<Offer>> {
+  /// The parameter `posId` of this provider.
+  String? get posId;
+}
+
+class _CloudOffersNotifierProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<CloudOffersNotifier,
+        List<Offer>> with CloudOffersNotifierRef {
+  _CloudOffersNotifierProviderElement(super.provider);
 
   @override
-  Future<List<Offer>> runNotifierBuild(
-    covariant CloudOffersNotifier notifier,
-  ) {
-    return notifier.build(
-      posId,
-    );
-  }
+  String? get posId => (origin as CloudOffersNotifierProvider).posId;
 }
 
 String _$requestNotifierHash() => r'78996f82d45eb5f6639a066dee2ec22f0ba8f9ed';
@@ -171,4 +219,5 @@ final requestNotifierProvider =
 );
 
 typedef _$RequestNotifier = AsyncNotifier<HomeState>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -79,11 +79,11 @@ class _$DeleteMerchantDataCopyWithImpl<$Res, $Val extends DeleteMerchantData>
 }
 
 /// @nodoc
-abstract class _$$_DeleteMerchantDataCopyWith<$Res>
+abstract class _$$DeleteMerchantDataImplCopyWith<$Res>
     implements $DeleteMerchantDataCopyWith<$Res> {
-  factory _$$_DeleteMerchantDataCopyWith(_$_DeleteMerchantData value,
-          $Res Function(_$_DeleteMerchantData) then) =
-      __$$_DeleteMerchantDataCopyWithImpl<$Res>;
+  factory _$$DeleteMerchantDataImplCopyWith(_$DeleteMerchantDataImpl value,
+          $Res Function(_$DeleteMerchantDataImpl) then) =
+      __$$DeleteMerchantDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -94,11 +94,11 @@ abstract class _$$_DeleteMerchantDataCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_DeleteMerchantDataCopyWithImpl<$Res>
-    extends _$DeleteMerchantDataCopyWithImpl<$Res, _$_DeleteMerchantData>
-    implements _$$_DeleteMerchantDataCopyWith<$Res> {
-  __$$_DeleteMerchantDataCopyWithImpl(
-      _$_DeleteMerchantData _value, $Res Function(_$_DeleteMerchantData) _then)
+class __$$DeleteMerchantDataImplCopyWithImpl<$Res>
+    extends _$DeleteMerchantDataCopyWithImpl<$Res, _$DeleteMerchantDataImpl>
+    implements _$$DeleteMerchantDataImplCopyWith<$Res> {
+  __$$DeleteMerchantDataImplCopyWithImpl(_$DeleteMerchantDataImpl _value,
+      $Res Function(_$DeleteMerchantDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -109,7 +109,7 @@ class __$$_DeleteMerchantDataCopyWithImpl<$Res>
     Object? countOfDeletedPos = null,
     Object? countOfDeletedOffers = null,
   }) {
-    return _then(_$_DeleteMerchantData(
+    return _then(_$DeleteMerchantDataImpl(
       operationPerformed: null == operationPerformed
           ? _value.operationPerformed
           : operationPerformed // ignore: cast_nullable_to_non_nullable
@@ -132,8 +132,10 @@ class __$$_DeleteMerchantDataCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_DeleteMerchantData implements _DeleteMerchantData {
-  const _$_DeleteMerchantData(
+class _$DeleteMerchantDataImpl
+    with DiagnosticableTreeMixin
+    implements _DeleteMerchantData {
+  const _$DeleteMerchantDataImpl(
       {required this.operationPerformed,
       required this.countOfDeletedMerchants,
       required this.countOfDeletedPos,
@@ -149,15 +151,27 @@ class _$_DeleteMerchantData implements _DeleteMerchantData {
   final int countOfDeletedOffers;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'DeleteMerchantData(operationPerformed: $operationPerformed, countOfDeletedMerchants: $countOfDeletedMerchants, countOfDeletedPos: $countOfDeletedPos, countOfDeletedOffers: $countOfDeletedOffers)';
   }
 
   @override
-  bool operator ==(dynamic other) {
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'DeleteMerchantData'))
+      ..add(DiagnosticsProperty('operationPerformed', operationPerformed))
+      ..add(DiagnosticsProperty(
+          'countOfDeletedMerchants', countOfDeletedMerchants))
+      ..add(DiagnosticsProperty('countOfDeletedPos', countOfDeletedPos))
+      ..add(DiagnosticsProperty('countOfDeletedOffers', countOfDeletedOffers));
+  }
+
+  @override
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_DeleteMerchantData &&
+            other is _$DeleteMerchantDataImpl &&
             (identical(other.operationPerformed, operationPerformed) ||
                 other.operationPerformed == operationPerformed) &&
             (identical(
@@ -176,8 +190,8 @@ class _$_DeleteMerchantData implements _DeleteMerchantData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_DeleteMerchantDataCopyWith<_$_DeleteMerchantData> get copyWith =>
-      __$$_DeleteMerchantDataCopyWithImpl<_$_DeleteMerchantData>(
+  _$$DeleteMerchantDataImplCopyWith<_$DeleteMerchantDataImpl> get copyWith =>
+      __$$DeleteMerchantDataImplCopyWithImpl<_$DeleteMerchantDataImpl>(
           this, _$identity);
 }
 
@@ -186,7 +200,7 @@ abstract class _DeleteMerchantData implements DeleteMerchantData {
       {required final bool operationPerformed,
       required final int countOfDeletedMerchants,
       required final int countOfDeletedPos,
-      required final int countOfDeletedOffers}) = _$_DeleteMerchantData;
+      required final int countOfDeletedOffers}) = _$DeleteMerchantDataImpl;
 
   @override
   bool get operationPerformed;
@@ -198,6 +212,6 @@ abstract class _DeleteMerchantData implements DeleteMerchantData {
   int get countOfDeletedOffers;
   @override
   @JsonKey(ignore: true)
-  _$$_DeleteMerchantDataCopyWith<_$_DeleteMerchantData> get copyWith =>
+  _$$DeleteMerchantDataImplCopyWith<_$DeleteMerchantDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

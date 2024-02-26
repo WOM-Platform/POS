@@ -108,25 +108,25 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
 }
 
 /// @nodoc
-abstract class _$$RequestLoadingCopyWith<$Res> {
-  factory _$$RequestLoadingCopyWith(
-          _$RequestLoading value, $Res Function(_$RequestLoading) then) =
-      __$$RequestLoadingCopyWithImpl<$Res>;
+abstract class _$$RequestLoadingImplCopyWith<$Res> {
+  factory _$$RequestLoadingImplCopyWith(_$RequestLoadingImpl value,
+          $Res Function(_$RequestLoadingImpl) then) =
+      __$$RequestLoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$RequestLoadingCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$RequestLoading>
-    implements _$$RequestLoadingCopyWith<$Res> {
-  __$$RequestLoadingCopyWithImpl(
-      _$RequestLoading _value, $Res Function(_$RequestLoading) _then)
+class __$$RequestLoadingImplCopyWithImpl<$Res>
+    extends _$HomeStateCopyWithImpl<$Res, _$RequestLoadingImpl>
+    implements _$$RequestLoadingImplCopyWith<$Res> {
+  __$$RequestLoadingImplCopyWithImpl(
+      _$RequestLoadingImpl _value, $Res Function(_$RequestLoadingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$RequestLoading implements RequestLoading {
-  const _$RequestLoading();
+class _$RequestLoadingImpl implements RequestLoading {
+  const _$RequestLoadingImpl();
 
   @override
   String toString() {
@@ -134,9 +134,9 @@ class _$RequestLoading implements RequestLoading {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$RequestLoading);
+        (other.runtimeType == runtimeType && other is _$RequestLoadingImpl);
   }
 
   @override
@@ -240,29 +240,30 @@ class _$RequestLoading implements RequestLoading {
 }
 
 abstract class RequestLoading implements HomeState {
-  const factory RequestLoading() = _$RequestLoading;
+  const factory RequestLoading() = _$RequestLoadingImpl;
 }
 
 /// @nodoc
-abstract class _$$NoDataConnectionStateCopyWith<$Res> {
-  factory _$$NoDataConnectionStateCopyWith(_$NoDataConnectionState value,
-          $Res Function(_$NoDataConnectionState) then) =
-      __$$NoDataConnectionStateCopyWithImpl<$Res>;
+abstract class _$$NoDataConnectionStateImplCopyWith<$Res> {
+  factory _$$NoDataConnectionStateImplCopyWith(
+          _$NoDataConnectionStateImpl value,
+          $Res Function(_$NoDataConnectionStateImpl) then) =
+      __$$NoDataConnectionStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$NoDataConnectionStateCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$NoDataConnectionState>
-    implements _$$NoDataConnectionStateCopyWith<$Res> {
-  __$$NoDataConnectionStateCopyWithImpl(_$NoDataConnectionState _value,
-      $Res Function(_$NoDataConnectionState) _then)
+class __$$NoDataConnectionStateImplCopyWithImpl<$Res>
+    extends _$HomeStateCopyWithImpl<$Res, _$NoDataConnectionStateImpl>
+    implements _$$NoDataConnectionStateImplCopyWith<$Res> {
+  __$$NoDataConnectionStateImplCopyWithImpl(_$NoDataConnectionStateImpl _value,
+      $Res Function(_$NoDataConnectionStateImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$NoDataConnectionState implements NoDataConnectionState {
-  const _$NoDataConnectionState();
+class _$NoDataConnectionStateImpl implements NoDataConnectionState {
+  const _$NoDataConnectionStateImpl();
 
   @override
   String toString() {
@@ -270,9 +271,10 @@ class _$NoDataConnectionState implements NoDataConnectionState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$NoDataConnectionState);
+        (other.runtimeType == runtimeType &&
+            other is _$NoDataConnectionStateImpl);
   }
 
   @override
@@ -376,29 +378,29 @@ class _$NoDataConnectionState implements NoDataConnectionState {
 }
 
 abstract class NoDataConnectionState implements HomeState {
-  const factory NoDataConnectionState() = _$NoDataConnectionState;
+  const factory NoDataConnectionState() = _$NoDataConnectionStateImpl;
 }
 
 /// @nodoc
-abstract class _$$NoPosStateCopyWith<$Res> {
-  factory _$$NoPosStateCopyWith(
-          _$NoPosState value, $Res Function(_$NoPosState) then) =
-      __$$NoPosStateCopyWithImpl<$Res>;
+abstract class _$$NoPosStateImplCopyWith<$Res> {
+  factory _$$NoPosStateImplCopyWith(
+          _$NoPosStateImpl value, $Res Function(_$NoPosStateImpl) then) =
+      __$$NoPosStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$NoPosStateCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$NoPosState>
-    implements _$$NoPosStateCopyWith<$Res> {
-  __$$NoPosStateCopyWithImpl(
-      _$NoPosState _value, $Res Function(_$NoPosState) _then)
+class __$$NoPosStateImplCopyWithImpl<$Res>
+    extends _$HomeStateCopyWithImpl<$Res, _$NoPosStateImpl>
+    implements _$$NoPosStateImplCopyWith<$Res> {
+  __$$NoPosStateImplCopyWithImpl(
+      _$NoPosStateImpl _value, $Res Function(_$NoPosStateImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$NoPosState implements NoPosState {
-  const _$NoPosState();
+class _$NoPosStateImpl implements NoPosState {
+  const _$NoPosStateImpl();
 
   @override
   String toString() {
@@ -406,9 +408,9 @@ class _$NoPosState implements NoPosState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$NoPosState);
+        (other.runtimeType == runtimeType && other is _$NoPosStateImpl);
   }
 
   @override
@@ -512,29 +514,29 @@ class _$NoPosState implements NoPosState {
 }
 
 abstract class NoPosState implements HomeState {
-  const factory NoPosState() = _$NoPosState;
+  const factory NoPosState() = _$NoPosStateImpl;
 }
 
 /// @nodoc
-abstract class _$$NoMerchantStateCopyWith<$Res> {
-  factory _$$NoMerchantStateCopyWith(
-          _$NoMerchantState value, $Res Function(_$NoMerchantState) then) =
-      __$$NoMerchantStateCopyWithImpl<$Res>;
+abstract class _$$NoMerchantStateImplCopyWith<$Res> {
+  factory _$$NoMerchantStateImplCopyWith(_$NoMerchantStateImpl value,
+          $Res Function(_$NoMerchantStateImpl) then) =
+      __$$NoMerchantStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$NoMerchantStateCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$NoMerchantState>
-    implements _$$NoMerchantStateCopyWith<$Res> {
-  __$$NoMerchantStateCopyWithImpl(
-      _$NoMerchantState _value, $Res Function(_$NoMerchantState) _then)
+class __$$NoMerchantStateImplCopyWithImpl<$Res>
+    extends _$HomeStateCopyWithImpl<$Res, _$NoMerchantStateImpl>
+    implements _$$NoMerchantStateImplCopyWith<$Res> {
+  __$$NoMerchantStateImplCopyWithImpl(
+      _$NoMerchantStateImpl _value, $Res Function(_$NoMerchantStateImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$NoMerchantState implements NoMerchantState {
-  const _$NoMerchantState();
+class _$NoMerchantStateImpl implements NoMerchantState {
+  const _$NoMerchantStateImpl();
 
   @override
   String toString() {
@@ -542,9 +544,9 @@ class _$NoMerchantState implements NoMerchantState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$NoMerchantState);
+        (other.runtimeType == runtimeType && other is _$NoMerchantStateImpl);
   }
 
   @override
@@ -648,24 +650,24 @@ class _$NoMerchantState implements NoMerchantState {
 }
 
 abstract class NoMerchantState implements HomeState {
-  const factory NoMerchantState() = _$NoMerchantState;
+  const factory NoMerchantState() = _$NoMerchantStateImpl;
 }
 
 /// @nodoc
-abstract class _$$RequestLoadedCopyWith<$Res> {
-  factory _$$RequestLoadedCopyWith(
-          _$RequestLoaded value, $Res Function(_$RequestLoaded) then) =
-      __$$RequestLoadedCopyWithImpl<$Res>;
+abstract class _$$RequestLoadedImplCopyWith<$Res> {
+  factory _$$RequestLoadedImplCopyWith(
+          _$RequestLoadedImpl value, $Res Function(_$RequestLoadedImpl) then) =
+      __$$RequestLoadedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<PaymentRequest> requests});
 }
 
 /// @nodoc
-class __$$RequestLoadedCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$RequestLoaded>
-    implements _$$RequestLoadedCopyWith<$Res> {
-  __$$RequestLoadedCopyWithImpl(
-      _$RequestLoaded _value, $Res Function(_$RequestLoaded) _then)
+class __$$RequestLoadedImplCopyWithImpl<$Res>
+    extends _$HomeStateCopyWithImpl<$Res, _$RequestLoadedImpl>
+    implements _$$RequestLoadedImplCopyWith<$Res> {
+  __$$RequestLoadedImplCopyWithImpl(
+      _$RequestLoadedImpl _value, $Res Function(_$RequestLoadedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -673,7 +675,7 @@ class __$$RequestLoadedCopyWithImpl<$Res>
   $Res call({
     Object? requests = null,
   }) {
-    return _then(_$RequestLoaded(
+    return _then(_$RequestLoadedImpl(
       requests: null == requests
           ? _value._requests
           : requests // ignore: cast_nullable_to_non_nullable
@@ -684,8 +686,8 @@ class __$$RequestLoadedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$RequestLoaded implements RequestLoaded {
-  const _$RequestLoaded({required final List<PaymentRequest> requests})
+class _$RequestLoadedImpl implements RequestLoaded {
+  const _$RequestLoadedImpl({required final List<PaymentRequest> requests})
       : _requests = requests;
 
   final List<PaymentRequest> _requests;
@@ -702,10 +704,10 @@ class _$RequestLoaded implements RequestLoaded {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RequestLoaded &&
+            other is _$RequestLoadedImpl &&
             const DeepCollectionEquality().equals(other._requests, _requests));
   }
 
@@ -716,8 +718,8 @@ class _$RequestLoaded implements RequestLoaded {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$RequestLoadedCopyWith<_$RequestLoaded> get copyWith =>
-      __$$RequestLoadedCopyWithImpl<_$RequestLoaded>(this, _$identity);
+  _$$RequestLoadedImplCopyWith<_$RequestLoadedImpl> get copyWith =>
+      __$$RequestLoadedImplCopyWithImpl<_$RequestLoadedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -818,30 +820,31 @@ class _$RequestLoaded implements RequestLoaded {
 
 abstract class RequestLoaded implements HomeState {
   const factory RequestLoaded({required final List<PaymentRequest> requests}) =
-      _$RequestLoaded;
+      _$RequestLoadedImpl;
 
   List<PaymentRequest> get requests;
   @JsonKey(ignore: true)
-  _$$RequestLoadedCopyWith<_$RequestLoaded> get copyWith =>
+  _$$RequestLoadedImplCopyWith<_$RequestLoadedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$RequestsLoadingErrorStateCopyWith<$Res> {
-  factory _$$RequestsLoadingErrorStateCopyWith(
-          _$RequestsLoadingErrorState value,
-          $Res Function(_$RequestsLoadingErrorState) then) =
-      __$$RequestsLoadingErrorStateCopyWithImpl<$Res>;
+abstract class _$$RequestsLoadingErrorStateImplCopyWith<$Res> {
+  factory _$$RequestsLoadingErrorStateImplCopyWith(
+          _$RequestsLoadingErrorStateImpl value,
+          $Res Function(_$RequestsLoadingErrorStateImpl) then) =
+      __$$RequestsLoadingErrorStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String error});
 }
 
 /// @nodoc
-class __$$RequestsLoadingErrorStateCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$RequestsLoadingErrorState>
-    implements _$$RequestsLoadingErrorStateCopyWith<$Res> {
-  __$$RequestsLoadingErrorStateCopyWithImpl(_$RequestsLoadingErrorState _value,
-      $Res Function(_$RequestsLoadingErrorState) _then)
+class __$$RequestsLoadingErrorStateImplCopyWithImpl<$Res>
+    extends _$HomeStateCopyWithImpl<$Res, _$RequestsLoadingErrorStateImpl>
+    implements _$$RequestsLoadingErrorStateImplCopyWith<$Res> {
+  __$$RequestsLoadingErrorStateImplCopyWithImpl(
+      _$RequestsLoadingErrorStateImpl _value,
+      $Res Function(_$RequestsLoadingErrorStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -849,7 +852,7 @@ class __$$RequestsLoadingErrorStateCopyWithImpl<$Res>
   $Res call({
     Object? error = null,
   }) {
-    return _then(_$RequestsLoadingErrorState(
+    return _then(_$RequestsLoadingErrorStateImpl(
       null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -860,8 +863,8 @@ class __$$RequestsLoadingErrorStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$RequestsLoadingErrorState implements RequestsLoadingErrorState {
-  const _$RequestsLoadingErrorState(this.error);
+class _$RequestsLoadingErrorStateImpl implements RequestsLoadingErrorState {
+  const _$RequestsLoadingErrorStateImpl(this.error);
 
   @override
   final String error;
@@ -872,10 +875,10 @@ class _$RequestsLoadingErrorState implements RequestsLoadingErrorState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RequestsLoadingErrorState &&
+            other is _$RequestsLoadingErrorStateImpl &&
             (identical(other.error, error) || other.error == error));
   }
 
@@ -885,9 +888,9 @@ class _$RequestsLoadingErrorState implements RequestsLoadingErrorState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$RequestsLoadingErrorStateCopyWith<_$RequestsLoadingErrorState>
-      get copyWith => __$$RequestsLoadingErrorStateCopyWithImpl<
-          _$RequestsLoadingErrorState>(this, _$identity);
+  _$$RequestsLoadingErrorStateImplCopyWith<_$RequestsLoadingErrorStateImpl>
+      get copyWith => __$$RequestsLoadingErrorStateImplCopyWithImpl<
+          _$RequestsLoadingErrorStateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -988,29 +991,29 @@ class _$RequestsLoadingErrorState implements RequestsLoadingErrorState {
 
 abstract class RequestsLoadingErrorState implements HomeState {
   const factory RequestsLoadingErrorState(final String error) =
-      _$RequestsLoadingErrorState;
+      _$RequestsLoadingErrorStateImpl;
 
   String get error;
   @JsonKey(ignore: true)
-  _$$RequestsLoadingErrorStateCopyWith<_$RequestsLoadingErrorState>
+  _$$RequestsLoadingErrorStateImplCopyWith<_$RequestsLoadingErrorStateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$HomeStateErrorCopyWith<$Res> {
-  factory _$$HomeStateErrorCopyWith(
-          _$HomeStateError value, $Res Function(_$HomeStateError) then) =
-      __$$HomeStateErrorCopyWithImpl<$Res>;
+abstract class _$$HomeStateErrorImplCopyWith<$Res> {
+  factory _$$HomeStateErrorImplCopyWith(_$HomeStateErrorImpl value,
+          $Res Function(_$HomeStateErrorImpl) then) =
+      __$$HomeStateErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Object error, StackTrace st});
 }
 
 /// @nodoc
-class __$$HomeStateErrorCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$HomeStateError>
-    implements _$$HomeStateErrorCopyWith<$Res> {
-  __$$HomeStateErrorCopyWithImpl(
-      _$HomeStateError _value, $Res Function(_$HomeStateError) _then)
+class __$$HomeStateErrorImplCopyWithImpl<$Res>
+    extends _$HomeStateCopyWithImpl<$Res, _$HomeStateErrorImpl>
+    implements _$$HomeStateErrorImplCopyWith<$Res> {
+  __$$HomeStateErrorImplCopyWithImpl(
+      _$HomeStateErrorImpl _value, $Res Function(_$HomeStateErrorImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1019,7 +1022,7 @@ class __$$HomeStateErrorCopyWithImpl<$Res>
     Object? error = null,
     Object? st = null,
   }) {
-    return _then(_$HomeStateError(
+    return _then(_$HomeStateErrorImpl(
       null == error ? _value.error : error,
       null == st
           ? _value.st
@@ -1031,8 +1034,8 @@ class __$$HomeStateErrorCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$HomeStateError implements HomeStateError {
-  const _$HomeStateError(this.error, this.st);
+class _$HomeStateErrorImpl implements HomeStateError {
+  const _$HomeStateErrorImpl(this.error, this.st);
 
   @override
   final Object error;
@@ -1045,10 +1048,10 @@ class _$HomeStateError implements HomeStateError {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$HomeStateError &&
+            other is _$HomeStateErrorImpl &&
             const DeepCollectionEquality().equals(other.error, error) &&
             (identical(other.st, st) || other.st == st));
   }
@@ -1060,8 +1063,9 @@ class _$HomeStateError implements HomeStateError {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$HomeStateErrorCopyWith<_$HomeStateError> get copyWith =>
-      __$$HomeStateErrorCopyWithImpl<_$HomeStateError>(this, _$identity);
+  _$$HomeStateErrorImplCopyWith<_$HomeStateErrorImpl> get copyWith =>
+      __$$HomeStateErrorImplCopyWithImpl<_$HomeStateErrorImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1162,11 +1166,11 @@ class _$HomeStateError implements HomeStateError {
 
 abstract class HomeStateError implements HomeState {
   const factory HomeStateError(final Object error, final StackTrace st) =
-      _$HomeStateError;
+      _$HomeStateErrorImpl;
 
   Object get error;
   StackTrace get st;
   @JsonKey(ignore: true)
-  _$$HomeStateErrorCopyWith<_$HomeStateError> get copyWith =>
+  _$$HomeStateErrorImplCopyWith<_$HomeStateErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

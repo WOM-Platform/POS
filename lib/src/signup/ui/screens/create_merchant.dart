@@ -14,6 +14,7 @@ import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
 import 'package:pos/src/exceptions.dart';
 import 'package:pos/src/screens/root/root.dart';
 import 'package:pos/src/signup/application/create_merchant.dart';
+import 'package:pos/src/signup/data/custom_form_field.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../../../my_logger.dart';
 import 'package:collection/collection.dart';
@@ -192,14 +193,14 @@ class CreateMerchantScreen extends HookConsumerWidget {
           },
           forms: [
             FormData(
-              field: FormField.name,
+              field: CustomFormField.name,
               keyboardType: TextInputType.name,
               hintText: 'merchant_name'.tr(),
               labelText: 'merchant_name'.tr(),
               minLength: 8,
             ),
             FormData(
-              field: FormField.cf,
+              field: CustomFormField.cf,
               hintText: 'merchant_fiscal_code'.tr(),
               labelText: 'merchant_fiscal_code'.tr(),
               minLength: 11,
@@ -210,7 +211,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
               ],
             ),
             FormData<MerchantActivity>(
-              field: FormField.custom,
+              field: CustomFormField.custom,
               customKey: 'activity',
               type: FormType.dropdown,
               items: MerchantActivity.values
@@ -222,7 +223,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
             ),
             FormData(
               type: FormType.searchAddress,
-              field: FormField.address,
+              field: CustomFormField.address,
               keyboardType: TextInputType.streetAddress,
               // customKey: 'google_address',
               hintText: 'merchant_address'.tr(),
@@ -234,24 +235,24 @@ class CreateMerchantScreen extends HookConsumerWidget {
             //   labelText: 'Indirizzo',
             // ),
             FormData(
-              field: FormField.zip,
+              field: CustomFormField.zip,
               hintText: 'merchant_zip_code'.tr(),
               labelText: 'merchant_zip_code'.tr(),
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               keyboardType: TextInputType.number,
             ),
             FormData(
-              field: FormField.city,
+              field: CustomFormField.city,
               hintText: 'merchant_city'.tr(),
               labelText: 'merchant_city'.tr(),
             ),
             FormData(
-              field: FormField.country,
+              field: CustomFormField.country,
               hintText: 'merchant_country'.tr(),
               labelText: 'merchant_country'.tr(),
             ),
             FormData(
-              field: FormField.custom,
+              field: CustomFormField.custom,
               customKey: 'description',
               hintText: 'merchant_description'.tr(),
               labelText: 'merchant_description'.tr(),
@@ -259,7 +260,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
               mandatory: false,
             ),
             FormData(
-              field: FormField.url,
+              field: CustomFormField.url,
               keyboardType: TextInputType.url,
               prefix: 'https://',
               hintText: 'miomerchant.it',
@@ -278,7 +279,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
 
 enum FormType { textField, dropdown, searchAddress }
 
-enum FormField { name, surname, address, cf, zip, city, country, url, custom }
+
 
 class DropdownData {
   final String key;
@@ -289,7 +290,7 @@ class DropdownData {
 
 class FormData<T extends Enum> {
   final String? customKey;
-  final FormField field;
+  final CustomFormField field;
   final FormType type;
   final String? hintText;
   final String? labelText;
@@ -321,7 +322,7 @@ class FormData<T extends Enum> {
   });
 
   String get key =>
-      field == FormField.custom ? customKey ?? 'custom' : field.name;
+      field == CustomFormField.custom ? customKey ?? 'custom' : field.name;
 }
 
 class CustomFormWidget extends HookConsumerWidget {
@@ -473,9 +474,9 @@ class CustomFormWidget extends HookConsumerWidget {
                         }
                       }
 
-                      if (controllers.containsKey(FormField.address.name)) {
+                      if (controllers.containsKey(CustomFormField.address.name)) {
                         final addressController =
-                            controllers[FormField.address.name];
+                            controllers[CustomFormField.address.name];
                         if (addressController is TextEditingController) {
                           final currentText = addressController.text;
                           addressController.text =
@@ -484,8 +485,8 @@ class CustomFormWidget extends HookConsumerWidget {
                       }
 
                       // Set city
-                      if (controllers.containsKey(FormField.city.name)) {
-                        final cityController = controllers[FormField.city.name];
+                      if (controllers.containsKey(CustomFormField.city.name)) {
+                        final cityController = controllers[CustomFormField.city.name];
                         if (cityController is TextEditingController) {
                           final currentText = cityController.text;
                           cityController.text = locality ?? currentText ?? '';
@@ -493,9 +494,9 @@ class CustomFormWidget extends HookConsumerWidget {
                       }
 
                       // Set country
-                      if (controllers.containsKey(FormField.country.name)) {
+                      if (controllers.containsKey(CustomFormField.country.name)) {
                         final countryController =
-                            controllers[FormField.country.name];
+                            controllers[CustomFormField.country.name];
                         if (countryController is TextEditingController) {
                           final currentText = countryController.text;
                           countryController.text = country ?? currentText;
@@ -503,8 +504,8 @@ class CustomFormWidget extends HookConsumerWidget {
                       }
 
                       // Set CAP
-                      if (controllers.containsKey(FormField.zip.name)) {
-                        final capController = controllers[FormField.zip.name];
+                      if (controllers.containsKey(CustomFormField.zip.name)) {
+                        final capController = controllers[CustomFormField.zip.name];
                         if (capController is TextEditingController) {
                           final currentText = capController.text;
                           capController.text = postcode ?? currentText;

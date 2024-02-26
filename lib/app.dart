@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:pos/src/create_new_pos/ui/create_pos_screen.dart';
 import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
 import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/pos_handler/ui/screens/pos_manager.dart';
@@ -64,14 +65,16 @@ final _router = GoRouter(
             builder: (context, state) => SettingsScreen(),
             routes: [
               GoRoute(
-                  path: POSManagerScreen.path,
-                  builder: (context, state) => POSManagerScreen(),
-                  routes: [
-                    GoRoute(
-                      path: CreateMerchantScreen.path,
-                      builder: (context, state) => CreateMerchantScreen(),
-                    ),
-                  ]),
+                path: POSManagerScreen.path,
+                builder: (context, state) => POSManagerScreen(),
+                routes: [
+                  GoRoute(
+                    path: '${CreatePOSScreen.path}/:merchantId',
+                    builder: (context, state) => CreatePOSScreen(
+                        merchantId: state.pathParameters['merchantId'] as String),
+                  ),
+                ],
+              ),
             ]),
         GoRoute(
           path: PositionSelectionPage.path,

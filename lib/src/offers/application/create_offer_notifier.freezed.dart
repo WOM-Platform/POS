@@ -69,22 +69,22 @@ class _$MapPolygonCopyWithImpl<$Res, $Val extends MapPolygon>
 }
 
 /// @nodoc
-abstract class _$$_MapPolygonCopyWith<$Res>
+abstract class _$$MapPolygonImplCopyWith<$Res>
     implements $MapPolygonCopyWith<$Res> {
-  factory _$$_MapPolygonCopyWith(
-          _$_MapPolygon value, $Res Function(_$_MapPolygon) then) =
-      __$$_MapPolygonCopyWithImpl<$Res>;
+  factory _$$MapPolygonImplCopyWith(
+          _$MapPolygonImpl value, $Res Function(_$MapPolygonImpl) then) =
+      __$$MapPolygonImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({LatLng target, List<LatLng> polygon, double zoom});
 }
 
 /// @nodoc
-class __$$_MapPolygonCopyWithImpl<$Res>
-    extends _$MapPolygonCopyWithImpl<$Res, _$_MapPolygon>
-    implements _$$_MapPolygonCopyWith<$Res> {
-  __$$_MapPolygonCopyWithImpl(
-      _$_MapPolygon _value, $Res Function(_$_MapPolygon) _then)
+class __$$MapPolygonImplCopyWithImpl<$Res>
+    extends _$MapPolygonCopyWithImpl<$Res, _$MapPolygonImpl>
+    implements _$$MapPolygonImplCopyWith<$Res> {
+  __$$MapPolygonImplCopyWithImpl(
+      _$MapPolygonImpl _value, $Res Function(_$MapPolygonImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -94,7 +94,7 @@ class __$$_MapPolygonCopyWithImpl<$Res>
     Object? polygon = null,
     Object? zoom = null,
   }) {
-    return _then(_$_MapPolygon(
+    return _then(_$MapPolygonImpl(
       target: null == target
           ? _value.target
           : target // ignore: cast_nullable_to_non_nullable
@@ -113,8 +113,8 @@ class __$$_MapPolygonCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_MapPolygon implements _MapPolygon {
-  const _$_MapPolygon(
+class _$MapPolygonImpl implements _MapPolygon {
+  const _$MapPolygonImpl(
       {required this.target,
       required final List<LatLng> polygon,
       required this.zoom})
@@ -139,10 +139,10 @@ class _$_MapPolygon implements _MapPolygon {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MapPolygon &&
+            other is _$MapPolygonImpl &&
             (identical(other.target, target) || other.target == target) &&
             const DeepCollectionEquality().equals(other._polygon, _polygon) &&
             (identical(other.zoom, zoom) || other.zoom == zoom));
@@ -155,15 +155,15 @@ class _$_MapPolygon implements _MapPolygon {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MapPolygonCopyWith<_$_MapPolygon> get copyWith =>
-      __$$_MapPolygonCopyWithImpl<_$_MapPolygon>(this, _$identity);
+  _$$MapPolygonImplCopyWith<_$MapPolygonImpl> get copyWith =>
+      __$$MapPolygonImplCopyWithImpl<_$MapPolygonImpl>(this, _$identity);
 }
 
 abstract class _MapPolygon implements MapPolygon {
   const factory _MapPolygon(
       {required final LatLng target,
       required final List<LatLng> polygon,
-      required final double zoom}) = _$_MapPolygon;
+      required final double zoom}) = _$MapPolygonImpl;
 
   @override
   LatLng get target;
@@ -173,7 +173,7 @@ abstract class _MapPolygon implements MapPolygon {
   double get zoom;
   @override
   @JsonKey(ignore: true)
-  _$$_MapPolygonCopyWith<_$_MapPolygon> get copyWith =>
+  _$$MapPolygonImplCopyWith<_$MapPolygonImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -284,11 +284,11 @@ class _$CreateOfferStateCopyWithImpl<$Res, $Val extends CreateOfferState>
 }
 
 /// @nodoc
-abstract class _$$_CreateOfferStateCopyWith<$Res>
+abstract class _$$CreateOfferStateImplCopyWith<$Res>
     implements $CreateOfferStateCopyWith<$Res> {
-  factory _$$_CreateOfferStateCopyWith(
-          _$_CreateOfferState value, $Res Function(_$_CreateOfferState) then) =
-      __$$_CreateOfferStateCopyWithImpl<$Res>;
+  factory _$$CreateOfferStateImplCopyWith(_$CreateOfferStateImpl value,
+          $Res Function(_$CreateOfferStateImpl) then) =
+      __$$CreateOfferStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -306,11 +306,11 @@ abstract class _$$_CreateOfferStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_CreateOfferStateCopyWithImpl<$Res>
-    extends _$CreateOfferStateCopyWithImpl<$Res, _$_CreateOfferState>
-    implements _$$_CreateOfferStateCopyWith<$Res> {
-  __$$_CreateOfferStateCopyWithImpl(
-      _$_CreateOfferState _value, $Res Function(_$_CreateOfferState) _then)
+class __$$CreateOfferStateImplCopyWithImpl<$Res>
+    extends _$CreateOfferStateCopyWithImpl<$Res, _$CreateOfferStateImpl>
+    implements _$$CreateOfferStateImplCopyWith<$Res> {
+  __$$CreateOfferStateImplCopyWithImpl(_$CreateOfferStateImpl _value,
+      $Res Function(_$CreateOfferStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -325,7 +325,7 @@ class __$$_CreateOfferStateCopyWithImpl<$Res>
     Object? description = freezed,
     Object? mapPolygon = freezed,
   }) {
-    return _then(_$_CreateOfferState(
+    return _then(_$CreateOfferStateImpl(
       activeStep: null == activeStep
           ? _value.activeStep
           : activeStep // ignore: cast_nullable_to_non_nullable
@@ -364,8 +364,8 @@ class __$$_CreateOfferStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_CreateOfferState implements _CreateOfferState {
-  const _$_CreateOfferState(
+class _$CreateOfferStateImpl implements _CreateOfferState {
+  const _$CreateOfferStateImpl(
       {required this.activeStep,
       this.type,
       this.title,
@@ -398,10 +398,10 @@ class _$_CreateOfferState implements _CreateOfferState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_CreateOfferState &&
+            other is _$CreateOfferStateImpl &&
             (identical(other.activeStep, activeStep) ||
                 other.activeStep == activeStep) &&
             (identical(other.type, type) || other.type == type) &&
@@ -422,8 +422,9 @@ class _$_CreateOfferState implements _CreateOfferState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_CreateOfferStateCopyWith<_$_CreateOfferState> get copyWith =>
-      __$$_CreateOfferStateCopyWithImpl<_$_CreateOfferState>(this, _$identity);
+  _$$CreateOfferStateImplCopyWith<_$CreateOfferStateImpl> get copyWith =>
+      __$$CreateOfferStateImplCopyWithImpl<_$CreateOfferStateImpl>(
+          this, _$identity);
 }
 
 abstract class _CreateOfferState implements CreateOfferState {
@@ -435,7 +436,7 @@ abstract class _CreateOfferState implements CreateOfferState {
       final int? maxAge,
       final String? aimCode,
       final String? description,
-      final MapPolygon? mapPolygon}) = _$_CreateOfferState;
+      final MapPolygon? mapPolygon}) = _$CreateOfferStateImpl;
 
   @override
   int get activeStep;
@@ -455,6 +456,6 @@ abstract class _CreateOfferState implements CreateOfferState {
   MapPolygon? get mapPolygon;
   @override
   @JsonKey(ignore: true)
-  _$$_CreateOfferStateCopyWith<_$_CreateOfferState> get copyWith =>
+  _$$CreateOfferStateImplCopyWith<_$CreateOfferStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

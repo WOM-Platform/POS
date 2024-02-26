@@ -8,7 +8,6 @@ import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/services/user_repository.dart';
 import 'package:pos/src/utils.dart';
 import '../../my_logger.dart';
-import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'package:collection/collection.dart';
 

@@ -7,7 +7,7 @@ part of 'create_offer_notifier.dart';
 // **************************************************************************
 
 String _$createOfferNotifierHash() =>
-    r'f8d441b55db6d1979a16650efb94d028bbfce6e6';
+    r'122d976eb0012200b4bce80d2bfb979f5df9b381';
 
 /// See also [CreateOfferNotifier].
 @ProviderFor(CreateOfferNotifier)
@@ -23,4 +23,5 @@ final createOfferNotifierProvider =
 );
 
 typedef _$CreateOfferNotifier = AutoDisposeNotifier<CreateOfferState>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

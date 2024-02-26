@@ -100,11 +100,11 @@ class _$AimSelectionStateCopyWithImpl<$Res, $Val extends AimSelectionState>
 }
 
 /// @nodoc
-abstract class _$$_AimSelectionStateCopyWith<$Res>
+abstract class _$$AimSelectionStateImplCopyWith<$Res>
     implements $AimSelectionStateCopyWith<$Res> {
-  factory _$$_AimSelectionStateCopyWith(_$_AimSelectionState value,
-          $Res Function(_$_AimSelectionState) then) =
-      __$$_AimSelectionStateCopyWithImpl<$Res>;
+  factory _$$AimSelectionStateImplCopyWith(_$AimSelectionStateImpl value,
+          $Res Function(_$AimSelectionStateImpl) then) =
+      __$$AimSelectionStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -118,11 +118,11 @@ abstract class _$$_AimSelectionStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_AimSelectionStateCopyWithImpl<$Res>
-    extends _$AimSelectionStateCopyWithImpl<$Res, _$_AimSelectionState>
-    implements _$$_AimSelectionStateCopyWith<$Res> {
-  __$$_AimSelectionStateCopyWithImpl(
-      _$_AimSelectionState _value, $Res Function(_$_AimSelectionState) _then)
+class __$$AimSelectionStateImplCopyWithImpl<$Res>
+    extends _$AimSelectionStateCopyWithImpl<$Res, _$AimSelectionStateImpl>
+    implements _$$AimSelectionStateImplCopyWith<$Res> {
+  __$$AimSelectionStateImplCopyWithImpl(_$AimSelectionStateImpl _value,
+      $Res Function(_$AimSelectionStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -136,7 +136,7 @@ class __$$_AimSelectionStateCopyWithImpl<$Res>
     Object? subSubAimList = null,
     Object? aimEnabled = null,
   }) {
-    return _then(_$_AimSelectionState(
+    return _then(_$AimSelectionStateImpl(
       aimCode: freezed == aimCode
           ? _value.aimCode
           : aimCode // ignore: cast_nullable_to_non_nullable
@@ -171,8 +171,8 @@ class __$$_AimSelectionStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_AimSelectionState implements _AimSelectionState {
-  const _$_AimSelectionState(
+class _$AimSelectionStateImpl implements _AimSelectionState {
+  const _$AimSelectionStateImpl(
       {this.aimCode,
       this.subAimCode,
       this.subSubAimCode,
@@ -224,10 +224,10 @@ class _$_AimSelectionState implements _AimSelectionState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AimSelectionState &&
+            other is _$AimSelectionStateImpl &&
             (identical(other.aimCode, aimCode) || other.aimCode == aimCode) &&
             (identical(other.subAimCode, subAimCode) ||
                 other.subAimCode == subAimCode) &&
@@ -256,8 +256,8 @@ class _$_AimSelectionState implements _AimSelectionState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AimSelectionStateCopyWith<_$_AimSelectionState> get copyWith =>
-      __$$_AimSelectionStateCopyWithImpl<_$_AimSelectionState>(
+  _$$AimSelectionStateImplCopyWith<_$AimSelectionStateImpl> get copyWith =>
+      __$$AimSelectionStateImplCopyWithImpl<_$AimSelectionStateImpl>(
           this, _$identity);
 }
 
@@ -269,7 +269,7 @@ abstract class _AimSelectionState implements AimSelectionState {
       required final List<Aim> aimList,
       required final List<Aim> subAimList,
       required final List<Aim> subSubAimList,
-      final bool aimEnabled}) = _$_AimSelectionState;
+      final bool aimEnabled}) = _$AimSelectionStateImpl;
 
   @override
   String? get aimCode;
@@ -287,6 +287,6 @@ abstract class _AimSelectionState implements AimSelectionState {
   bool get aimEnabled;
   @override
   @JsonKey(ignore: true)
-  _$$_AimSelectionStateCopyWith<_$_AimSelectionState> get copyWith =>
+  _$$AimSelectionStateImplCopyWith<_$AimSelectionStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
