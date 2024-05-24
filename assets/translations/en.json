@@ -216,5 +216,31 @@
   "create_pos_title": "Create your POS",
   "now_go_to_login": "Sign in in the app now",
   "select_merchant": "Select Merchant to create your POS:",
-  "creation_complete":"Creation completed"
+  "creation_complete": "Creation completed",
+  "share_link": "Share link",
+  "download_pdf": "Download PDF",
+  "create_merchant": {
+    "activation_code": "Activation code",
+    "activation_code_desc": "Se hai ricevuto un codice di attivazione inseriscilo qui sotto",
+    "activity": "Primary Activity",
+    "activity_error": "Devi selezionare un tipo di attività per il tuo merchant.",
+    "address": "Address",
+    "city": "City",
+    "continue": "Verify your data",
+    "country": "Country",
+    "create": "Create",
+    "created": "Your Merchant was created!",
+    "description": "Description",
+    "error": "Sorry, an error occurred while creating your Merchant.",
+    "fiscal_code": "Italian Codice Fiscale or VAT number",
+    "name": "Merchant name",
+    "url": "Website",
+    "verify_data": "Verifica che i dati inseriti siano corretti:",
+    "select_activity": "Select primary activity",
+    "street_name_error": "L'indirizzo non è valido, assicurati di aver inserito un indirizzo valido nel campo di ricerca.",
+    "street_number": "Street number",
+    "title": "Create your merchant",
+    "zip_code": "Zip Code",
+    "zip_code_error": "Il CAP non è valido, assicurati di aver inserito un indirizzo valido."
+  }
 }

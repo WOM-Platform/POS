@@ -17,10 +17,38 @@ import 'package:pos/src/services/aim_repository.dart';
 import 'package:pos/src/signup/ui/screens/create_merchant.dart';
 import 'package:pos/src/signup/ui/screens/email_verification.dart';
 import 'package:pos/src/signup/ui/screens/sign_up.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+void goRouterOnException(
+    BuildContext context,
+    GoRouterState state,
+    GoRouter router,
+    ) {
+  // routerSnackbarManager.showSnackbar(
+  //   appKey.currentContext!,
+  //   messageText: coreStrings.errorNavigationPageNotFound,
+  //   onActionPress: routerSnackbarManager.hideSnackbar,
+  //   actionText: coreStrings.dismiss,
+  // );
+
+  final originalUri = state.uri.queryParameters['originalUri'];
+  final uri = originalUri ?? state.toString();
+
+  Sentry.captureException(
+    GoException(
+      'Invalid route $uri '
+          '${state.error?.message ?? ''}',
+    ),
+  );
+}
 
 //wompos://process/verify?email=d.ifrancescogianmarco@gmail.com&token=T0YDD4P9
 final _router = GoRouter(
   debugLogDiagnostics: kDebugMode,
+  observers: [
+    SentryNavigatorObserver(),
+  ],
+  onException: goRouterOnException,
   routes: [
     GoRoute(
       path: RootScreen.path,
@@ -49,8 +77,8 @@ final _router = GoRouter(
         GoRoute(
           path: ResetPasswordScreen.path,
           builder: (context, state) => ResetPasswordScreen(
-              email: state.queryParameters['email'] as String,
-              code: state.queryParameters['token']),
+              email: state.uri.queryParameters['email'] as String,
+              code: state.uri.queryParameters['token']),
         ),
         GoRoute(
           path: SignUpScreen.path,
@@ -85,8 +113,8 @@ final _router = GoRouter(
     GoRoute(
       path: '/${EmailVerificationScreen.path}',
       builder: (context, state) => EmailVerificationScreen(
-        email: state.queryParameters['email'],
-        code: state.queryParameters['token'],
+        email: state.uri.queryParameters['email'],
+        code: state.uri.queryParameters['token'],
       ),
     ),
   ],
@@ -125,7 +153,6 @@ class App extends ConsumerWidget {
       theme: ThemeData(
         useMaterial3: false,
         primaryColor: Colors.blue,
-        // accentColor: Colors.yellow,
       ),
       // home: isFirstOpen ? IntroScreen() : RootScreen(),
     );

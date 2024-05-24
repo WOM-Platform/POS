@@ -38,7 +38,7 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>I need it to select POS position</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>I need it to select image from gallery</string>
+	<string>Users need this permission to change the image of their POS</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

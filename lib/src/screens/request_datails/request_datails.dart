@@ -1,4 +1,5 @@
 import 'package:clippy_flutter/arc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/model/payment_request.dart';
@@ -137,7 +138,7 @@ class RequestDetails extends ConsumerWidget {
                       children: [
                         Icon(Icons.picture_as_pdf),
                         const SizedBox(width: 16),
-                        Text('Scarica PDF'),
+                        Text('download_pdf'.tr()),
                       ],
                     ),
                   ),
@@ -153,7 +154,7 @@ class RequestDetails extends ConsumerWidget {
                       children: [
                         Icon(Icons.share),
                         const SizedBox(width: 16),
-                        Text('Condividi link'),
+                        Text('share_link'.tr()),
                       ],
                     ),
                   ),

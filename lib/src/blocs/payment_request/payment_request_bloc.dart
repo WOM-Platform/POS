@@ -227,8 +227,8 @@ class CreatePaymentRequestBloc {
       } else {
         await db.updateRequest(paymentRequest);
       }
-    } catch (ex) {
-      logger.i(ex.toString());
+    } catch (ex,st) {
+      logger.e('login', error: ex, stackTrace: st);
     }
   }
 

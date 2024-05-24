@@ -288,17 +288,11 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
         if (!isAnonymous) {
           ref.read(offersTabProvider.notifier).state = OfferType.ephemeral;
         }
-      } on ServerException catch (ex, stack) {
-        logger.e('${ex.url}: ${ex.statusCode} => ${ex.error}');
-        logger.e(stack);
-        // paymentRequest.status = RequestStatus.DRAFT;
-        // insertRequestOnDb(paymentRequest);
-        // state = WomCreationRequestError(error: ex.error);
-      } catch (ex) {
-        logger.e(ex);
-        // paymentRequest.status = RequestStatus.DRAFT;
-        // insertRequestOnDb(paymentRequest);
-        // state = WomCreationRequestError();
+      } on ServerException catch (ex, st) {
+        logger.e('createLocalOffer: ${ex.url}: ${ex.statusCode} => ${ex.error}',
+            error: ex, stackTrace: st);
+      } catch (ex, st) {
+        logger.e('createLocalOffer', error: ex, stackTrace: st);
       }
     }
   }
@@ -312,8 +306,8 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
       } else {
         await PaymentDatabase.get().updateRequest(paymentRequest);
       }
-    } catch (ex) {
-      logger.i("insertRequestOnDb $ex");
+    } catch (ex, st) {
+      logger.e('insertRequestOnDb', error: ex, stackTrace: st);
     }
   }
 

@@ -12,6 +12,7 @@ import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/screens/password/request_reset_password.dart';
 import 'package:pos/src/signup/ui/screens/sign_up.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../settings/change_language.dart';
 
@@ -137,9 +138,11 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
                             hintText: "Password",
                             prefixIcon: const Icon(Icons.lock),
                             suffixIcon: IconButton(
-                                icon: Icon(obscureText
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
+                                icon: Icon(
+                                  obscureText
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
                                 color: Colors.blue,
                                 onPressed: () {
                                   setState(() {
@@ -151,8 +154,9 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
                         const Spacer(),
                         ElevatedButton(
                           onPressed: () => _onLoginButtonPressed(
-                              usernameController.text.trim(),
-                              passwordController.text.trim()),
+                            usernameController.text.trim(),
+                            passwordController.text.trim(),
+                          ),
                           child: Text('signIn'.tr()),
                         ),
                         TextButton(

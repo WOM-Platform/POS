@@ -1,4 +1,3 @@
-import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,17 +5,13 @@ import 'package:flutter_codice_fiscale/codice_fiscale.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:pos/src/blocs/authentication/authentication_bloc.dart';
-import 'package:pos/src/exceptions.dart';
-import 'package:pos/src/screens/root/root.dart';
-import 'package:pos/src/signup/application/create_merchant.dart';
 import 'package:pos/src/signup/data/custom_form_field.dart';
+import 'package:pos/src/signup/ui/screens/summary_creation.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import '../../../my_logger.dart';
 import 'package:collection/collection.dart';
 
 enum MerchantActivity {
@@ -95,114 +90,66 @@ class CreateMerchantScreen extends HookConsumerWidget {
     final isLoading = useState<bool>(false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('create_merchant_title'.tr()),
+        title: Text('create_merchant.title'.tr()),
         actions: [
-           IconButton(
-                         icon: Icon(Icons.exit_to_app),
-                         color: Colors.white,
-                         onPressed: () {
-                           ref.read(authNotifierProvider.notifier).logOut();
-                         }),
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              color: Colors.white,
+              onPressed: () {
+                ref.read(authNotifierProvider.notifier).logOut();
+              }),
         ],
       ),
       body: LoadingOverlay(
         isLoading: isLoading.value,
         child: CustomFormWidget(
-          buttonText: "Salva",
+          buttonText: 'create_merchant.continue'.tr(),
           onSubmit: (answers) async {
             FocusScope.of(context).requestFocus(new FocusNode());
-            try {
-              final nav = Navigator.of(context);
-              final router = GoRouter.of(context);
-              isLoading.value = true;
-              await ref
-                  .read(createMerchantNotifierProvider.notifier)
-                  .createMerchant(
-                    name: answers['name']!,
-                    fiscalCode: answers['cf']!,
-                    address: answers['address']!,
-                    primaryActivity: answers['activity']!,
-                    zipCode: answers['zip']!,
-                    city: answers['city']!,
-                    country: answers['country']!,
-                    googleMapsPlaceId: answers['placeId'],
-                    streetName: answers['streetName'],
-                    streetNumber: answers['streetNumber'],
-                    formattedAddress: answers['formattedAddress'],
-                    lat: double.tryParse(answers['lat'] ?? '0.0') ?? 0.0,
-                    long: double.tryParse(answers['long'] ?? '0.0') ?? 0.0,
-                    description: answers['description'] != null
-                        ? answers['description']!.isEmpty
-                            ? null
-                            : answers['description']
-                        : null,
-                    url: answers['url'] != null
-                        ? answers['url']!.isEmpty
-                            ? null
-                            : 'https://${answers['url']}'
-                        : null,
-                  );
+            final nav = Navigator.of(context);
 
-              isLoading.value = false;
-              Alert(
-                context: context,
-                title: 'merchant_created'.tr(),
-                buttons: [
-                  DialogButton(
-                    child: Text('back_to_home'.tr()),
-                    onPressed: () {
-                      nav.pop();
-                      router.go(RootScreen.path);
-                    },
-                  ),
-                ],
-              ).show();
-            } on ServerException catch (ex) {
-              isLoading.value = false;
-              Alert(
-                context: context,
-                title: 'merchant_creation_error'.tr(),
-                desc: ex.errorDescription,
-                buttons: [
-                  DialogButton(
-                    child: Text('Ok'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ).show();
-              logger.e(ex);
-            } catch (ex, st) {
-              isLoading.value = false;
-              Alert(
-                context: context,
-                title: 'merchant_creation_error'.tr(),
-                buttons: [
-                  DialogButton(
-                    child: Text('Ok'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ).show();
-              logger.e(ex);
-              logger.e(st);
-            }
+            nav.push(
+              MaterialPageRoute(
+                builder: (_) => SummaryCreationScreen(
+                  name: answers['name']!,
+                  fiscalCode: answers['cf']!,
+                  address: answers['address']!,
+                  primaryActivity: answers['activity']!,
+                  zipCode: answers['zip']!,
+                  city: answers['city']!,
+                  country: answers['country']!,
+                  googleMapsPlaceId: answers['placeId']!,
+                  streetName: answers['streetName']!,
+                  streetNumber: answers['streetNumber'],
+                  formattedAddress: answers['formattedAddress']!,
+                  lat: double.tryParse(answers['lat'] ?? '-'),
+                  long: double.tryParse(answers['long'] ?? '-'),
+                  description: answers['description'] != null
+                      ? answers['description']!.isEmpty
+                          ? null
+                          : answers['description']
+                      : null,
+                  url: answers['url'] != null
+                      ? answers['url']!.isEmpty
+                          ? null
+                          : 'https://${answers['url']}'
+                      : null,
+                ),
+              ),
+            );
           },
           forms: [
             FormData(
               field: CustomFormField.name,
               keyboardType: TextInputType.name,
-              hintText: 'merchant_name'.tr(),
-              labelText: 'merchant_name'.tr(),
+              hintText: 'create_merchant.name'.tr(),
+              labelText: 'create_merchant.name'.tr(),
               minLength: 8,
             ),
             FormData(
               field: CustomFormField.cf,
-              hintText: 'merchant_fiscal_code'.tr(),
-              labelText: 'merchant_fiscal_code'.tr(),
+              hintText: 'create_merchant.fiscal_code'.tr(),
+              labelText: 'create_merchant.fiscal_code'.tr(),
               minLength: 11,
               maxLength: 16,
               inputFormatters: [UpperCaseTextFormatter()],
@@ -217,8 +164,8 @@ class CreateMerchantScreen extends HookConsumerWidget {
               items: MerchantActivity.values
                   .map((e) => DropdownData(e.name, e.text.tr()))
                   .toList(),
-              hintText: 'merchant_select_activity'.tr(),
-              labelText: 'merchant_select_activity'.tr(),
+              hintText: 'create_merchant.select_activity'.tr(),
+              labelText: 'create_merchant.select_activity'.tr(),
               validators: [],
             ),
             FormData(
@@ -226,36 +173,31 @@ class CreateMerchantScreen extends HookConsumerWidget {
               field: CustomFormField.address,
               keyboardType: TextInputType.streetAddress,
               // customKey: 'google_address',
-              hintText: 'merchant_address'.tr(),
-              labelText: 'merchant_address'.tr(),
+              hintText: 'create_merchant.address'.tr(),
+              labelText: 'create_merchant.address'.tr(),
             ),
             // FormData(
-            //   field: FormField.address,
-            //   hintText: 'Indirizzo',
-            //   labelText: 'Indirizzo',
+            //   field: CustomFormField.zip,
+            //   hintText: 'create_merchant.zip_code'.tr(),
+            //   labelText: 'create_merchant.zip_code'.tr(),
+            //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            //   keyboardType: TextInputType.number,
             // ),
-            FormData(
-              field: CustomFormField.zip,
-              hintText: 'merchant_zip_code'.tr(),
-              labelText: 'merchant_zip_code'.tr(),
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              keyboardType: TextInputType.number,
-            ),
-            FormData(
-              field: CustomFormField.city,
-              hintText: 'merchant_city'.tr(),
-              labelText: 'merchant_city'.tr(),
-            ),
-            FormData(
-              field: CustomFormField.country,
-              hintText: 'merchant_country'.tr(),
-              labelText: 'merchant_country'.tr(),
-            ),
+            // FormData(
+            //   field: CustomFormField.city,
+            //   hintText: 'create_merchant.city'.tr(),
+            //   labelText: 'create_merchant.city'.tr(),
+            // ),
+            // FormData(
+            //   field: CustomFormField.country,
+            //   hintText: 'create_merchant.country'.tr(),
+            //   labelText: 'create_merchant.country'.tr(),
+            // ),
             FormData(
               field: CustomFormField.custom,
               customKey: 'description',
-              hintText: 'merchant_description'.tr(),
-              labelText: 'merchant_description'.tr(),
+              hintText: 'create_merchant.description'.tr(),
+              labelText: 'create_merchant.description'.tr(),
               maxLines: 3,
               mandatory: false,
             ),
@@ -264,7 +206,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
               keyboardType: TextInputType.url,
               prefix: 'https://',
               hintText: 'miomerchant.it',
-              labelText: 'merchant_url'.tr(),
+              labelText: 'create_merchant.url'.tr(),
               validators: [
                 UrlValidator(errorText: 'invalid_url_warning'.tr()),
               ],
@@ -278,8 +220,6 @@ class CreateMerchantScreen extends HookConsumerWidget {
 }
 
 enum FormType { textField, dropdown, searchAddress }
-
-
 
 class DropdownData {
   final String key;
@@ -345,6 +285,9 @@ class CustomFormWidget extends HookConsumerWidget {
     final placeId = useState<String?>(null);
     final streetName = useState<String?>(null);
     final streetNumber = useState<String?>(null);
+    final city = useState<String?>(null);
+    final country = useState<String?>(null);
+    final cap = useState<String?>(null);
     final latitude = useState<String?>(null);
     final longitude = useState<String?>(null);
 
@@ -446,7 +389,7 @@ class CustomFormWidget extends HookConsumerWidget {
                           .firstWhereOrNull(
                               (c) => c.types?.contains('postal_code') ?? false)
                           ?.longName;
-                      final country = addressComponents
+                      final _country = addressComponents
                           .firstWhereOrNull(
                               (c) => c.types?.contains('country') ?? false)
                           ?.longName;
@@ -454,17 +397,20 @@ class CustomFormWidget extends HookConsumerWidget {
                       final pId = prediction.placeId;
                       final lat = prediction.lat;
                       final long = prediction.lng;
+
+                      cap.value = postcode;
+                      city.value = locality;
+                      country.value = _country;
                       latitude.value = lat;
                       longitude.value = long;
                       placeId.value = pId;
-
                       formattedAddress.value = prediction.description;
                       streetNumber.value = number;
                       streetName.value = address;
 
                       // Set address
-                      final fullAddress =
-                          prediction.structuredFormatting?.mainText;
+                      final fullAddress = details.result?.formattedAddress;
+
                       if (controllers.containsKey('google_address')) {
                         final addressController = controllers['google_address'];
                         if (addressController is TextEditingController) {
@@ -474,7 +420,8 @@ class CustomFormWidget extends HookConsumerWidget {
                         }
                       }
 
-                      if (controllers.containsKey(CustomFormField.address.name)) {
+                      if (controllers
+                          .containsKey(CustomFormField.address.name)) {
                         final addressController =
                             controllers[CustomFormField.address.name];
                         if (addressController is TextEditingController) {
@@ -486,7 +433,8 @@ class CustomFormWidget extends HookConsumerWidget {
 
                       // Set city
                       if (controllers.containsKey(CustomFormField.city.name)) {
-                        final cityController = controllers[CustomFormField.city.name];
+                        final cityController =
+                            controllers[CustomFormField.city.name];
                         if (cityController is TextEditingController) {
                           final currentText = cityController.text;
                           cityController.text = locality ?? currentText ?? '';
@@ -494,18 +442,20 @@ class CustomFormWidget extends HookConsumerWidget {
                       }
 
                       // Set country
-                      if (controllers.containsKey(CustomFormField.country.name)) {
+                      if (controllers
+                          .containsKey(CustomFormField.country.name)) {
                         final countryController =
                             controllers[CustomFormField.country.name];
                         if (countryController is TextEditingController) {
                           final currentText = countryController.text;
-                          countryController.text = country ?? currentText;
+                          countryController.text = _country ?? currentText;
                         }
                       }
 
                       // Set CAP
                       if (controllers.containsKey(CustomFormField.zip.name)) {
-                        final capController = controllers[CustomFormField.zip.name];
+                        final capController =
+                            controllers[CustomFormField.zip.name];
                         if (capController is TextEditingController) {
                           final currentText = capController.text;
                           capController.text = postcode ?? currentText;
@@ -598,14 +548,41 @@ class CustomFormWidget extends HookConsumerWidget {
                       map[f.key] = controllers[f.key].value;
                       break;
                   }
-                  if (f.type == FormType.textField) {
-                  } else if (f.type == FormType.dropdown) {}
                 }
-                if (latitude.value != null && longitude.value != null) {
-                  map['lat'] = latitude.value!;
-                  map['long'] = longitude.value!;
+
+                if (cap.value == null) {
+                  showWarning(
+                    context,
+                    'zip_code_error'.tr(),
+                  );
+                  return;
                 }
+
+                if (streetName.value == null) {
+                  showWarning(
+                    context,
+                    'street_name_error'.tr(),
+                  );
+                  return;
+                }
+
+                if (country.value == null) {
+                  showWarning(context, 'country');
+                  return;
+                }
+
+                if (map['activity'] == null) {
+                  showWarning(context,
+                      'activity_error'.tr());
+                  return;
+                }
+
+                map['zip'] = cap.value!;
+                map['city'] = city.value!;
+                map['country'] = country.value!;
                 map['placeId'] = placeId.value!;
+                map['lat'] = latitude.value;
+                map['long'] = longitude.value;
                 map['streetName'] = streetName.value;
                 map['streetNumber'] = streetNumber.value;
                 map['formattedAddress'] = formattedAddress.value;
@@ -617,6 +594,11 @@ class CustomFormWidget extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  void showWarning(BuildContext context, String message) {
+    Alert(context: context, type: AlertType.warning, content: Text(message))
+        .show();
   }
 }
 

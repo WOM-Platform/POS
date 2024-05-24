@@ -21,8 +21,7 @@ class RequestResetPasswordScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
-    final passwordController =
-        useTextEditingController();
+    final passwordController = useTextEditingController();
     final isLoading = useState(false);
     return Scaffold(
       appBar: AppBar(
@@ -93,8 +92,8 @@ class RequestResetPasswordScreen extends HookConsumerWidget {
                       ).show();
                     } catch (ex, st) {
                       isLoading.value = false;
-                      logger.e(ex);
-                      logger.e(st);
+                      logger.e('requestResetPassword',
+                          error: ex, stackTrace: st);
                       Alert(
                         context: context,
                         title: 'sign_up_error'.tr(),

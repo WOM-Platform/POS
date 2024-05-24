@@ -63,9 +63,9 @@ class AddImageScreen extends HookConsumerWidget {
       final bytes = await image.readAsBytes();
       ref.read(selectedImageProvider.notifier).state = bytes;
       isProcessing.value = false;
-    } catch (ex) {
+    } catch (ex, st) {
       isProcessing.value = false;
-      logger.e(ex);
+      logger.e('pickImage', error: ex, stackTrace: st);
     }
   }
 
@@ -97,13 +97,11 @@ class AddImageScreen extends HookConsumerWidget {
                               minWidth: minWidth,
                               quality: 80,
                             );
-                            print(croppedData.length);
-                            print(result.length);
 
                             await onSave?.call(result);
                             Navigator.of(context).pop();
-                          } catch (ex) {
-                            logger.e(ex);
+                          } catch (ex,st) {
+                            logger.e('saveImage',error:ex,stackTrace: st);
                             isProcessing.value = false;
                           }
                         } else {

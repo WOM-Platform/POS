@@ -210,7 +210,7 @@ class _HomeListState extends ConsumerState<HomeList> {
           final file = await pdfCreator.buildPdf(
             request,
             pos,
-           context.locale.languageCode ?? 'en',
+           context.locale.languageCode,
           );
           Share.shareFiles([file.path]);
         }),

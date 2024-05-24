@@ -42,7 +42,6 @@ class OffersScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('offerscreen build');
     final selectedPosId = ref.watch(selectedPosProvider)?.pos?.id;
     final offersAsync = ref.watch(cloudOffersNotifierProvider(selectedPosId));
     final controller = ref.watch(refreshControllerProvider);
@@ -124,7 +123,7 @@ class OffersScreen extends HookConsumerWidget {
                                             await pdfCreator.buildPersistentPdf(
                                           offer,
                                           pos,
-                                          context.locale.languageCode ?? 'en',
+                                          context.locale.languageCode,
                                           aims,
                                         );
                                         Share.shareFiles([file.path]);
@@ -215,7 +214,7 @@ class _OfferTileState extends ConsumerState<OfferTile> {
                   final file = await pdfCreator.buildPersistentPdf(
                     widget.offer,
                     pos,
-                    context.locale.languageCode ?? 'en',
+                    context.locale.languageCode,
                     aims,
                   );
                   Share.shareFiles([file.path]);

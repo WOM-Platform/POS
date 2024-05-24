@@ -51,8 +51,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
             padding: const EdgeInsets.all(16.0),
             children: [
               EasyRichText(
-                'reset_password_description'
-                    .tr(args: [email]),
+                'reset_password_description'.tr(args: [email]),
                 patternList: [
                   EasyRichTextPattern(
                     targetString: email,
@@ -107,7 +106,8 @@ class ResetPasswordScreen extends HookConsumerWidget {
                   code != null
                       ? []
                       : [
-                          Validatorless.max(4, 'token_max_length_warning'.tr(args: ['4'])),
+                          Validatorless.max(
+                              4, 'token_max_length_warning'.tr(args: ['4'])),
                           Validatorless.required('mandatory_field'.tr()),
                         ],
                 ),
@@ -199,9 +199,9 @@ class ResetPasswordScreen extends HookConsumerWidget {
                             repeatPasswordController.text,
                           );
                       context.go(RootScreen.path);
-                    } on ServerException catch (ex) {
+                    } on ServerException catch (ex,st) {
                       isLoading.value = false;
-                      logger.e(ex);
+                      logger.e('resetPassword: ${ex.error} => ${ex.statusCode}', error: ex, stackTrace: st);
                       Alert(
                         context: context,
                         // title: 'sign_up_error'.tr(),
@@ -217,8 +217,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
                       ).show();
                     } catch (ex, st) {
                       isLoading.value = false;
-                      logger.e(ex);
-                      logger.e(st);
+                      logger.e('resetPassword', error: ex, stackTrace: st);
                       Alert(
                         context: context,
                         title: 'sign_up_error'.tr(),

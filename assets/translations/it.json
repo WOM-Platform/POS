@@ -216,5 +216,31 @@
   "create_pos_title": "Crea il tuo POS",
   "now_go_to_login": "Ora effettua il login",
   "select_merchant": "Seleziona il merchant per cui creare un POS:",
-  "creation_complete":"Creazione completata"
+  "creation_complete": "Creazione completata",
+  "share_link": "Condividi link",
+  "download_pdf": "Scarica PDF",
+  "create_merchant": {
+    "activation_code": "Codice di attivazione",
+    "activation_code_desc": "Se hai ricevuto un codice di attivazione inseriscilo qui sotto",
+    "activity": "Attività primaria",
+    "activity_error": "Devi selezionare un tipo di attività per il tuo merchant.",
+    "address": "Indirizzo",
+    "create": "Crea merchant",
+    "city": "Località",
+    "continue": "Verifica i dati",
+    "country": "Nazione",
+    "created": "Abbiamo creato il tuo Merchant!",
+    "description": "Descrizione",
+    "error": "Spiacenti si è verificato un errore durante la creazione del Merchant",
+    "fiscal_code": "Codice Fiscale o Partita IVA",
+    "name": "Ragione sociale",
+    "url": "Sito Web",
+    "verify_data": "Verifica che i dati inseriti siano corretti:",
+    "select_activity": "Seleziona l’attività",
+    "street_name_error": "L'indirizzo non è valido, assicurati di aver inserito un indirizzo valido nel campo di ricerca.",
+    "street_number": "Numero civico",
+    "title": "Crea il tuo merchant",
+    "zip_code": "CAP",
+    "zip_code_error": "Il CAP non è valido, assicurati di aver inserito un indirizzo valido."
+  }
 }

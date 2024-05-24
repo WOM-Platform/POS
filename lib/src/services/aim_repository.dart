@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pos/src/db/aim_db.dart';
 import 'package:pos/src/db/app_database/app_database.dart';
+import 'package:pos/src/offers/application/offers.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:collection/collection.dart';
 import '../constants.dart';
@@ -10,7 +11,7 @@ import '../my_logger.dart';
 import '../utils.dart';
 
 final aimRepositoryProvider = Provider<AimRepository>((ref) {
-  return AimRepository();
+  return AimRepository(ref.read(getPosProvider));
 });
 
 final aimListFutureProvider = FutureProvider((ref) {
@@ -35,11 +36,10 @@ final aimNameProvider =
 });
 
 class AimRepository {
-  late AimRemoteDataSources _apiProvider;
   late AimDatabase _aimDbHelper;
 
-  AimRepository() {
-    _apiProvider = AimRemoteDataSources(domain);
+  final PosClient pos;
+  AimRepository(this.pos) {
     _aimDbHelper = AimDatabase.get();
   }
 
@@ -69,7 +69,7 @@ class AimRepository {
     final lastCheck = await getLastAimCheckDateTime();
     final aimsAreOld = DateTime.now().difference(lastCheck).inMinutes > 1;
     if (list.isEmpty || aimsAreOld) {
-      list = await _apiProvider.checkUpdate();
+      list = await pos.getAims();
       await saveAimToDb(db, list);
       await setAimCheckDateTime(DateTime.now());
       // list = await _aimDbHelper.getFlatAimList(db: db) ?? [];
@@ -97,7 +97,7 @@ class AimRepository {
       final lastCheck = await getLastAimCheckDateTime();
       final aimsAreOld = DateTime.now().difference(lastCheck).inMinutes > 1;
       if (rootList.isEmpty || aimsAreOld) {
-        final list = await _apiProvider.getAims();
+        final list = await pos.getAims();
         await saveAimToDb(db, list);
         await setAimCheckDateTime(DateTime.now());
         rootList = await _aimDbHelper.getAimWithLevel(

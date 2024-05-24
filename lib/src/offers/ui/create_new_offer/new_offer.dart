@@ -243,8 +243,11 @@ class NewOfferScreen extends HookConsumerWidget {
                                 .createOffer();
                             Navigator.of(context, rootNavigator: true).pop();
                           } on ServerException catch (ex, st) {
-                            logger.e(ex);
-                            logger.e(st);
+                            logger.e(
+                                'new Offer: ${ex.error} => ${ex.statusCode}',
+                                error: ex,
+                                stackTrace: st);
+
                             isLoading.value = false;
                             Alert(
                               context: context,
@@ -261,8 +264,7 @@ class NewOfferScreen extends HookConsumerWidget {
                             ).show();
                           } catch (ex, st) {
                             isLoading.value = false;
-                            logger.e(ex);
-                            logger.e(st);
+                            logger.e('createOffer', error: ex, stackTrace: st);
                             showError(context);
                           }
                         }
@@ -375,10 +377,10 @@ class MandatoryInfo extends HookConsumerWidget {
               controller: ref.watch(womControllerProvider),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                FilteringTextInputFormatter.digitsOnly,
               ],
               onChanged: (value) {
-                if (int.parse(value) == 0) {
+                if ((int.tryParse(value) ?? 0) == 0) {
                   errorWomText.value = 'noZeroWomWarning'.tr();
                 } else {
                   errorWomText.value = null;

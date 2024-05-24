@@ -195,7 +195,9 @@ class SignUpScreen extends HookConsumerWidget {
                       context.pop();
                       // isLoading.value = false;
                     }
-                  } on ServerException catch (ex) {
+                  } on ServerException catch (ex, st) {
+                    logger.e('signUp: ${ex.error} with ${ex.statusCode}',
+                        error: ex, stackTrace: st);
                     isLoading.value = false;
                     Alert(
                       context: context,
@@ -210,11 +212,9 @@ class SignUpScreen extends HookConsumerWidget {
                         ),
                       ],
                     ).show();
-                    logger.e(ex);
                   } catch (ex, st) {
                     isLoading.value = false;
-                    logger.e(ex);
-                    logger.e(st);
+                    logger.e('signUp', error: ex, stackTrace: st);
                     Alert(
                       context: context,
                       title: 'sign_up_error'.tr(),

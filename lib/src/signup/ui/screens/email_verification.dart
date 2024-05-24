@@ -151,9 +151,9 @@ class EmailVerificationScreen extends HookConsumerWidget {
                     }
                   }
                   isLoading.value = false;
-                } catch (ex) {
+                } catch (ex,st) {
                   isLoading.value = false;
-                  logger.e(ex);
+                  logger.e('emailVerification',error:ex,stackTrace: st);
                   Alert(
                     context: context,
                     type: AlertType.error,

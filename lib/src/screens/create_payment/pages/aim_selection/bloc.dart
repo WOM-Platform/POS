@@ -83,16 +83,15 @@ class AimSelectorNotifier extends StateNotifier<AimSelectionState> {
 
   Future<void> getAimListFromDb() async {
     try {
-      final aimList = await ref
-          .read(aimListFutureProvider.future);
+      final aimList = await ref.read(aimListFutureProvider.future);
       state = AimSelectionState(
         aimList: aimList,
         subSubAimList: [],
         subAimList: [],
       );
-    } catch (ex) {
+    } catch (ex, st) {
       state = AimSelectionState.empty();
-      logger.e(ex.toString());
+      logger.e('getAimListFromDb', error: ex, stackTrace: st);
     }
   }
 

@@ -32,8 +32,8 @@ class PaymentDatabase extends PaymentDatabaseBase {
       return maps.map((a) {
         return PaymentRequest.fromDBMap(a);
       }).toList();
-    } catch (e) {
-      logger.i(e.toString());
+    } catch (ex, st) {
+      logger.e('getRequestsByPosId', error: ex, stackTrace: st);
       return <PaymentRequest>[];
     }
   }
@@ -48,9 +48,9 @@ class PaymentDatabase extends PaymentDatabaseBase {
         whereArgs: [id],
       );
       return PaymentRequest.fromDBMap(maps.first);
-    } catch (e) {
-      logger.i(e.toString());
-      throw Exception("PaymentRequest not find: ${e.toString()}");
+    } catch (ex, st) {
+      logger.e('getRequest', error: ex, stackTrace: st);
+      rethrow;
     }
   }
 
@@ -65,8 +65,8 @@ class PaymentDatabase extends PaymentDatabaseBase {
         );
       });
       return result;
-    } catch (ex) {
-      logger.e(ex.toString());
+    } catch (ex, st) {
+      logger.e('insertRequest', error: ex, stackTrace: st);
       throw Exception(ex);
     }
   }
@@ -85,9 +85,9 @@ class PaymentDatabase extends PaymentDatabaseBase {
         );
       });
       return result;
-    } catch (ex) {
-      logger.i(ex.toString());
-      throw Exception(ex);
+    } catch (ex, st) {
+      logger.e('updateRequest', error: ex, stackTrace: st);
+      rethrow;
     }
   }
 

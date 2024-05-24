@@ -101,7 +101,7 @@ class SelectAim extends ConsumerWidget {
               ? AimDropdown(
                   list: state.subAimList,
                   value: state.subAimCode,
-                  labelText:'secondary_aim'.tr(),
+                  labelText: 'secondary_aim'.tr(),
                   onChanged: (String? aimCode) {
                     if (aimCode == null) return;
                     ref
@@ -238,8 +238,10 @@ class SelectMaxAge extends HookConsumerWidget {
           divisions: maxAgeIta.length,
           max: (maxAgeIta.length - 1).toDouble(),
           value: selectedAge.value.toDouble(),
-          label: getMaxAgeText(selectedAge.value,
-             context.locale.languageCode ?? 'en'),
+          label: getMaxAgeText(
+            selectedAge.value,
+            context.locale.languageCode,
+          ),
           onChanged: (double value) {
             selectedAge.value = value.toInt();
             ref

@@ -11,6 +11,7 @@ import 'package:pos/src/services/user_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:collection/collection.dart';
+import 'package:sentry_dio/sentry_dio.dart';
 import '../../db/payment_database/payment_database.dart';
 import '../../model/payment_request.dart';
 
@@ -18,7 +19,9 @@ part 'offers.g.dart';
 
 @Riverpod(keepAlive: true)
 PosClient getPos(GetPosRef ref) {
-  return PosClient(domain, registryKey);
+  final pos = PosClient(domain, registryKey);
+  pos.pointOfSaleRepository.dio.addSentry();
+  return pos;
 }
 
 @riverpod
@@ -29,6 +32,7 @@ FlutterSecureStorage getSecureStorage(GetSecureStorageRef ref) {
 @riverpod
 class CloudOffersNotifier extends _$CloudOffersNotifier {
   String? posId;
+
   // String? email;
   String? token;
 
@@ -62,8 +66,7 @@ class CloudOffersNotifier extends _$CloudOffersNotifier {
           );
       state = AsyncData(list);
     } catch (ex, st) {
-      logger.e(ex);
-      logger.e(st);
+      logger.e('refreshList offers', error: ex, stackTrace: st);
       state = AsyncError(ex, st);
     }
   }
@@ -151,8 +154,7 @@ class RequestNotifier extends _$RequestNotifier {
       }
       return RequestLoaded(requests: requests);
     } catch (ex, st) {
-      logger.e(ex);
-      logger.e(st);
+      logger.e('selectedPOS', error: ex, stackTrace: st);
       return RequestsLoadingErrorState('somethings_wrong');
     }
   }

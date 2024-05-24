@@ -22,17 +22,15 @@ class UserRepository {
     required String username,
     required String password,
   }) async {
-    final authResponse = await pos.authenticate(
+    return pos.authenticate(
       username,
       password,
       '${Platform.localeName}Pos/1',
     );
-    return authResponse;
   }
 
   Future<POSUser> getUser(String token) async {
-    final user = await pos.getUser(token);
-    return user;
+    return pos.getUser(token);
   }
 
   Future<String?> getToken() async {

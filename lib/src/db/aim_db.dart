@@ -48,8 +48,8 @@ class AimDatabase {
           // iconUrl: a[AimDbKeys.ICON_URL],
         );
       }).toList();
-    } catch (e) {
-      logger.i(e.toString());
+    } catch (ex, st) {
+      logger.e('getAimWithLevel', error: ex, stackTrace: st);
       return <Aim>[];
     }
   }
@@ -57,10 +57,8 @@ class AimDatabase {
   Future<List<Aim>?> getFlatAimList({required Database db}) async {
     logger.i("AimDatabase: getFlatAimList()");
     try {
-      List<Map> maps = await db.query(
-        AimDbKeys.TABLE_NAME,
-        where: "${AimDbKeys.hidden} == 0"
-      );
+      List<Map> maps = await db.query(AimDbKeys.TABLE_NAME,
+          where: "${AimDbKeys.hidden} == 0");
       return maps.map((a) {
         return Aim(
           code: a[AimDbKeys.CODE],
@@ -68,8 +66,8 @@ class AimDatabase {
           // iconUrl: a[AimDbKeys.ICON_URL],
         );
       }).toList();
-    } catch (e) {
-      logger.i(e.toString());
+    } catch (ex, st) {
+      logger.e('getFlatAimList', error: ex, stackTrace: st);
       return null;
     }
   }
@@ -89,13 +87,13 @@ class AimDatabase {
         titles: json.decode(a[AimDbKeys.TITLES]),
         // iconUrl: a[AimDbKeys.ICON_URL],
       );
-    } catch (e) {
-      logger.i(e.toString());
+    } catch (ex, st) {
+      logger.e('getAim', error: ex, stackTrace: st);
       return null;
     }
   }
 
-  Future<int> insert({required Database db,required Aim aim}) async {
+  Future<int> insert({required Database db, required Aim aim}) async {
     logger.i("AimDatabase: insert()");
     late int result;
     await db.transaction((Transaction txn) async {

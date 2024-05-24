@@ -430,8 +430,9 @@ class EditTextDialog extends HookConsumerWidget {
                           await onSave?.call(tc.text.trim());
                           isLoading.value = false;
                           Navigator.of(context).pop();
-                        } catch (ex) {
-                          logger.e(ex);
+                        } catch (ex, st) {
+                          logger.e('update POS text',
+                              error: ex, stackTrace: st);
                           isLoading.value = false;
                         }
                       }

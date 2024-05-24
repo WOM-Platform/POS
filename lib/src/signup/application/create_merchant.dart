@@ -43,14 +43,15 @@ class CreateMerchantNotifier extends _$CreateMerchantNotifier {
     required String zipCode,
     required String city,
     required String country,
-    required double lat,
-    required double long,
+    double? lat,
+    double? long,
     String? streetName,
     String? streetNumber,
     String? formattedAddress,
     String? googleMapsPlaceId,
     String? description,
     String? url,
+    String? activationCode,
   }) async {
     final token = await ref.read(userRepositoryProvider).getToken();
     if (token == null) return;
@@ -69,6 +70,7 @@ class CreateMerchantNotifier extends _$CreateMerchantNotifier {
           description: description,
           url: url,
           token: token,
+          activationCode: activationCode,
         );
 
     await ref.read(getPosProvider).createPOS(

@@ -108,8 +108,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       }
       state = AuthenticationAuthenticated(user, token, user.verified);
     } catch (ex, st) {
-      logger.e(ex.toString());
-      logger.e(st.toString());
+      logger.e('starting app', error: ex, stackTrace: st);
       state = AuthenticationUnauthenticated();
     }
   }
@@ -150,9 +149,8 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       state =
           AuthenticationAuthenticated(user, authResponse.token, user.verified);
       return authResponse;
-    } catch (ex, stack) {
-      logger.e(ex);
-      logger.e(stack);
+    } catch (ex, st) {
+      logger.e('login', error: ex, stackTrace: st);
       ref.read(loginErrorProvider.notifier).state =
           LoginFailure(error: "Username e/o password non validi!");
       return null;

@@ -45,6 +45,7 @@ const cameraZoom = <double>[
 
 class PositionSelectionPage extends StatefulHookConsumerWidget {
   static const String path = 'positionSelection';
+
   @override
   _PositionSelectionPageState createState() => _PositionSelectionPageState();
 }
@@ -83,14 +84,13 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
         return true;
       }
       return false;
-    } on PlatformException catch (e) {
-      logger.i(e);
+    } on PlatformException catch (e, st) {
       if (e.code == 'PERMISSION_DENIED') {
-        logger.i(e.message);
+        logger.w(e.message);
       } else if (e.code == 'SERVICE_STATUS_ERROR') {
-        logger.i(e.message);
+        logger.w(e.message);
       }
-      logger.i("location = null");
+      logger.e('getLocationPermission ${e.message}', error: e, stackTrace: st);
       return false;
     }
   }
@@ -132,8 +132,8 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
         controller.animateCamera(
             CameraUpdate.newCameraPosition(_currentCameraPosition));
       }
-    } on PlatformException catch (e) {
-      logger.i(e.toString());
+    } on PlatformException catch (e, st) {
+      logger.e('_updateMyLocation ${e.message}', error: e, stackTrace: st);
       setState(() {
         positionProcess = null;
       });
@@ -193,7 +193,8 @@ class _PositionSelectionPageState extends ConsumerState<PositionSelectionPage> {
                     inactiveTickMarkColor: Colors.white,
                     overlayColor: Colors.black12,
                     thumbColor: Theme.of(context).colorScheme.secondary,
-                    valueIndicatorColor: Theme.of(context).colorScheme.secondary,
+                    valueIndicatorColor:
+                        Theme.of(context).colorScheme.secondary,
                     valueIndicatorTextStyle: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold),

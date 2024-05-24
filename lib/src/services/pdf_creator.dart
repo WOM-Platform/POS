@@ -7,10 +7,14 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pos/src/model/payment_request.dart';
 import 'package:collection/collection.dart';
+import 'package:printing/printing.dart';
 
 class PdfCreator {
   Future<File> buildPdf(
-      PaymentRequest paymentRequest, PointOfSale pos, String locale) async {
+    PaymentRequest paymentRequest,
+    PointOfSale pos,
+    String locale,
+  ) async {
     if (paymentRequest.password == null) {
       throw Exception('paymentRequest.password is null');
     }
@@ -19,13 +23,13 @@ class PdfCreator {
     }
     final tmpDir = await getTemporaryDirectory();
 
-    final doc = _createPdf(
+    final doc = await _createPdf(
       pos.name,
       paymentRequest.name,
       paymentRequest.amount,
       paymentRequest.deepLink!,
       paymentRequest.password!,
-        '${paymentRequest.aim != null ? '${paymentRequest.aim?.titles[locale]} - ' : ''}',
+      '${paymentRequest.aim != null ? '${paymentRequest.aim?.titles[locale]} - ' : ''}',
     );
 
     final file =
@@ -45,7 +49,7 @@ class PdfCreator {
     final aim = aimList
         .firstWhereOrNull((element) => offer.filter?.aim == element.code);
     final aimText = aim != null ? aim.titles[locale] : null;
-    final doc = _createPdf(
+    final doc = await _createPdf(
       pos.name,
       offer.title,
       offer.cost,
@@ -59,16 +63,17 @@ class PdfCreator {
     return file;
   }
 
-  pw.Document _createPdf(
+  Future<pw.Document> _createPdf(
     String posName,
     String offerName,
     int cost,
     String link,
     String password,
     String? aim,
-  ) {
+  ) async {
     final doc = pw.Document();
-
+    final font = await PdfGoogleFonts.ralewayRegular();
+    final fontBold = await PdfGoogleFonts.ralewayBold();
     final qrcode = pw.BarcodeWidget(
       data: link,
       width: 250,
@@ -85,30 +90,38 @@ class PdfCreator {
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               if (posName != 'Anonymous')
-                pw.Text(posName,
-                    style: const pw.TextStyle(fontSize: 30),
-                    textAlign: pw.TextAlign.center),
+                pw.Text(
+                  posName,
+                  style: pw.TextStyle(fontSize: 30, font: font),
+                  textAlign: pw.TextAlign.center,
+                ),
               // pw.SizedBox(height: 120),
               pw.Spacer(),
-              pw.Text(offerName,
-                  style: const pw.TextStyle(fontSize: 35),
-                  textAlign: pw.TextAlign.center),
+              pw.Text(
+                offerName,
+                style: pw.TextStyle(fontSize: 35, font: font),
+                textAlign: pw.TextAlign.center,
+              ),
               pw.SizedBox(height: 14),
               if (aim != null)
-                pw.Text(aim,
-                    style: pw.TextStyle(fontSize: 26),
-                    textAlign: pw.TextAlign.center),
+                pw.Text(
+                  aim,
+                  style: pw.TextStyle(fontSize: 26, font: font),
+                  textAlign: pw.TextAlign.center,
+                ),
               pw.SizedBox(height: 20),
-              pw.Text('$cost WOM',
-                  style: pw.TextStyle(fontSize: 30),
-                  textAlign: pw.TextAlign.center),
+              pw.Text(
+                '$cost WOM',
+                style: pw.TextStyle(fontSize: 30, font: font),
+                textAlign: pw.TextAlign.center,
+              ),
               pw.Spacer(),
               qrcode,
               pw.Spacer(),
               pw.Text(
                 password,
                 style:
-                    pw.TextStyle(fontSize: 40, fontWeight: pw.FontWeight.bold),
+                    pw.TextStyle(fontSize: 40, font: fontBold),
                 textAlign: pw.TextAlign.center,
               ),
               pw.Spacer(),

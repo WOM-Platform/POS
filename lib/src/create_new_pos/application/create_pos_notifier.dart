@@ -66,7 +66,7 @@ class CreatePOSNotifier extends _$CreatePOSNotifier {
       state = CreatePOSState.complete();
       ref.read(authNotifierProvider.notifier).refresh();
     } catch (ex, st) {
-      logger.e(st);
+      logger.e('createPOS', error: ex, stackTrace: st);
       state = CreatePOSState.error(ex, st);
     }
   }

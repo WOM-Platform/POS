@@ -1,4 +1,3 @@
-import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:pos/src/db/aim_db.dart';
 import 'package:pos/src/db/app_database/src/app_database_base.dart';
 import 'dart:async';

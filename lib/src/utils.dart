@@ -133,3 +133,6 @@ Future<bool> askChoice(BuildContext context, String title) async {
   ).show();
   return res ?? false;
 }
+
+/// Try to cast, in case of failure returns null
+T? castOrNull<T>(x) => x is T ? x : null;

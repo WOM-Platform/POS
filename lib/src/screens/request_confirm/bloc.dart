@@ -1,4 +1,3 @@
-
 import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -49,8 +48,8 @@ class RequestConfirmBloc extends StateNotifier<WomCreationState> {
       } else {
         await _requestDb.updateRequest(paymentRequest);
       }
-    } catch (ex) {
-      logger.i("insertRequestOnDb $ex");
+    } catch (ex, st) {
+      logger.e("insertRequestOnDb", error: ex, stackTrace: st);
     }
   }
 
@@ -68,16 +67,17 @@ class RequestConfirmBloc extends StateNotifier<WomCreationState> {
             DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build();
         paymentRequest.status = RequestStatus.COMPLETE;
         // paymentRequest.registryUrl = response.registryUrl;
-        await insertRequestOnDb(paymentRequest.copyFrom(password: response.password));
+        await insertRequestOnDb(
+            paymentRequest.copyFrom(password: response.password));
         state = WomVerifyCreationRequestComplete(response: response);
-      } on ServerException catch (ex, stack) {
-        logger.e('${ex.url}: ${ex.statusCode} => ${ex.error}');
-        logger.e(stack);
+      } on ServerException catch (ex, st) {
+        logger.e('createWomRequest ${ex.url}: ${ex.statusCode} => ${ex.error}',
+            error: ex, stackTrace: st);
         paymentRequest.status = RequestStatus.DRAFT;
         insertRequestOnDb(paymentRequest);
         state = WomCreationRequestError(error: ex.error);
-      } catch (ex) {
-        logger.e(ex);
+      } catch (ex, st) {
+        logger.e('createWomRequest', error: ex, stackTrace: st);
         paymentRequest.status = RequestStatus.DRAFT;
         insertRequestOnDb(paymentRequest);
         state = WomCreationRequestError();
