@@ -32,8 +32,8 @@ class PdfCreator {
       '${paymentRequest.aim != null ? '${paymentRequest.aim?.titles[locale]} - ' : ''}',
     );
 
-    final file =
-        File('${tmpDir.path}/${paymentRequest.name.replaceAll(' ', '_')}.pdf');
+    final file = File(
+        '${tmpDir.path}/offer_${DateTime.now().millisecondsSinceEpoch}.pdf');
     final bytes = await doc.save();
     file.writeAsBytesSync(bytes);
     return file;
@@ -57,7 +57,8 @@ class PdfCreator {
       offer.payment.password,
       aimText,
     );
-    final file = File('${tmpDir.path}/${offer.title.replaceAll(' ', '_')}.pdf');
+    final file = File(
+        '${tmpDir.path}/offer_${DateTime.now().millisecondsSinceEpoch}.pdf');
     final bytes = await doc.save();
     file.writeAsBytesSync(bytes);
     return file;
@@ -120,8 +121,7 @@ class PdfCreator {
               pw.Spacer(),
               pw.Text(
                 password,
-                style:
-                    pw.TextStyle(fontSize: 40, font: fontBold),
+                style: pw.TextStyle(fontSize: 40, font: fontBold),
                 textAlign: pw.TextAlign.center,
               ),
               pw.Spacer(),

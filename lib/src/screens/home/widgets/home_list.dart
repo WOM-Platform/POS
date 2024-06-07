@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
 import 'package:pos/src/blocs/payment_request/payment_request_bloc.dart';
 import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/model/request_status_enum.dart';
@@ -130,11 +129,10 @@ class _HomeListState extends ConsumerState<HomeList> {
                                 if (pos == null) return;
                                 final pdfCreator = PdfCreator();
                                 final file = await pdfCreator.buildPdf(
-                                    requests[index],
-                                    pos,
-                                   context.locale
-                                            .languageCode ??
-                                        'en');
+                                  requests[index],
+                                  pos,
+                                  context.locale.languageCode,
+                                );
                                 Share.shareFiles([file.path]);
                               },
                               color: Colors.pink,
@@ -210,7 +208,7 @@ class _HomeListState extends ConsumerState<HomeList> {
           final file = await pdfCreator.buildPdf(
             request,
             pos,
-           context.locale.languageCode,
+            context.locale.languageCode,
           );
           Share.shareFiles([file.path]);
         }),
@@ -251,8 +249,7 @@ class _HomeListState extends ConsumerState<HomeList> {
                 ref: ref,
                 posId: id,
                 draftRequest: request,
-                languageCode:
-                   context.locale.languageCode))
+                languageCode: context.locale.languageCode))
       ],
     );
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => provider));
