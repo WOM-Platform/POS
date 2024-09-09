@@ -118,7 +118,7 @@ class SummaryCreationScreen extends HookConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text('create_merchant.activation_code_desc'.tr()),
-             const SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextFormField(
               controller: verificationCodeController,
               maxLines: 1,
@@ -165,7 +165,7 @@ class SummaryCreationScreen extends HookConsumerWidget {
                   isLoading.value = false;
                   Alert(
                     context: context,
-                    title: 'created'.tr(),
+                    title: 'create_merchant.created'.tr(),
                     buttons: [
                       DialogButton(
                         child: Text('back_to_home'.tr()),
