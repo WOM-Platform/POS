@@ -7,7 +7,7 @@ part of 'create_merchant.dart';
 // **************************************************************************
 
 String _$createMerchantNotifierHash() =>
-    r'880ea9397e92c3e5851667fa019164177031f222';
+    r'2cd9f44f654da1f2b5a5dd4600e733825bb63a6a';
 
 /// See also [CreateMerchantNotifier].
 @ProviderFor(CreateMerchantNotifier)

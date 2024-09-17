@@ -1,4 +1,9 @@
 {
+  "go": "Vai",
+  "username-or-password-not-valid": "username-or-password-not-valid",
+  "password-unacceptable": "password-unacceptable",
+  "wrong-parameter": "I parametri inseriti non sono validi",
+  "invalid_username_password": "Username o password non validi!",
   "starting_creation_request": "Inizio creazione richiesta",
   "try_again": "Riprova",
   "error_screen_state": "Errore stato schermata",

@@ -1,7 +1,9 @@
 import 'package:dart_wom_connector/dart_wom_connector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pos/src/blocs/login/bloc.dart';
+import 'package:pos/src/exceptions.dart';
 
 import 'package:pos/src/extensions.dart';
 import 'package:pos/src/offers/application/offers.dart';
@@ -55,7 +57,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     startApp();
   }
 
-  startApp() async {
+  Future<void> startApp() async {
     try {
       final token = await ref.read(userRepositoryProvider).getToken();
       if (token == null) {
@@ -149,10 +151,23 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
       state =
           AuthenticationAuthenticated(user, authResponse.token, user.verified);
       return authResponse;
+    } on ServerException catch (ex, st) {
+      logger.e('login', error: ex, stackTrace: st);
+      switch(ex.errorType){
+        case ServerExceptionType.userNoFound:
+        case ServerExceptionType.usernameOrPasswordNotValid:
+          logger.w('login', error: ex, stackTrace: st);
+          break;
+        default:
+          logger.e('login', error: ex, stackTrace: st);
+      }
+      ref.read(loginErrorProvider.notifier).state =
+          LoginFailure(error: ex.errorDescription);
+      return null;
     } catch (ex, st) {
       logger.e('login', error: ex, stackTrace: st);
       ref.read(loginErrorProvider.notifier).state =
-          LoginFailure(error: "Username e/o password non validi!");
+          LoginFailure(error: "somethings_wrong".tr());
       return null;
     }
   }
@@ -176,7 +191,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     await ref.read(userRepositoryProvider).sendEmailVerification(email);
   }
 
-  anonymousLogin() async {
+  Future<void> anonymousLogin() async {
     final user = await getAnonymousUser(ref.read(getPosProvider));
     final m = user.merchants.firstWhere((m) => m.posList.isNotEmpty);
     final p = m.posList.first;
@@ -185,12 +200,12 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
     state = AuthenticationAuthenticated(user, anonymousToken, user.verified);
   }
 
-  logOut() async {
+  Future<void> logOut() async {
     await ref.read(userRepositoryProvider).deleteToken();
     state = AuthenticationUnauthenticated();
   }
 
-  Future refresh() async {
+  Future<void> refresh() async {
     final currentState = state;
     if (currentState is! AuthenticationAuthenticated) {
       return;

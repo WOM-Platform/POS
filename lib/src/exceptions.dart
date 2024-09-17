@@ -2,10 +2,8 @@ import 'package:dart_wom_connector/dart_wom_connector.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 extension ServerExceptionX on ServerException {
-  String? get errorDescription {
+  String get errorDescription {
     switch (errorType) {
-      case ServerExceptionType.emailAlreadyUsed:
-        return 'email_already_used'.tr();
       case ServerExceptionType.alreadyUsedFiscalCode:
         return 'fiscal_code_already_used'.tr();
       case ServerExceptionType.invalidFiscalCode:
@@ -34,9 +32,15 @@ extension ServerExceptionX on ServerException {
         return 'email-already-registered'.tr();
       case ServerExceptionType.userNotLoggedIn:
         return 'user-not-logged-in'.tr();
+      case ServerExceptionType.wrongParameter:
+        return 'wrong-parameter'.tr();
+      case ServerExceptionType.passwordUnacceptable:
+        return 'password-unacceptable'.tr();
+      case ServerExceptionType.usernameOrPasswordNotValid:
+        return 'invalid_username_password'.tr();
       case ServerExceptionType.unkown:
       default:
-        return null;
+        return 'somethings_wrong'.tr();
     }
   }
 }

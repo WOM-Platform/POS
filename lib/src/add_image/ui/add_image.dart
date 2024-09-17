@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 import 'package:pos/src/my_logger.dart';
+import 'package:pos/src/services/image_picker_client.dart';
 
 final selectedImageProvider = StateProvider.autoDispose<Uint8List?>((ref) {
   return null;
@@ -48,12 +49,8 @@ class AddImageScreen extends HookConsumerWidget {
   Future pickImage(WidgetRef ref, ValueNotifier<bool> isProcessing) async {
     isProcessing.value = true;
     try {
-      final picker = ImagePicker();
-      final image = await picker.pickImage(
-        source: ImageSource.gallery,
-        maxWidth: 1024,
-        // maxHeight: 1024
-      );
+      final picker = ImagePickerClient();
+      final image = await picker.pickImage();
 
       if (image == null) {
         isProcessing.value = false;
@@ -100,8 +97,8 @@ class AddImageScreen extends HookConsumerWidget {
 
                             await onSave?.call(result);
                             Navigator.of(context).pop();
-                          } catch (ex,st) {
-                            logger.e('saveImage',error:ex,stackTrace: st);
+                          } catch (ex, st) {
+                            logger.e('saveImage', error: ex, stackTrace: st);
                             isProcessing.value = false;
                           }
                         } else {

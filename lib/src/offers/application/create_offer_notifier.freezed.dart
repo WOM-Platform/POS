@@ -179,7 +179,7 @@ abstract class _MapPolygon implements MapPolygon {
 
 /// @nodoc
 mixin _$CreateOfferState {
-  int get activeStep => throw _privateConstructorUsedError;
+  OfferCreationStep get activeStep => throw _privateConstructorUsedError;
   OfferType? get type => throw _privateConstructorUsedError;
   String? get title => throw _privateConstructorUsedError;
   int? get wom => throw _privateConstructorUsedError;
@@ -200,7 +200,7 @@ abstract class $CreateOfferStateCopyWith<$Res> {
       _$CreateOfferStateCopyWithImpl<$Res, CreateOfferState>;
   @useResult
   $Res call(
-      {int activeStep,
+      {OfferCreationStep activeStep,
       OfferType? type,
       String? title,
       int? wom,
@@ -238,7 +238,7 @@ class _$CreateOfferStateCopyWithImpl<$Res, $Val extends CreateOfferState>
       activeStep: null == activeStep
           ? _value.activeStep
           : activeStep // ignore: cast_nullable_to_non_nullable
-              as int,
+              as OfferCreationStep,
       type: freezed == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -292,7 +292,7 @@ abstract class _$$CreateOfferStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int activeStep,
+      {OfferCreationStep activeStep,
       OfferType? type,
       String? title,
       int? wom,
@@ -329,7 +329,7 @@ class __$$CreateOfferStateImplCopyWithImpl<$Res>
       activeStep: null == activeStep
           ? _value.activeStep
           : activeStep // ignore: cast_nullable_to_non_nullable
-              as int,
+              as OfferCreationStep,
       type: freezed == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -376,7 +376,7 @@ class _$CreateOfferStateImpl implements _CreateOfferState {
       this.mapPolygon});
 
   @override
-  final int activeStep;
+  final OfferCreationStep activeStep;
   @override
   final OfferType? type;
   @override
@@ -429,7 +429,7 @@ class _$CreateOfferStateImpl implements _CreateOfferState {
 
 abstract class _CreateOfferState implements CreateOfferState {
   const factory _CreateOfferState(
-      {required final int activeStep,
+      {required final OfferCreationStep activeStep,
       final OfferType? type,
       final String? title,
       final int? wom,
@@ -439,7 +439,7 @@ abstract class _CreateOfferState implements CreateOfferState {
       final MapPolygon? mapPolygon}) = _$CreateOfferStateImpl;
 
   @override
-  int get activeStep;
+  OfferCreationStep get activeStep;
   @override
   OfferType? get type;
   @override

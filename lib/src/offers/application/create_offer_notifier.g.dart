@@ -7,7 +7,7 @@ part of 'create_offer_notifier.dart';
 // **************************************************************************
 
 String _$createOfferNotifierHash() =>
-    r'122d976eb0012200b4bce80d2bfb979f5df9b381';
+    r'7577ba59c8d9eb43a2d30dd5b9f7ef2b0d7109b2';
 
 /// See also [CreateOfferNotifier].
 @ProviderFor(CreateOfferNotifier)

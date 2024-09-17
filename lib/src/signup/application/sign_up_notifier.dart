@@ -51,23 +51,9 @@ class SignUpNotifier extends _$SignUpNotifier {
     print(userId);
     final authResponse =
         await ref.read(authNotifierProvider.notifier).login(email, password);
-    // final authResponse = await ref.read(userRepositoryProvider).authenticate(
-    //       username: email,
-    //       password: password,
-    //     );
     if (authResponse == null) {
       throw Exception('AuthResponse is null');
     }
     await ref.read(getPosProvider).sendVerificationEmail(email);
-
-    // state = SignUpStateEmailVerification(userId);
   }
-
-// void resendVerificationEmail() async {
-//   if (state is SignUpStateEmailVerification) {
-//     final userId = (state as SignUpStateEmailVerification).userId;
-//     final token = (state as SignUpStateEmailVerification).token;
-//     await ref.read(signUpRemoteApiProvider).sendVerificationEmail(userId, token);
-//   }
-// }
 }

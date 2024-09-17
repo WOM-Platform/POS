@@ -20,10 +20,10 @@ import 'package:pos/src/signup/ui/screens/sign_up.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void goRouterOnException(
-    BuildContext context,
-    GoRouterState state,
-    GoRouter router,
-    ) {
+  BuildContext context,
+  GoRouterState state,
+  GoRouter router,
+) {
   // routerSnackbarManager.showSnackbar(
   //   appKey.currentContext!,
   //   messageText: coreStrings.errorNavigationPageNotFound,
@@ -37,7 +37,7 @@ void goRouterOnException(
   Sentry.captureException(
     GoException(
       'Invalid route $uri '
-          '${state.error?.message ?? ''}',
+      '${state.error?.message ?? ''}',
     ),
   );
 }
@@ -77,8 +77,9 @@ final _router = GoRouter(
         GoRoute(
           path: ResetPasswordScreen.path,
           builder: (context, state) => ResetPasswordScreen(
-              email: state.uri.queryParameters['email'] as String,
-              code: state.uri.queryParameters['token']),
+            email: state.uri.queryParameters['email'] as String,
+            code: state.uri.queryParameters['token'],
+          ),
         ),
         GoRoute(
           path: SignUpScreen.path,
@@ -89,21 +90,23 @@ final _router = GoRouter(
           builder: (context, state) => NewOfferScreen(),
         ),
         GoRoute(
-            path: SettingsScreen.path,
-            builder: (context, state) => SettingsScreen(),
-            routes: [
-              GoRoute(
-                path: POSManagerScreen.path,
-                builder: (context, state) => POSManagerScreen(),
-                routes: [
-                  GoRoute(
-                    path: '${CreatePOSScreen.path}/:merchantId',
-                    builder: (context, state) => CreatePOSScreen(
-                        merchantId: state.pathParameters['merchantId'] as String),
+          path: SettingsScreen.path,
+          builder: (context, state) => SettingsScreen(),
+          routes: [
+            GoRoute(
+              path: POSManagerScreen.path,
+              builder: (context, state) => POSManagerScreen(),
+              routes: [
+                GoRoute(
+                  path: '${CreatePOSScreen.path}/:merchantId',
+                  builder: (context, state) => CreatePOSScreen(
+                    merchantId: state.pathParameters['merchantId'] as String,
                   ),
-                ],
-              ),
-            ]),
+                ),
+              ],
+            ),
+          ],
+        ),
         GoRoute(
           path: PositionSelectionPage.path,
           builder: (context, state) => PositionSelectionPage(),

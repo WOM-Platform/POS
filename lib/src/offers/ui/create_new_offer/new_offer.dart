@@ -41,7 +41,7 @@ class NewOfferScreen extends HookConsumerWidget {
     final isLoading = useState<bool>(false);
     return WillPopScope(
       onWillPop: () {
-        if (activeStep > 0) {
+        if (activeStep.index > 0) {
           ref.read(createOfferNotifierProvider.notifier).backStep();
           return Future.value(false);
         }
@@ -60,76 +60,6 @@ class NewOfferScreen extends HookConsumerWidget {
               title: Text(
                 'new_offer'.tr(),
               ),
-              // bottom: PreferredSize(
-              //   preferredSize: Size.fromHeight(100),
-              //   child: AnotherStepper(
-              //     activeBarColor: Colors.yellow,
-              //     inActiveBarColor: Colors.white,
-              //     activeIndex: activeStep,
-              //     stepperList: stepperList,
-              //     stepperDirection: Axis.horizontal,
-              //     iconWidth: 40,
-              //     iconHeight: 40,
-              //   ),
-              // ),
-              // bottom: PreferredSize(
-              //   child: Column(
-              //     children: [
-              //       NumberStepper(
-              //         lineColor: Colors.white,
-              //         stepColor: Colors.grey[400],
-              //         activeStepBorderColor: Colors.white,
-              //         activeStepColor: Colors.green,
-              //         enableStepTapping: false,
-              //         enableNextPreviousButtons: false,
-              //         activeStep: activeStep,
-              //         numberStyle: TextStyle(
-              //           color: Colors.black,
-              //           fontWeight: FontWeight.bold,
-              //         ),
-              //         numbers: [1, 2, 3, 4],
-              //       ),
-              //       Padding(
-              //         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              //         child: Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //           children: [
-              //             Expanded(
-              //               child: Text(
-              //                 'Tipo',
-              //                 style: stepperStyle,
-              //                 textAlign: TextAlign.center,
-              //               ),
-              //             ),
-              //             Expanded(
-              //               child: Text(
-              //                 'Info',
-              //                 style: stepperStyle,
-              //                 textAlign: TextAlign.center,
-              //               ),
-              //             ),
-              //             Expanded(
-              //               child: Text(
-              //                 'Filtri',
-              //                 style: stepperStyle,
-              //                 textAlign: TextAlign.center,
-              //               ),
-              //             ),
-              //             Expanded(
-              //               child: Text(
-              //                 'Sommario',
-              //                 style: stepperStyle,
-              //                 textAlign: TextAlign.center,
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //       const SizedBox(height: 16),
-              //     ],
-              //   ),
-              //   preferredSize: Size.fromHeight(100),
-              // ),
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -145,13 +75,13 @@ class NewOfferScreen extends HookConsumerWidget {
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
-                    if (activeStep == 0)
+                    if (activeStep == OfferCreationStep.offerType)
                       SelectOfferType()
-                    else if (activeStep == 1)
+                    else if (activeStep == OfferCreationStep.mandatory)
                       MandatoryInfo()
-                    else if (activeStep == 2)
-                      SimpleFilterBuilder()
-                    else if (activeStep == 3)
+                    // else if (activeStep == OfferCreationStep.filters)
+                    //   SimpleFilterBuilder()
+                    else if (activeStep == OfferCreationStep.summary)
                       Summary(),
                     Padding(
                       padding: EdgeInsets.only(
@@ -176,7 +106,7 @@ class NewOfferScreen extends HookConsumerWidget {
                     maintainState: true,
                     maintainAnimation: true,
                     maintainSize: true,
-                    visible: activeStep > 0,
+                    visible: activeStep.index > 0,
                     child: TextButton(
                       onPressed: () {
                         ref
@@ -195,41 +125,23 @@ class NewOfferScreen extends HookConsumerWidget {
                         iconHeight: 25,
                         activeBarColor: Colors.blue,
                         // inActiveBarColor: Colors.white,
-                        activeIndex: activeStep,
+                        activeIndex: activeStep.index,
                         stepperList: [
-                          StepperData(
-                              // title: StepperText(
-                              //   "type") ??
-                              //       '-',
-                              // ),
-                              ),
-                          StepperData(
-                              // title: StepperText(AppLocalizations.of(context)
-                              //         ?.translate("info") ??
-                              //     '-'),
-                              ),
-                          StepperData(
-                              // title: StepperText(AppLocalizations.of(context)
-                              //         ?.translate("filters") ??
-                              //     '-'),
-                              ),
-                          StepperData(
-                              // title: StepperText(
-                              //   AppLocalizations.of(context)
-                              //           ?.translate("summary") ??
-                              //       '-',
-                              // ),
-                              ),
+                          for (final v in OfferCreationStep.values)
+                            StepperData(),
                         ],
                       ),
                     ),
                   ),
                   FloatingActionButton(
                     child: Icon(
-                        activeStep == 3 ? Icons.check : Icons.navigate_next),
+                      activeStep == OfferCreationStep.summary
+                          ? Icons.check
+                          : Icons.navigate_next,
+                    ),
                     onPressed: () async {
-                      if (activeStep == 3) {
-                        final navigator = GoRouter.of(context);
+                      if (activeStep == OfferCreationStep.summary) {
+                        // final navigator = GoRouter.of(context);
                         final res = await askChoice(
                           context,
                           'do_you_want_create'.tr(),
@@ -244,9 +156,10 @@ class NewOfferScreen extends HookConsumerWidget {
                             Navigator.of(context, rootNavigator: true).pop();
                           } on ServerException catch (ex, st) {
                             logger.e(
-                                'new Offer: ${ex.error} => ${ex.statusCode}',
-                                error: ex,
-                                stackTrace: st);
+                              'new Offer: ${ex.error} => ${ex.statusCode}',
+                              error: ex,
+                              stackTrace: st,
+                            );
 
                             isLoading.value = false;
                             Alert(
@@ -293,15 +206,15 @@ class NewOfferScreen extends HookConsumerWidget {
     return 0;
   }
 
-  String headerText(BuildContext context, int activeStep) {
+  String headerText(BuildContext context, OfferCreationStep activeStep) {
     switch (activeStep) {
-      case 0:
+      case OfferCreationStep.offerType:
         return 'offer_type'.tr();
-      case 1:
+      case OfferCreationStep.mandatory:
         return 'mandatory_info'.tr();
-      case 2:
-        return 'filters'.tr();
-      case 3:
+      // case OfferCreationStep.filters:
+      //   return 'filters'.tr();
+      case OfferCreationStep.summary:
         return 'summary'.tr();
       default:
         return 'offer'.tr();

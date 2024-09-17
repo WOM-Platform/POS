@@ -10,6 +10,7 @@ import 'package:pos/src/my_logger.dart';
 import 'package:pos/src/offers/application/offers.dart';
 import 'package:pos/src/offers/domain/entities/offert_type.dart';
 import 'package:pos/src/offers/ui/create_new_offer/bounds_selector_screen.dart';
+import 'package:pos/src/offers/ui/create_new_offer/new_offer.dart';
 import 'package:pos/src/offers/ui/offers_screen.dart';
 import 'package:pos/src/screens/create_payment/pages/aim_selection/bloc.dart';
 import 'package:pos/src/screens/request_confirm/bloc.dart';
@@ -24,6 +25,13 @@ part 'create_offer_notifier.freezed.dart';
 
 part 'create_offer_notifier.g.dart';
 
+enum OfferCreationStep {
+  offerType,
+  mandatory,
+  // filters,
+  summary,
+}
+
 @freezed
 class MapPolygon with _$MapPolygon {
   const factory MapPolygon({
@@ -36,7 +44,7 @@ class MapPolygon with _$MapPolygon {
 @freezed
 class CreateOfferState with _$CreateOfferState {
   const factory CreateOfferState({
-    required int activeStep,
+    required OfferCreationStep activeStep,
     OfferType? type,
     String? title,
     int? wom,
@@ -47,7 +55,10 @@ class CreateOfferState with _$CreateOfferState {
   }) = _CreateOfferState;
 
   factory CreateOfferState.initial({required OfferType offerType}) =>
-      CreateOfferState(activeStep: 0, type: offerType);
+      CreateOfferState(
+        activeStep: OfferCreationStep.offerType,
+        type: offerType,
+      );
 }
 
 final titleControllerProvider =
@@ -107,11 +118,11 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
   }
 
   nextStep() {
-    if (state.activeStep == 4 || !canGoNext()) return;
+    if (state.activeStep == OfferCreationStep.summary || !canGoNext()) return;
     var tmp = state.copyWith(
-      activeStep: state.activeStep + 1,
+      activeStep: OfferCreationStep.values[state.activeStep.index + 1],
     );
-    if (state.activeStep == 1) {
+    if (state.activeStep == OfferCreationStep.mandatory) {
       final title = ref.read(titleControllerProvider).text.trim();
       final desc = ref.read(descControllerProvider).text.trim();
       final wom = int.tryParse(ref.read(womControllerProvider).text);
@@ -121,16 +132,14 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
         wom: wom,
       );
     }
-    // else if (state.activeStep == 2) {
-    // final maxAge = int.tryParse(ref.read(maxAgeControllerProvider).text);
-    // tmp = tmp.copyWith(maxAge: maxAge);
-    // }
     state = tmp;
   }
 
   backStep() {
-    if (state.activeStep == 0) return;
-    state = state.copyWith(activeStep: state.activeStep - 1);
+    if (state.activeStep.index == 0) return;
+    state = state.copyWith(
+      activeStep: OfferCreationStep.values[state.activeStep.index - 1],
+    );
   }
 
   void setOfferType(OfferType type) {
@@ -145,28 +154,19 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
 
   bool canGoNext() {
     switch (state.activeStep) {
-      case 0:
+      case OfferCreationStep.offerType:
         final isAnonymous = ref.read(isAnonymousUserProvider);
         return isAnonymous
             ? state.type == OfferType.ephemeral
             : state.type != null;
-      case 1:
+      case OfferCreationStep.mandatory:
         final title = ref.read(titleControllerProvider).text.trim();
         // final desc = ref.read(descControllerProvider).text.trim();
         final wom = int.tryParse(ref.read(womControllerProvider).text);
         final canGo = title.length > 5 && wom != null;
-        // if (canGo) {
-        //   state = state.copyWith(
-        //     title: title,
-        //     desc: desc,
-        //     wom: wom,
-        //   );
-        // }
         return canGo;
-      case 2:
-        // final maxAge =
-        //     int.tryParse(ref.read(maxAgeControllerProvider).text.trim());
-        return true;
+      // case OfferCreationStep.filters:
+      //   return true;
       default:
         return false;
     }
@@ -194,11 +194,11 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
             ? Bounds(
                 leftTop: [
                   state.mapPolygon!.polygon[0].latitude,
-                  state.mapPolygon!.polygon[0].longitude
+                  state.mapPolygon!.polygon[0].longitude,
                 ],
                 rightBottom: [
                   state.mapPolygon!.polygon[2].latitude,
-                  state.mapPolygon!.polygon[2].longitude
+                  state.mapPolygon!.polygon[2].longitude,
                 ],
               )
             : null,
@@ -289,8 +289,11 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
           ref.read(offersTabProvider.notifier).state = OfferType.ephemeral;
         }
       } on ServerException catch (ex, st) {
-        logger.e('createLocalOffer: ${ex.url}: ${ex.statusCode} => ${ex.error}',
-            error: ex, stackTrace: st);
+        logger.e(
+          'createLocalOffer: ${ex.url}: ${ex.statusCode} => ${ex.error}',
+          error: ex,
+          stackTrace: st,
+        );
       } catch (ex, st) {
         logger.e('createLocalOffer', error: ex, stackTrace: st);
       }
@@ -374,11 +377,11 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
             ? Bounds(
                 leftTop: [
                   state.mapPolygon!.polygon[0].latitude,
-                  state.mapPolygon!.polygon[0].longitude
+                  state.mapPolygon!.polygon[0].longitude,
                 ],
                 rightBottom: [
                   state.mapPolygon!.polygon[2].latitude,
-                  state.mapPolygon!.polygon[2].longitude
+                  state.mapPolygon!.polygon[2].longitude,
                 ],
               )
             : null,

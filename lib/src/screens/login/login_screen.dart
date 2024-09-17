@@ -240,18 +240,13 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
   _onLoginButtonPressed(String email, String password) async {
     print('_onLoginButtonPressed');
     if (password.length > 5) {
-      try {
-        FocusScope.of(context).requestFocus(FocusNode());
-        ref.read(loginLoadingProvider.notifier).state = true;
-        await ref.read(authNotifierProvider.notifier).login(
-              email,
-              password,
-            );
-        ref.read(loginLoadingProvider.notifier).state = false;
-      } catch (ex) {
-        logger.e(ex);
-        ref.read(loginLoadingProvider.notifier).state = false;
-      }
+      FocusScope.of(context).requestFocus(FocusNode());
+      ref.read(loginLoadingProvider.notifier).state = true;
+      await ref.read(authNotifierProvider.notifier).login(
+            email,
+            password,
+          );
+      ref.read(loginLoadingProvider.notifier).state = false;
     } else {
       FocusScope.of(context).requestFocus(_focusNode);
     }

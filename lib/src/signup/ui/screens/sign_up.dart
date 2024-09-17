@@ -145,12 +145,13 @@ class SignUpScreen extends HookConsumerWidget {
                   hintText: 'write_here'.tr(),
                   prefixIcon: const Icon(Icons.password),
                   suffixIcon: IconButton(
-                      onPressed: () {
-                        _obscurePassword.value = !_obscurePassword.value;
-                      },
-                      icon: _obscurePassword.value
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined)),
+                    onPressed: () {
+                      _obscurePassword.value = !_obscurePassword.value;
+                    },
+                    icon: _obscurePassword.value
+                        ? const Icon(Icons.visibility_outlined)
+                        : const Icon(Icons.visibility_off_outlined),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -162,6 +163,10 @@ class SignUpScreen extends HookConsumerWidget {
                   [
                     Validatorless.required(
                       'mandatory_field'.tr(),
+                    ),
+                    Validatorless.min(
+                      8,
+                      'password_min_length_error'.tr(),
                     ),
                   ],
                 ),
@@ -193,23 +198,56 @@ class SignUpScreen extends HookConsumerWidget {
                             password,
                           );
                       context.pop();
-                      // isLoading.value = false;
                     }
                   } on ServerException catch (ex, st) {
-                    logger.e('signUp: ${ex.error} with ${ex.statusCode}',
-                        error: ex, stackTrace: st);
+                    switch (ex.errorType) {
+                      case ServerExceptionType.emailAlreadyRegistered:
+                      case ServerExceptionType.passwordUnacceptable:
+                        logger.w(
+                          'signUp: ${ex.error} with ${ex.statusCode}',
+                          error: ex,
+                          stackTrace: st,
+                        );
+                        break;
+                      default:
+                        logger.e(
+                          'signUp: ${ex.error} with ${ex.statusCode}',
+                          error: ex,
+                          stackTrace: st,
+                        );
+                    }
                     isLoading.value = false;
                     Alert(
                       context: context,
                       title: 'sign_up_error'.tr(),
                       desc: ex.errorDescription,
                       buttons: [
-                        DialogButton(
-                          child: Text('Ok'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
+                        if (ex.errorType ==
+                            ServerExceptionType.emailAlreadyRegistered) ...[
+                          DialogButton(
+                            child: Text(
+                              'Annulla',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          DialogButton(
+                            child: Text('Vai'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ] else
+                          DialogButton(
+                            child: Text('Ok'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
                       ],
                     ).show();
                   } catch (ex, st) {

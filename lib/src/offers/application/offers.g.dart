@@ -6,7 +6,7 @@ part of 'offers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getPosHash() => r'ee9b5c43f694fa78393491316cdcb6faf9b315c1';
+String _$getPosHash() => r'2ba7534c019cc59fee1c2e63f9629e915b978d01';
 
 /// See also [getPos].
 @ProviderFor(getPos)
@@ -37,7 +37,7 @@ final getSecureStorageProvider =
 
 typedef GetSecureStorageRef = AutoDisposeProviderRef<FlutterSecureStorage>;
 String _$cloudOffersNotifierHash() =>
-    r'75898b7bc5c23c9e84a07db11a907de385713bb4';
+    r'74ad80e3819ade3f2b42a2f150d384c2559590f1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -203,7 +203,7 @@ class _CloudOffersNotifierProviderElement
   String? get posId => (origin as CloudOffersNotifierProvider).posId;
 }
 
-String _$requestNotifierHash() => r'78996f82d45eb5f6639a066dee2ec22f0ba8f9ed';
+String _$requestNotifierHash() => r'6db8ba6fe82c6dd6f247f2fafb686934dc6dc00c';
 
 /// See also [RequestNotifier].
 @ProviderFor(RequestNotifier)
