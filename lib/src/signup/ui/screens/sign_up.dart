@@ -235,7 +235,7 @@ class SignUpScreen extends HookConsumerWidget {
                             },
                           ),
                           DialogButton(
-                            child: Text('Vai'),
+                            child: Text('go'.tr()),
                             onPressed: () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();

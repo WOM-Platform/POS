@@ -167,7 +167,7 @@
   "email_not_valid": "Indirizzo e-mail non valido.",
   "invalid_fiscal_code": "Il codice fiscale inserito non è valido.",
   "fiscal_code_already_used": "Il codice fiscale risulta già utilizzato da un altro profilo.",
-  "email-already-registered": "Questo indirizzo e-mail risulta già utilizzato.",
+  "email-already-registered": "Questo indirizzo e-mail risulta già utilizzato. Vuoi accedere?",
   "token_not_valid": "Token non valido.",
   "pos-not-found": "POS non trovato.",
   "source-not-found": "Merchant non trovato.",

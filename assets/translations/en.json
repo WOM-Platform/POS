@@ -168,7 +168,7 @@
   "email_not_valid": "Email not valid",
   "invalid_fiscal_code": "The Fiscal Code or VAT number appears to be not valid.",
   "fiscal_code_already_used": "The Fiscal Code or VAT number appears to be already in use.",
-  "email-already-registered": "This e-mail address is already registered.",
+  "email-already-registered": "This e-mail address is already registered. Do you want to login instead?",
   "token_not_valid": "Token not valid",
   "pos-not-found": "POS not found.",
   "source-not-found": "Merchant not found.",
