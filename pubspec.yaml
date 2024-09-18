@@ -11,11 +11,11 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.5.2+59
+version: 1.5.3+60
 publish_to: none
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -35,12 +35,11 @@ dependencies:
   flutter_slidable: ^3.0.1
   share: ^2.0.4
   simple_animations: ^5.0.2
-  url_launcher: ^6.2.4
+  url_launcher: ^6.3.0
   rflutter_alert: ^2.0.7
   sqflite:
 #  device_preview: ^1.0.0
   internet_connection_checker:
-  feature_discovery: ^0.14.1
 #  firebase_crashlytics: ^2.5.05
   flutter_sticky_header: ^0.6.5
   package_info: ^2.0.2
@@ -61,7 +60,7 @@ dependencies:
   loading_overlay:
   jwt_decoder: ^2.0.1
   google_fonts: ^6.2.0
-  printing:
+  printing: ^5.13.2
 
   flutter_hooks: ^0.20.4
   hooks_riverpod: ^2.4.9
@@ -81,8 +80,8 @@ dependencies:
   easy_localization_loader:
   go_router: ^13.2.0
   easy_rich_text: ^2.1.0
-  sentry_flutter: ^7.18.0
-  sentry_dio: ^7.18.0
+  sentry_flutter: ^8.9.0
+  sentry_dio: ^8.9.0
   permission_handler:
   device_info_plus:
 

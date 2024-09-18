@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pos/src/blocs/authentication/bloc.dart';
@@ -20,7 +19,7 @@ class RootScreen extends ConsumerWidget {
       AuthenticationUninitialized() => SplashScreen(),
       AuthenticationAuthenticated() when state.user.merchants.isEmpty =>
         CreateMerchantScreen(),
-      AuthenticationAuthenticated() => FeatureDiscovery(child: HomeScreen()),
+      AuthenticationAuthenticated() => HomeScreen(),
       AuthenticationEmailNotVerified(email: final email) =>
         EmailVerificationScreen(email: email),
       AuthenticationUnauthenticated() => LoginScreen(),

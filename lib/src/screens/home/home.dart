@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
@@ -27,7 +26,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
       if (isFirstOpen) {
-        _showTutorial(context);
+        // _showTutorial(context);
       }
       // else {
       //   showSelector(context);
@@ -58,39 +57,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           statusBarIconBrightness: Brightness.light,
           systemNavigationBarColor: Theme.of(context).primaryColor,
         ),
-        title: DescribedFeatureOverlay(
-          featureId: 'show_pos_selection_info',
-          tapTarget: Text('POS'),
-          title: Text('selection_pos_suggestion' 'try_again'.tr()),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          targetColor: Colors.white,
-          textColor: Theme.of(context).primaryColor,
-          child: GestureDetector(
-            onTap: () async {
-              md.showMaterialModalBottomSheet(
-                context: context,
-                useRootNavigator: true,
-                builder: (context) => PosSelectorWidget(),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.blue[300],
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(selectedPos?.pos?.name ?? 'Seleziona POS'),
-                  // if (ref.read(homeNotifierProvider.notifier).posSelectionEnabled)
-                  Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
+        title: GestureDetector(
+          onTap: () async {
+            md.showMaterialModalBottomSheet(
+              context: context,
+              useRootNavigator: true,
+              builder: (context) => PosSelectorWidget(),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.blue[300],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(selectedPos?.pos?.name ?? 'Seleziona POS'),
+                // if (ref.read(homeNotifierProvider.notifier).posSelectionEnabled)
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.white,
+                ),
+              ],
             ),
           ),
         ),
@@ -188,17 +179,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       },
     );
   }*/
-
-  void _showTutorial(BuildContext context) {
-    FeatureDiscovery.discoverFeatures(
-      context,
-      const <String>{
-        'show_fab_info',
-        'show_pos_selection_info',
-        'show_logout_info',
-      },
-    );
-  }
 }
 
 class WarningWidget extends StatelessWidget {

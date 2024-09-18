@@ -216,7 +216,7 @@ class _LoginBoxState extends ConsumerState<LoginBox> {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  text: 'areYouNotRegistered'.tr(),
+                  text: '${'areYouNotRegistered'.tr()} ',
                   children: [
                     TextSpan(
                       text: 'tapHere'.tr(),

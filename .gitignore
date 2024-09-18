@@ -83,3 +83,6 @@
 assets/anonymous.pem
 assets/anonymous.pub
 /.fvm/
+
+# FVM Version Cache
+.fvm/

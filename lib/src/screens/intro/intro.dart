@@ -42,26 +42,26 @@ class IntroScreenState extends State<IntroScreen> {
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context)
         .textTheme
-        .subtitle1
+        .titleMedium
         ?.copyWith(color: Theme.of(context).primaryColor);
     return IntroSlider(
       colorActiveDot: Theme.of(context).primaryColor,
       doneButtonStyle: TextButton.styleFrom(
         textStyle: Theme.of(context)
             .textTheme
-            .headline6
+            .titleLarge
             ?.copyWith(fontSize: 16, color: Theme.of(context).primaryColor),
       ),
       skipButtonStyle: TextButton.styleFrom(
         textStyle: Theme.of(context)
             .textTheme
-            .headline6
+            .titleLarge
             ?.copyWith(fontSize: 16, color: Theme.of(context).primaryColor),
       ),
       prevButtonStyle: TextButton.styleFrom(
         textStyle: Theme.of(context)
             .textTheme
-            .headline6
+            .titleLarge
             ?.copyWith(fontSize: 16, color: Theme.of(context).primaryColor),
       ),
       onDonePress: this.onDonePress,
@@ -70,7 +70,7 @@ class IntroScreenState extends State<IntroScreen> {
         Slide(
           maxLineTitle: 10,
           styleTitle: titleStyle,
-          styleDescription: Theme.of(context).textTheme.bodyText1,
+          styleDescription: Theme.of(context).textTheme.bodyLarge,
           backgroundColor: Colors.white,
           heightImage: 150,
           centerWidget: Icon(
@@ -83,7 +83,7 @@ class IntroScreenState extends State<IntroScreen> {
         Slide(
           maxLineTitle: 10,
           styleTitle: titleStyle,
-          styleDescription: Theme.of(context).textTheme.bodyText1,
+          styleDescription: Theme.of(context).textTheme.bodyLarge,
           backgroundColor: Colors.white,
           heightImage: 150,
           centerWidget: Icon(
@@ -96,7 +96,7 @@ class IntroScreenState extends State<IntroScreen> {
               Text(
                 'merchant_desc'.tr(),
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
               SizedBox(height: 16),
               FloatingActionButton.extended(
@@ -113,7 +113,7 @@ class IntroScreenState extends State<IntroScreen> {
         Slide(
           maxLineTitle: 10,
           styleTitle: titleStyle,
-          styleDescription: Theme.of(context).textTheme.bodyText1,
+          styleDescription: Theme.of(context).textTheme.bodyLarge,
           backgroundColor: Colors.white,
           heightImage: 150,
           pathImage: "assets/slide4.png",
@@ -123,7 +123,7 @@ class IntroScreenState extends State<IntroScreen> {
         Slide(
           maxLineTitle: 10,
           styleTitle: titleStyle,
-          styleDescription: Theme.of(context).textTheme.bodyText1,
+          styleDescription: Theme.of(context).textTheme.bodyLarge,
           backgroundColor: Colors.white,
           heightImage: 150,
           centerWidget: Icon(
