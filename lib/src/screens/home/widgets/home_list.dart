@@ -25,10 +25,6 @@ import '../../../db/payment_database/payment_database.dart';
 import '../../../my_logger.dart';
 
 class HomeList extends ConsumerStatefulWidget {
-  // final List<PaymentRequest> requests;
-  //
-  // HomeList({Key? key, required this.requests}) : super(key: key);
-
   @override
   _HomeListState createState() => _HomeListState();
 }
@@ -68,10 +64,11 @@ class _HomeListState extends ConsumerState<HomeList> {
                     height: 20,
                   ),
                   FloatingActionButton.extended(
-                      label: Text('try_again'.tr()),
-                      onPressed: () {
-                        ref.invalidate(requestNotifierProvider);
-                      }),
+                    label: Text('try_again'.tr()),
+                    onPressed: () {
+                      ref.invalidate(requestNotifierProvider);
+                    },
+                  ),
                 ],
               ),
             );
@@ -121,22 +118,6 @@ class _HomeListState extends ConsumerState<HomeList> {
                             },
                             color: Colors.green,
                           ),
-                          if (requests[index].persistent)
-                            MySlidableAction(
-                              icon: Icons.picture_as_pdf,
-                              onTap: () async {
-                                final pos = ref.read(selectedPosProvider)?.pos;
-                                if (pos == null) return;
-                                final pdfCreator = PdfCreator();
-                                final file = await pdfCreator.buildPdf(
-                                  requests[index],
-                                  pos,
-                                  context.locale.languageCode,
-                                );
-                                Share.shareFiles([file.path]);
-                              },
-                              color: Colors.pink,
-                            ),
                         ],
                         if (requests[index].status != RequestStatus.COMPLETE)
                           MySlidableAction(
@@ -244,12 +225,14 @@ class _HomeListState extends ConsumerState<HomeList> {
     final provider = ProviderScope(
       child: GenerateWomScreen(),
       overrides: [
-        createPaymentNotifierProvider.overrideWith((ref) =>
-            CreatePaymentRequestBloc(
-                ref: ref,
-                posId: id,
-                draftRequest: request,
-                languageCode: context.locale.languageCode))
+        createPaymentNotifierProvider.overrideWith(
+          (ref) => CreatePaymentRequestBloc(
+            ref: ref,
+            posId: id,
+            draftRequest: request,
+            languageCode: context.locale.languageCode,
+          ),
+        ),
       ],
     );
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => provider));
@@ -283,7 +266,9 @@ class MySlidableAction extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
           decoration: BoxDecoration(
-              color: color, borderRadius: BorderRadius.circular(16)),
+            color: color,
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Center(
             child: Icon(
               icon,

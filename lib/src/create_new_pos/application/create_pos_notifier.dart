@@ -35,6 +35,7 @@ class CreatePOSNotifier extends _$CreatePOSNotifier {
     required String city,
     required String country,
     String? streetName,
+    String? zipCode,
     String? streetNumber,
     String? formattedAddress,
     String? googleMapsPlaceId,
@@ -61,6 +62,7 @@ class CreatePOSNotifier extends _$CreatePOSNotifier {
             streetName: streetName,
             city: city,
             country: country,
+            zipCode: zipCode,
           );
 
       state = CreatePOSState.complete();

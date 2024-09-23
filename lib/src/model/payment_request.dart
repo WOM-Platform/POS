@@ -172,7 +172,6 @@ class PaymentRequest {
       password: map[PASSWORD],
       posId: map[POS_ID],
       status: RequestStatus.values[map[STATUS]],
-      // registryUrl: map[URL],
       pocketAckUrl: map[POCKET_ACK_URL],
       posAckUrl: map[POS_ACK_URL],
       persistent: map[PERSISTENT] == 0 ? false : true,

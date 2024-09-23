@@ -273,8 +273,6 @@ class CreateOfferNotifier extends _$CreateOfferNotifier {
           simpleFilter: request.filter,
           location: state.mapPolygon?.target,
           dateTime: DateTime.now(),
-          // pocketAckUrl: 'pocketAckUrl',
-          // posAckUrl: 'posAckUrl',
           deepLink:
               DeepLinkBuilder(response.otc, TransactionType.PAYMENT).build(),
           nonce: payload.nonce,

@@ -112,6 +112,7 @@ class OffersScreen extends HookConsumerWidget {
                                       password: offer.payment.password,
                                       link: offer.payment.link,
                                       name: offer.title,
+                                      isPersistent: true,
                                       onCreatePdf: () async {
                                         final pos =
                                             ref.read(selectedPosProvider)?.pos;

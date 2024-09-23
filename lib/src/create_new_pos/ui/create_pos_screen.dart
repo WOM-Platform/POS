@@ -90,6 +90,7 @@ class CreatePOSScreen extends HookConsumerWidget {
                   country: answers['country']!,
                   googleMapsPlaceId: answers['placeId'],
                   streetName: answers['streetName'],
+                  zipCode: answers['zipCode'],
                   streetNumber: answers['streetNumber'],
                   formattedAddress: answers['formattedAddress'] as String,
                   lat: double.tryParse(answers['lat'] ?? '0.0') ?? 0.0,

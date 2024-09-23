@@ -38,21 +38,21 @@ class PaymentDatabase extends PaymentDatabaseBase {
     }
   }
 
-  Future<PaymentRequest> getRequest(int id) async {
-    var db = await _appDatabase.getDb();
-    try {
-      List<Map<String, dynamic>> maps = await db.query(
-        PaymentRequest.TABLE,
-        columns: null,
-        where: "${PaymentRequest.ID} = ?",
-        whereArgs: [id],
-      );
-      return PaymentRequest.fromDBMap(maps.first);
-    } catch (ex, st) {
-      logger.e('getRequest', error: ex, stackTrace: st);
-      rethrow;
-    }
-  }
+  // Future<PaymentRequest> getRequest(int id) async {
+  //   var db = await _appDatabase.getDb();
+  //   try {
+  //     List<Map<String, dynamic>> maps = await db.query(
+  //       PaymentRequest.TABLE,
+  //       columns: null,
+  //       where: "${PaymentRequest.ID} = ?",
+  //       whereArgs: [id],
+  //     );
+  //     return PaymentRequest.fromDBMap(maps.first);
+  //   } catch (ex, st) {
+  //     logger.e('getRequest', error: ex, stackTrace: st);
+  //     rethrow;
+  //   }
+  // }
 
   Future<int> insertRequest(PaymentRequest paymentRequest) async {
     var db = await _appDatabase.getDb();

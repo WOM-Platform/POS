@@ -90,7 +90,7 @@ class IntroScreenState extends State<IntroScreen> {
             CustomIcons.merchant_logo,
             size: 100,
           ),
-          title: "Merchant!",
+          title: 'intro_merchant_title'.tr(),
           widgetDescription: Column(
             children: <Widget>[
               Text(
@@ -99,14 +99,6 @@ class IntroScreenState extends State<IntroScreen> {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               SizedBox(height: 16),
-              FloatingActionButton.extended(
-                onPressed: () {
-                  launchUrl('https://$domain/user/register-merchant');
-                },
-                label: Text(
-                  'sign_up'.tr(),
-                ),
-              )
             ],
           ),
         ),

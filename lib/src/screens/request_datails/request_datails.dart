@@ -6,7 +6,6 @@ import 'package:pos/src/model/payment_request.dart';
 import 'package:pos/src/screens/request_confirm/summary_request.dart';
 import 'package:share/share.dart';
 
-
 class RequestDetails extends ConsumerWidget {
   // final PaymentRequest paymentRequest;
   final int cost;
@@ -15,16 +14,18 @@ class RequestDetails extends ConsumerWidget {
   final String name;
   final String link;
   final Function()? onCreatePdf;
+  final bool isPersistent;
 
-  const RequestDetails(
-      {Key? key,
-      required this.id,
-      required this.cost,
-      this.onCreatePdf,
-      required this.password,
-      required this.link,
-      required this.name})
-      : super(key: key);
+  const RequestDetails({
+    Key? key,
+    required this.id,
+    required this.cost,
+    this.onCreatePdf,
+    required this.isPersistent,
+    required this.password,
+    required this.link,
+    required this.name,
+  }) : super(key: key);
 
   factory RequestDetails.fromPaymentRequest(
     PaymentRequest request,
@@ -36,7 +37,8 @@ class RequestDetails extends ConsumerWidget {
       password: request.password ?? '-',
       name: request.name,
       link: request.deepLink ?? '-',
-      onCreatePdf: onCreatePdf,
+      isPersistent: request.persistent,
+      onCreatePdf: request.persistent ? onCreatePdf : null,
     );
   }
 
@@ -87,8 +89,9 @@ class RequestDetails extends ConsumerWidget {
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                          text: "WOM",
-                          style: TextStyle(fontWeight: FontWeight.normal)),
+                        text: "WOM",
+                        style: TextStyle(fontWeight: FontWeight.normal),
+                      ),
                     ],
                   ),
                 ),
@@ -112,13 +115,16 @@ class RequestDetails extends ConsumerWidget {
                   text: TextSpan(
                     text: 'PIN ',
                     style: TextStyle(
-                        fontSize: 30.0, color: Theme.of(context).primaryColor),
+                      fontSize: 30.0,
+                      color: Theme.of(context).primaryColor,
+                    ),
                     children: <TextSpan>[
                       TextSpan(
-                          text: password,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )),
+                        text: password,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -126,7 +132,7 @@ class RequestDetails extends ConsumerWidget {
               SizedBox(
                 height: 80.0,
               ),
-              if (onCreatePdf != null) ...[
+              if (onCreatePdf != null && isPersistent)
                 Center(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -143,56 +149,22 @@ class RequestDetails extends ConsumerWidget {
                     ),
                   ),
                 ),
-                Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                    onPressed: () => Share.share(link),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.share),
-                        const SizedBox(width: 16),
-                        Text('share_link'.tr()),
-                      ],
-                    ),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                  onPressed: () => Share.share(link),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.share),
+                      const SizedBox(width: 16),
+                      Text('share_link'.tr()),
+                    ],
                   ),
                 ),
-                /* Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pink,
-                      ),
-                      onPressed: onCreatePdf,
-                      child: Row(
-                        children: [
-                          Icon(Icons.picture_as_pdf),
-                          const SizedBox(width: 16),
-                          Text('Scarica PDF'),
-                        ],
-                      ),
-                    ),
-                    // IconButton(
-                    //   icon: Icon(Icons.picture_as_pdf),
-                    //   color: Colors.pink,
-                    //   iconSize: 50,
-                    //   onPressed: onCreatePdf,
-                    // ),
-                    const SizedBox(width: 24),
-                    IconButton(
-                      icon: Icon(Icons.share),
-                      color: Colors.green,
-                      iconSize: 50,
-                      onPressed: () {
-                        Share.share(link);
-                      },
-                    ),
-                  ],
-                ),*/
-              ]
+              ),
             ],
           ),
         ],

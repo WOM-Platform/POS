@@ -65,23 +65,10 @@ class SummaryRequest extends ConsumerWidget {
                     height: height / 3,
                     width: height / 3,
                     child: Center(
-                        child: MyBarcode(
-                      link: paymentRequest.deepLink!,
-                    )
-                        // child: Card(
-                        //   child: paymentRequest.deepLink != null
-                        //       ? pdf.BarcodeWidget(
-                        //           barcode: pdf.Barcode.qrCode(
-                        //             errorCorrectLevel:
-                        //                 pdf.BarcodeQRCorrectionLevel.high,
-                        //           ),
-                        //           data: paymentRequest.deepLink,
-                        //           width: 200,
-                        //           height: 200,
-                        //         )
-                        //       : Text('Errore QRCode'),
-                        // ),
-                        ),
+                      child: MyBarcode(
+                        link: paymentRequest.deepLink!,
+                      ),
+                    ),
                   ),
                 const SizedBox(
                   height: 20,
@@ -139,7 +126,8 @@ class SummaryRequest extends ConsumerWidget {
                   );
                 },
                 label: Text(
-                    'duplicate'.tr()),
+                  'duplicate'.tr(),
+                ),
               ),
       ),
     );

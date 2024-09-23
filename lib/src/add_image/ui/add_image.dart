@@ -28,7 +28,51 @@ final cropControllerProvider = Provider.autoDispose<CropController>((ref) {
 
 enum CropType { square, circle }
 
-class AddImageScreen extends HookConsumerWidget {
+class AddImageScreen extends ConsumerStatefulWidget {
+  final Future Function(Uint8List)? onSave;
+
+  const AddImageScreen({
+    super.key,
+    this.onSave,
+  });
+
+  @override
+  ConsumerState<AddImageScreen> createState() => _AddImageScreenState();
+}
+
+class _AddImageScreenState extends ConsumerState<AddImageScreen> {
+  @override
+  void initState() {
+    super.initState();
+    pickImage();
+  }
+
+  Future pickImage() async {
+    try {
+      final picker = ImagePickerClient();
+      final image = await picker.pickImage();
+
+      if (image == null) {
+        Navigator.of(context).pop();
+        return;
+      }
+
+      final bytes = await image.readAsBytes();
+      ref.read(selectedImageProvider.notifier).state = bytes;
+    } catch (ex, st) {
+      logger.e('pickImage', error: ex, stackTrace: st);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AddImageWidget(
+      onSave: widget.onSave,
+    );
+  }
+}
+
+class AddImageWidget extends HookConsumerWidget {
   final String? imageUrl;
   final CropType cropType;
   final int minWidth;
@@ -36,11 +80,11 @@ class AddImageScreen extends HookConsumerWidget {
   final double aspectRatio;
   final Future Function(Uint8List)? onSave;
 
-  const AddImageScreen({
+  const AddImageWidget({
     Key? key,
     this.imageUrl,
     this.onSave,
-    this.aspectRatio = 1.0,
+    this.aspectRatio = 16 / 9,
     this.minWidth = 1024,
     this.minHeight = 1024,
     this.cropType = CropType.square,
@@ -136,12 +180,13 @@ class AddImageScreen extends HookConsumerWidget {
                     ],
                   )
                 : Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await pickImage(ref, isProcessing);
-                      },
-                      child: Text('select_image'.tr()),
-                    ),
+                    // child: ElevatedButton(
+                    //   onPressed: () async {
+                    //     await pickImage(ref, isProcessing);
+                    //   },
+                    //   child: Text('select_image'.tr()),
+                    // ),
+                    child: CircularProgressIndicator(),
                   )
             : croppedData != null
                 ? Center(child: Image.memory(croppedData))

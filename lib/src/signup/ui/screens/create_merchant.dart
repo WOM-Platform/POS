@@ -93,11 +93,12 @@ class CreateMerchantScreen extends HookConsumerWidget {
         title: Text('create_merchant.title'.tr()),
         actions: [
           IconButton(
-              icon: Icon(Icons.exit_to_app),
-              color: Colors.white,
-              onPressed: () {
-                ref.read(authNotifierProvider.notifier).logOut();
-              }),
+            icon: Icon(Icons.exit_to_app),
+            color: Colors.white,
+            onPressed: () {
+              ref.read(authNotifierProvider.notifier).logOut();
+            },
+          ),
         ],
       ),
       body: LoadingOverlay(
@@ -115,7 +116,7 @@ class CreateMerchantScreen extends HookConsumerWidget {
                   fiscalCode: answers['cf']!,
                   address: answers['address']!,
                   primaryActivity: answers['activity']!,
-                  zipCode: answers['zip']!,
+                  zipCode: answers['zipCode']!,
                   city: answers['city']!,
                   country: answers['country']!,
                   googleMapsPlaceId: answers['placeId']!,
@@ -354,121 +355,128 @@ class CustomFormWidget extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: GooglePlacesAutoCompleteTextFormField(
-                    inputDecoration: InputDecoration(
-                      prefixText: forms[i].prefix,
-                      labelText: forms[i].labelText,
-                      hintText: forms[i].hintText,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 1),
-                      ),
+                  inputDecoration: InputDecoration(
+                    prefixText: forms[i].prefix,
+                    labelText: forms[i].labelText,
+                    hintText: forms[i].hintText,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    textEditingController: controllers[forms[i].key],
-                    googleAPIKey: "AIzaSyBnSeX3CiELwq6CWBXFbcmW7DeZ3BGLaag",
-                    debounceTime: 400,
-                    countries: ["it"],
-                    isLatLngRequired: true,
-                    getPlaceDetailWithLatLng: (prediction, details) {
-                      final addressComponents =
-                          details.result?.addressComponents ?? [];
-                      final number = addressComponents
-                          .firstWhereOrNull((c) =>
-                              c.types?.contains('street_number') ?? false)
-                          ?.longName;
-                      final address = addressComponents
-                          .firstWhereOrNull(
-                              (c) => c.types?.contains('route') ?? false)
-                          ?.longName;
-                      final locality = addressComponents
-                          .firstWhereOrNull(
-                              (c) => c.types?.contains('locality') ?? false)
-                          ?.longName;
-                      final postcode = addressComponents
-                          .firstWhereOrNull(
-                              (c) => c.types?.contains('postal_code') ?? false)
-                          ?.longName;
-                      final _country = addressComponents
-                          .firstWhereOrNull(
-                              (c) => c.types?.contains('country') ?? false)
-                          ?.longName;
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),
+                  ),
+                  textEditingController: controllers[forms[i].key],
+                  googleAPIKey: "AIzaSyBnSeX3CiELwq6CWBXFbcmW7DeZ3BGLaag",
+                  debounceTime: 400,
+                  countries: ["it"],
+                  isLatLngRequired: true,
+                  getPlaceDetailWithLatLng: (prediction, details) {
+                    final addressComponents =
+                        details.result?.addressComponents ?? [];
+                    final number = addressComponents
+                        .firstWhereOrNull(
+                          (c) => c.types?.contains('street_number') ?? false,
+                        )
+                        ?.longName;
+                    final address = addressComponents
+                        .firstWhereOrNull(
+                          (c) => c.types?.contains('route') ?? false,
+                        )
+                        ?.longName;
+                    final locality = addressComponents
+                        .firstWhereOrNull(
+                          (c) => c.types?.contains('locality') ?? false,
+                        )
+                        ?.longName;
+                    final postcode = addressComponents
+                        .firstWhereOrNull(
+                          (c) => c.types?.contains('postal_code') ?? false,
+                        )
+                        ?.longName;
+                    final _country = addressComponents
+                        .firstWhereOrNull(
+                          (c) => c.types?.contains('country') ?? false,
+                        )
+                        ?.longName;
 
-                      final pId = prediction.placeId;
-                      final lat = prediction.lat;
-                      final long = prediction.lng;
+                    final pId = prediction.placeId;
+                    final lat = prediction.lat;
+                    final long = prediction.lng;
 
-                      cap.value = postcode;
-                      city.value = locality;
-                      country.value = _country;
-                      latitude.value = lat;
-                      longitude.value = long;
-                      placeId.value = pId;
-                      formattedAddress.value = prediction.description;
-                      streetNumber.value = number;
-                      streetName.value = address;
+                    cap.value = postcode;
+                    city.value = locality;
+                    country.value = _country;
+                    latitude.value = lat;
+                    longitude.value = long;
+                    placeId.value = pId;
+                    formattedAddress.value = prediction.description;
+                    streetNumber.value = number;
+                    streetName.value = address;
 
-                      // Set address
-                      final fullAddress = details.result?.formattedAddress;
+                    // Set address
+                    final fullAddress = details.result?.formattedAddress;
 
-                      if (controllers.containsKey('google_address')) {
-                        final addressController = controllers['google_address'];
-                        if (addressController is TextEditingController) {
-                          final currentText = addressController.text;
-                          addressController.text =
-                              fullAddress ?? streetName.value ?? currentText;
-                        }
+                    if (controllers.containsKey('google_address')) {
+                      final addressController = controllers['google_address'];
+                      if (addressController is TextEditingController) {
+                        final currentText = addressController.text;
+                        addressController.text =
+                            fullAddress ?? streetName.value ?? currentText;
                       }
+                    }
 
-                      if (controllers
-                          .containsKey(CustomFormField.address.name)) {
-                        final addressController =
-                            controllers[CustomFormField.address.name];
-                        if (addressController is TextEditingController) {
-                          final currentText = addressController.text;
-                          addressController.text =
-                              fullAddress ?? streetName.value ?? currentText;
-                        }
+                    if (controllers.containsKey(CustomFormField.address.name)) {
+                      final addressController =
+                          controllers[CustomFormField.address.name];
+                      if (addressController is TextEditingController) {
+                        final currentText = addressController.text;
+                        addressController.text =
+                            fullAddress ?? streetName.value ?? currentText;
                       }
+                    }
 
-                      // Set city
-                      if (controllers.containsKey(CustomFormField.city.name)) {
-                        final cityController =
-                            controllers[CustomFormField.city.name];
-                        if (cityController is TextEditingController) {
-                          final currentText = cityController.text;
-                          cityController.text = locality ?? currentText ?? '';
-                        }
+                    // Set city
+                    if (controllers.containsKey(CustomFormField.city.name)) {
+                      final cityController =
+                          controllers[CustomFormField.city.name];
+                      if (cityController is TextEditingController) {
+                        final currentText = cityController.text;
+                        cityController.text = locality ?? currentText ?? '';
                       }
+                    }
 
-                      // Set country
-                      if (controllers
-                          .containsKey(CustomFormField.country.name)) {
-                        final countryController =
-                            controllers[CustomFormField.country.name];
-                        if (countryController is TextEditingController) {
-                          final currentText = countryController.text;
-                          countryController.text = _country ?? currentText;
-                        }
+                    // Set country
+                    if (controllers.containsKey(CustomFormField.country.name)) {
+                      final countryController =
+                          controllers[CustomFormField.country.name];
+                      if (countryController is TextEditingController) {
+                        final currentText = countryController.text;
+                        countryController.text = _country ?? currentText;
                       }
+                    }
 
-                      // Set CAP
-                      if (controllers.containsKey(CustomFormField.zip.name)) {
-                        final capController =
-                            controllers[CustomFormField.zip.name];
-                        if (capController is TextEditingController) {
-                          final currentText = capController.text;
-                          capController.text = postcode ?? currentText;
-                        }
+                    // Set CAP
+                    if (controllers.containsKey(CustomFormField.zip.name)) {
+                      final capController =
+                          controllers[CustomFormField.zip.name];
+                      if (capController is TextEditingController) {
+                        final currentText = capController.text;
+                        capController.text = postcode ?? currentText;
                       }
-                    },
-                    // this callback is called when isLatLngRequired is true
-                    itmClick: (prediction) {
-                      controllers[forms[i].key].text = prediction.description;
-                      controllers[forms[i].key].selection =
-                          TextSelection.fromPosition(TextPosition(
-                              offset: prediction.description!.length));
-                    }),
+                    }
+                  },
+                  // this callback is called when isLatLngRequired is true
+                  itmClick: (prediction) {
+                    controllers[forms[i].key].text = prediction.description;
+                    controllers[forms[i].key].selection =
+                        TextSelection.fromPosition(
+                      TextPosition(
+                        offset: prediction.description!.length,
+                      ),
+                    );
+                  },
+                ),
               )
             else
               Padding(
@@ -553,7 +561,7 @@ class CustomFormWidget extends HookConsumerWidget {
                 if (cap.value == null) {
                   showWarning(
                     context,
-                    'zip_code_error'.tr(),
+                    'create_merchant.zip_code_error'.tr(),
                   );
                   return;
                 }
@@ -572,12 +580,14 @@ class CustomFormWidget extends HookConsumerWidget {
                 }
 
                 if (map['activity'] == null) {
-                  showWarning(context,
-                      'activity_error'.tr());
+                  showWarning(
+                    context,
+                    'activity_error'.tr(),
+                  );
                   return;
                 }
 
-                map['zip'] = cap.value!;
+                map['zipCode'] = cap.value!;
                 map['city'] = city.value!;
                 map['country'] = country.value!;
                 map['placeId'] = placeId.value!;
@@ -645,7 +655,9 @@ class CFValidator extends TextFieldValidator {
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     return TextEditingValue(
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,

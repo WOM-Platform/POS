@@ -123,7 +123,6 @@ class POSHandler extends ConsumerWidget {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => AddImageScreen(
-                            aspectRatio: 16 / 9,
                             onSave: (bytes) async {
                               final userRepo = ref.read(userRepositoryProvider);
                               final token = await userRepo.getToken();
@@ -166,7 +165,7 @@ class POSHandler extends ConsumerWidget {
                         edit(
                           ref: ref,
                           initialText: pos.name,
-                          title: 'posName' 'try_again'.tr(),
+                          title: 'posName'.tr(),
                           maxLength: 28,
                           minLength: 4,
                           maxLines: 1,

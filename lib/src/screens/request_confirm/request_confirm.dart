@@ -13,11 +13,8 @@ import 'package:pos/src/screens/request_confirm/wom_creation_event.dart';
 import 'package:pos/src/screens/request_confirm/wom_creation_state.dart';
 
 class RequestConfirmScreen extends ConsumerStatefulWidget {
-  // final PaymentRequest paymentRequest;
-
   const RequestConfirmScreen({
     Key? key,
-    // required this.paymentRequest,
   }) : super(key: key);
 
   @override
@@ -25,22 +22,9 @@ class RequestConfirmScreen extends ConsumerStatefulWidget {
 }
 
 class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
-  // late RequestConfirmBloc bloc;
-  // late HomeBloc homeBloc;
-
   bool isComplete = false;
   bool isWrong = false;
   bool noDataConnection = false;
-
-  // @override
-  // void initState() {
-  //   bloc = RequestConfirmBloc(
-  //     pos: context.read<PosClient>(),
-  //     pointOfSale: context.read<HomeBloc>().selectedPos,
-  //     paymentRequest: widget.paymentRequest,
-  //   );
-  //   super.initState();
-  // }
 
   Future<bool> onWillPop() {
     if (isComplete || isWrong || noDataConnection) {
@@ -52,9 +36,6 @@ class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final bloc = context.read<RequestConfirmBloc>();
-    // final homeBloc = ref.watch(homeNotifierProvider);
-
     final paymentRequest = ref.watch(paymentRequestProvider);
     final state = ref.watch(requestConfirmNotifierProvider);
     return WillPopScope(
@@ -156,7 +137,6 @@ class _RequestConfirmScreenState extends ConsumerState<RequestConfirmScreen> {
   @override
   void dispose() {
     ref.invalidate(requestNotifierProvider);
-    // bloc.close();
     super.dispose();
   }
 }

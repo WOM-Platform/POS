@@ -26,6 +26,13 @@ class ImagePickerClient {
         return (await Permission.storage.request()).isGranted;
       }
     }
-    return (await Permission.photos.request()).isGranted;
+    final req  = await Permission.photos.request();
+    if(req.isPermanentlyDenied){
+      // The user opted to never again see the permission request dialog for this
+      // app. The only way to change the permission's status now is to let the
+      // user manually enables it in the system settings.
+      openAppSettings();
+    }
+    return req.isGranted;
   }
 }

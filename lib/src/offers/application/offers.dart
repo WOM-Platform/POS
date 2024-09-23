@@ -38,16 +38,12 @@ class CloudOffersNotifier extends _$CloudOffersNotifier {
 
   Future<List<Offer>> build(String? posId) async {
     final selectedPos = ref.watch(selectedPosProvider);
-    // final mmkv = Hive.box('settings');
-    // final posId = await mmkv.get('lastPosId');
-    // await mmkv.get('lastMerchantId');
 
     posId = selectedPos?.pos?.id;
     if (posId == null) {
       throw Exception('posId is null');
     }
     final repo = ref.watch(userRepositoryProvider);
-    // email = await repo.getSavedEmail();
     token = await repo.getToken();
     final pos = ref.watch(getPosProvider);
     if (token == null) {
@@ -78,25 +74,6 @@ class CloudOffersNotifier extends _$CloudOffersNotifier {
   }
 }
 
-// @riverpod
-// Future<List<Offer>> getOffers(GetOffersRef ref, {String? posId}) async {
-//   final mmkv = Hive.box('settings');
-//   final posId = await mmkv.get('lastPosId');
-//   await mmkv.get('lastMerchantId');
-//
-//   if (posId == null) {
-//     throw Exception();
-//   }
-//   final secureStorage = ref.watch(userRepositoryProvider).secureStorage;
-//   final email = await secureStorage.read(key: 'email');
-//   final password = await secureStorage.read(key: 'password');
-//   final pos = ref.watch(getPosProvider);
-//   if (email == null || password == null) {
-//     throw Exception();
-//   }
-//   return pos.getOffers(posId, email, password);
-// }
-
 final selectedPosProvider = StateProvider<SelectedPos?>((ref) {
   ref.listenSelf((previous, next) {
     if (next?.pos?.id == null) return;
@@ -122,23 +99,6 @@ class RequestNotifier extends _$RequestNotifier {
     if (selectedPos?.pos == null) return NoPosState();
 
     try {
-      // final lastCheck = await getLastAimCheckDateTime();
-      // final aimsAreOld = DateTime.now().difference(lastCheck).inMinutes > 1;
-      //
-      // //Se non ho gli aim salvati nel db o sono vecchi li scarico da internet
-      // if (aims == null || aims.isEmpty || aimsAreOld) {
-      //   if (await InternetConnectionChecker().hasConnection) {
-      //     logger.i("HomeBloc: trying to update Aim from internet");
-      //     aims = await ref
-      //         .watch(aimRepositoryProvider)
-      //         .updateAim(database: AppDatabase.get().getDb());
-      //     await setAimCheckDateTime(DateTime.now());
-      //   } else {
-      //     logger.i("Aims null or empty and No internet connection");
-      //     return NoDataConnectionState();
-      //   }
-      // }
-
       final aims = await ref.read(aimFlatListFutureProvider.future);
       logger.i('aim letti : ${aims.length}');
 
